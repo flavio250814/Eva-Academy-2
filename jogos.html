@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EVA Academy | Jogos</title>
+<style>
+:root{--azul:#071a36;--escuro:#031023;--dourado:#c9a227;--dourado2:#e0bd45;--agua:#55d6c2;--agua2:#8be6d6;--creme:#faf8ef;--branco:#fff;--cinza:#657086;--erro:#d64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--creme);color:#172238;min-height:100vh}
+header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:800;letter-spacing:2px}
+.back{color:var(--agua2);text-decoration:none;font-weight:700;font-size:14px}
+.wrap{width:min(900px,90%);margin:40px auto 70px}
+
+/* ---- tela de seleção ---- */
+#selecao h1{color:var(--azul);font-size:clamp(26px,4vw,38px);margin-bottom:8px}
+#selecao p{color:var(--cinza);margin-bottom:30px}
+.modos{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.modo-card{background:white;border-radius:16px;padding:26px 20px;text-align:center;box-shadow:0 12px 30px rgba(7,26,54,.08);cursor:pointer;transition:.2s;border:2px solid transparent}
+.modo-card:hover{transform:translateY(-4px);border-color:var(--dourado)}
+.modo-card .icon{font-size:30px;margin-bottom:10px}
+.modo-card h3{color:var(--azul);margin-bottom:6px;font-size:16px}
+.modo-card p{color:var(--cinza);font-size:13px;line-height:1.4}
+@media(max-width:650px){.modos{grid-template-columns:1fr}}
+
+/* ---- tela de jogo ---- */
+#jogo{display:none}
+.jogo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.jogo-header button{background:none;border:none;color:var(--azul);font-weight:700;cursor:pointer;font-size:14px}
+.placar{font-weight:800;color:var(--azul);background:white;padding:8px 14px;border-radius:999px;box-shadow:0 6px 16px rgba(7,26,54,.08)}
+.card-jogo{background:white;border-radius:18px;padding:34px 26px;box-shadow:0 15px 40px rgba(7,26,54,.1);text-align:center}
+.pergunta{font-size:22px;font-weight:800;color:var(--azul);margin-bottom:26px}
+.opcoes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:550px){.opcoes{grid-template-columns:1fr}}
+.opcao{padding:16px;border-radius:12px;border:2px solid var(--borda,rgba(7,26,54,.12));background:var(--creme);font-size:15px;font-weight:700;color:var(--azul);cursor:pointer;transition:.15s}
+.opcao:hover{border-color:var(--dourado)}
+.opcao.certa{background:var(--agua);border-color:var(--agua);color:var(--azul)}
+.opcao.errada{background:var(--erro);border-color:var(--erro);color:white}
+.proxima{display:inline-block;margin-top:22px;padding:12px 22px;border-radius:10px;background:var(--azul);color:white;font-weight:700;border:none;cursor:pointer}
+.proxima:hover{background:var(--escuro)}
+.fim h2{color:var(--azul);margin-bottom:10px}
+.fim p{color:var(--cinza);margin-bottom:20px}
+
+/* ---- jogo da memória ---- */
+.memoria-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:550px){.memoria-grid{grid-template-columns:repeat(3,1fr)}}
+.mem-carta{aspect-ratio:1/1;border-radius:12px;background:var(--azul);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;text-align:center;padding:6px;cursor:pointer;user-select:none;transition:.2s;box-shadow:0 8px 18px rgba(7,26,54,.12)}
+.mem-carta.virada{background:white;color:var(--azul);border:2px solid var(--dourado)}
+.mem-carta.acertou{background:var(--agua);color:var(--azul);cursor:default}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">EVA ACADEMY</div>
+  <a class="back" href="alunos.html">← Voltar à área do aluno</a>
+</header>
+
+<main class="wrap">
+
+  <section id="selecao">
+    <h1>Jogos em Inglês &amp; Português</h1>
+    <p>Escolha um jogo para praticar vocabulário.</p>
+    <div class="modos">
+      <article class="modo-card" onclick="iniciarMultiplaEscolha()">
+        <div class="icon">✅</div>
+        <h3>Múltipla Escolha</h3>
+        <p>Escolha a tradução correta entre as opções.</p>
+      </article>
+      <article class="modo-card" onclick="iniciarCompletarFrase()">
+        <div class="icon">✏️</div>
+        <h3>Complete a Frase</h3>
+        <p>Escolha a palavra que completa a frase.</p>
+      </article>
+      <article class="modo-card" onclick="iniciarMemoria()">
+        <div class="icon">🧠</div>
+        <h3>Jogo da Memória</h3>
+        <p>Encontre os pares de palavras em inglês e português.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="jogo">
+    <div class="jogo-header">
+      <button onclick="voltarSelecao()">← Trocar de jogo</button>
+      <div class="placar" id="placar">Pontos: 0</div>
+    </div>
+    <div class="card-jogo" id="areaJogo"></div>
+  </section>
+
+</main>
+
+<script>
+/* =====================================================
+   BANCO DE PALAVRAS
+   (adicione mais pares aqui — pt / en)
+===================================================== */
+const banco = [
+  {en:"house", pt:"casa"},
+  {en:"dog", pt:"cachorro"},
+  {en:"book", pt:"livro"},
+  {en:"water", pt:"água"},
+  {en:"friend", pt:"amigo"},
+  {en:"school", pt:"escola"},
+  {en:"happy", pt:"feliz"},
+  {en:"food", pt:"comida"},
+  {en:"family", pt:"família"},
+  {en:"teacher", pt:"professora"},
+  {en:"morning", pt:"manhã"},
+  {en:"love", pt:"amor"}
+];
+
+/* frases para o modo "complete a frase" — {en} vira a palavra correta */
+const frases = [
+  {frase:"I live in a big {en}.", resposta:"house", opcoesPt:false},
+  {frase:"My {en} is very loyal.", resposta:"dog", opcoesPt:false},
+  {frase:"She is reading a {en}.", resposta:"book", opcoesPt:false},
+  {frase:"Eu bebo muita {pt} todo dia.", resposta:"água", opcoesPt:true, chave:"pt"},
+  {frase:"Ele é meu melhor {pt}.", resposta:"amigo", opcoesPt:true, chave:"pt"},
+  {frase:"We go to {en} every morning.", resposta:"school", opcoesPt:false}
+];
+
+let pontos = 0;
+let indiceAtual = 0;
+let ordemAtual = [];
+
+function embaralhar(arr){return [...arr].sort(()=>Math.random()-0.5)}
+function mostrarTela(id){
+  document.getElementById('selecao').style.display = id==='selecao' ? 'block':'none';
+  document.getElementById('jogo').style.display = id==='jogo' ? 'block':'none';
+}
+function voltarSelecao(){ mostrarTela('selecao'); }
+function atualizarPlacar(){ document.getElementById('placar').textContent = 'Pontos: '+pontos; }
+
+/* ---------------- MÚLTIPLA ESCOLHA ---------------- */
+function iniciarMultiplaEscolha(){
+  pontos = 0; indiceAtual = 0;
+  ordemAtual = embaralhar(banco).slice(0,8);
+  atualizarPlacar();
+  mostrarTela('jogo');
+  renderMultiplaEscolha();
+}
+function renderMultiplaEscolha(){
+  const area = document.getElementById('areaJogo');
+  if(indiceAtual >= ordemAtual.length){ return fimDeJogo(); }
+  const item = ordemAtual[indiceAtual];
+  const erradas = embaralhar(banco.filter(p=>p.pt!==item.pt)).slice(0,3).map(p=>p.pt);
+  const opcoes = embaralhar([item.pt, ...erradas]);
+  area.innerHTML = `
+    <div class="pergunta">Como se diz "<u>${item.en}</u>" em português?</div>
+    <div class="opcoes">${opcoes.map(o=>`<button class="opcao" onclick="responderMultipla(this,'${o}','${item.pt}')">${o}</button>`).join('')}</div>
+  `;
+}
+function responderMultipla(botao, escolhida, correta){
+  document.querySelectorAll('#areaJogo .opcao').forEach(b=>{
+    b.onclick=null;
+    if(b.textContent===correta) b.classList.add('certa');
+  });
+  if(escolhida!==correta) botao.classList.add('errada'); else pontos++;
+  atualizarPlacar();
+  setTimeout(()=>{ indiceAtual++; renderMultiplaEscolha(); }, 900);
+}
+
+/* ---------------- COMPLETAR FRASE ---------------- */
+function iniciarCompletarFrase(){
+  pontos = 0; indiceAtual = 0;
+  ordemAtual = embaralhar(frases);
+  atualizarPlacar();
+  mostrarTela('jogo');
+  renderCompletarFrase();
+}
+function renderCompletarFrase(){
+  const area = document.getElementById('areaJogo');
+  if(indiceAtual >= ordemAtual.length){ return fimDeJogo(); }
+  const item = ordemAtual[indiceAtual];
+  const chave = item.opcoesPt ? 'pt' : 'en';
+  const erradas = embaralhar(banco.filter(p=>p[chave]!==item.resposta)).slice(0,3).map(p=>p[chave]);
+  const opcoes = embaralhar([item.resposta, ...erradas]);
+  const fraseComLacuna = item.frase.replace('{'+chave+'}', '_____');
+  area.innerHTML = `
+    <div class="pergunta">${fraseComLacuna}</div>
+    <div class="opcoes">${opcoes.map(o=>`<button class="opcao" onclick="responderFrase(this,'${o}','${item.resposta}')">${o}</button>`).join('')}</div>
+  `;
+}
+function responderFrase(botao, escolhida, correta){
+  document.querySelectorAll('#areaJogo .opcao').forEach(b=>{
+    b.onclick=null;
+    if(b.textContent===correta) b.classList.add('certa');
+  });
+  if(escolhida!==correta) botao.classList.add('errada'); else pontos++;
+  atualizarPlacar();
+  setTimeout(()=>{ indiceAtual++; renderCompletarFrase(); }, 900);
+}
+
+/* ---------------- JOGO DA MEMÓRIA ---------------- */
+let memCartas = [];
+let memViradas = [];
+let memBloqueado = false;
+let memPares = 0;
+
+function iniciarMemoria(){
+  pontos = 0; memPares = 0; memViradas = []; memBloqueado = false;
+  const pares = embaralhar(banco).slice(0,6);
+  memCartas = embaralhar(pares.flatMap(p=>[
+    {chave:p.en+p.pt, texto:p.en},
+    {chave:p.en+p.pt, texto:p.pt}
+  ]));
+  atualizarPlacar();
+  mostrarTela('jogo');
+  renderMemoria();
+}
+function renderMemoria(){
+  const area = document.getElementById('areaJogo');
+  area.innerHTML = `
+    <div class="pergunta">Encontre os pares (inglês ↔ português)</div>
+    <div class="memoria-grid">
+      ${memCartas.map((c,i)=>`<div class="mem-carta" id="mc${i}" onclick="virarCarta(${i})">?</div>`).join('')}
+    </div>
+  `;
+}
+function virarCarta(i){
+  const el = document.getElementById('mc'+i);
+  if(memBloqueado || el.classList.contains('virada') || el.classList.contains('acertou')) return;
+  el.classList.add('virada');
+  el.textContent = memCartas[i].texto;
+  memViradas.push(i);
+  if(memViradas.length===2){
+    memBloqueado = true;
+    const [a,b] = memViradas;
+    if(memCartas[a].chave === memCartas[b].chave){
+      document.getElementById('mc'+a).classList.add('acertou');
+      document.getElementById('mc'+b).classList.add('acertou');
+      pontos++; memPares++; atualizarPlacar();
+      memViradas=[]; memBloqueado=false;
+      if(memPares === memCartas.length/2){ setTimeout(fimDeJogo, 500); }
+    } else {
+      setTimeout(()=>{
+        document.getElementById('mc'+a).classList.remove('virada');
+        document.getElementById('mc'+b).classList.remove('virada');
+        document.getElementById('mc'+a).textContent='?';
+        document.getElementById('mc'+b).textContent='?';
+        memViradas=[]; memBloqueado=false;
+      }, 800);
+    }
+  }
+}
+
+/* ---------------- FIM DE JOGO ---------------- */
+function fimDeJogo(){
+  const area = document.getElementById('areaJogo');
+  area.innerHTML = `
+    <div class="fim">
+      <h2>Muito bem! 🎉</h2>
+      <p>Você fez ${pontos} ponto(s).</p>
+      <button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button>
+    </div>
+  `;
+}
+</script>
+</body>
+</html>
