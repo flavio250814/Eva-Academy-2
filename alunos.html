@@ -1,218 +1,450 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>EVA Academy | Área do Aluno</title>
-  <style>
-    :root {
-      --azul: #071a36;
-      --escuro: #031023;
-      --dourado: #c9a227;
-      --agua: #55d6c2;
-      --agua2: #8be6d6;
-      --creme: #faf8ef;
-      --branco: #fff;
-      --cinza: #657086;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, sans-serif;
-      background: var(--creme);
-      color: #172238;
-      min-height: 100vh;
-    }
-
-    header {
-      background: var(--azul);
-      color: white;
-      padding: 22px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .brand {
-      font-weight: 800;
-      letter-spacing: 2px;
-    }
-
-    .back {
-      color: var(--agua2);
-      text-decoration: none;
-    }
-
-    .hero {
-      background: var(--azul);
-      color: white;
-      text-align: center;
-      padding: 65px 6% 85px;
-    }
-
-    .eyebrow {
-      color: #e0bd45;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
-    }
-
-    .hero h1 {
-      font-size: clamp(38px, 6vw, 64px);
-      margin: 14px 0;
-    }
-
-    .hero h1 span {
-      color: var(--agua2);
-    }
-
-    .hero p {
-      max-width: 680px;
-      margin: auto;
-      line-height: 1.7;
-      color: #d9e0ea;
-    }
-
-    .container {
-      width: min(1100px, 88%);
-      margin: -42px auto 70px;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 22px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
-      transition: .2s;
-    }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .icon {
-      font-size: 32px;
-      margin-bottom: 15px;
-    }
-
-    .card h2 {
-      color: var(--azul);
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: var(--cinza);
-      line-height: 1.6;
-    }
-
-    .button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 18px;
-      border-radius: 10px;
-      background: var(--azul);
-      color: white;
-      text-decoration: none;
-      font-weight: 700;
-    }
-
-    .button:hover {
-      background: var(--escuro);
-    }
-
-    .notice {
-      margin-top: 22px;
-      background: var(--azul);
-      color: white;
-      border-radius: 18px;
-      padding: 28px;
-      line-height: 1.6;
-    }
-
-    .notice strong {
-      color: var(--agua2);
-    }
-
-    footer {
-      text-align: center;
-      color: var(--cinza);
-      padding: 25px;
-    }
-
-    @media (max-width: 700px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding-top: 50px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Área do Aluno EVA Academy">
+<title>EVA Academy | Área do Aluno</title>
+<style>
+:root{
+  --navy:#071a36;
+  --navy-2:#0d274d;
+  --navy-3:#102f5b;
+  --gold:#c9a227;
+  --gold-2:#e0bd45;
+  --aqua:#55d6c2;
+  --aqua-2:#8be6d6;
+  --cream:#faf8ef;
+  --white:#fff;
+  --text:#172238;
+  --muted:#6a7588;
+  --line:#e3e7ed;
+  --success:#17795f;
+  --danger:#b94b4b;
+  --shadow:0 18px 45px rgba(7,26,54,.10);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  background:var(--cream);color:var(--text);min-height:100vh;
+}
+button,a{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.topbar{
+  height:74px;background:rgba(7,26,54,.97);color:#fff;display:flex;align-items:center;
+  padding:0 5%;gap:28px;position:sticky;top:0;z-index:100;box-shadow:0 5px 20px rgba(0,0,0,.14)
+}
+.brand{font-weight:850;letter-spacing:2px;color:var(--gold-2);font-size:21px;white-space:nowrap}
+.nav{display:flex;align-items:center;gap:7px;flex:1}
+.nav a{padding:10px 12px;border-radius:8px;color:#e9edf5;font-size:14px}
+.nav a:hover,.nav a.active{background:rgba(255,255,255,.09);color:#fff}
+.nav-right{display:flex;align-items:center;gap:8px}
+.nav-right a{padding:9px 12px;border:1px solid rgba(255,255,255,.18);border-radius:8px;font-size:13px}
+.hero{
+  background:radial-gradient(circle at 85% 20%,rgba(85,214,194,.18),transparent 30%),
+             linear-gradient(135deg,var(--navy),var(--navy-2));
+  color:#fff;padding:66px 5% 58px;
+}
+.hero-inner{max-width:1180px;margin:auto}
+.eyebrow{color:var(--aqua-2);font-weight:800;letter-spacing:2px;font-size:13px}
+.hero h1{font-size:clamp(36px,5vw,60px);line-height:1.05;margin:12px 0 14px}
+.hero p{max-width:720px;color:#dfe7f2;line-height:1.75;font-size:17px}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
+.btn{border:0;border-radius:10px;padding:13px 18px;font-weight:750;transition:.2s}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold-2);transform:translateY(-1px)}
+.btn-light{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);color:#fff}
+.btn-light:hover{background:rgba(255,255,255,.16)}
+.wrap{max-width:1180px;margin:auto;padding:36px 5% 70px}
+.dashboard{
+  display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:-25px;position:relative;z-index:2
+}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+.progress-panel{padding:22px}
+.panel-title{display:flex;justify-content:space-between;gap:15px;align-items:center}
+.panel-title h2{font-size:19px;color:var(--navy)}
+.stat{font-size:14px;font-weight:800;color:var(--gold)}
+.progress-track{height:12px;background:#edf0f3;border-radius:30px;overflow:hidden;margin:16px 0 10px}
+.progress-bar{height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--aqua));transition:.5s}
+.progress-note{font-size:13px;color:var(--muted)}
+.quick-panel{padding:20px;display:flex;flex-direction:column;justify-content:center}
+.quick-panel strong{color:var(--navy);margin-bottom:5px}
+.quick-panel span{color:var(--muted);font-size:13px;line-height:1.5}
+.section-heading{margin:42px 0 18px}
+.section-heading h2{color:var(--navy);font-size:28px}
+.section-heading p{color:var(--muted);margin-top:5px}
+.level{
+  background:#fff;border:1px solid var(--line);border-radius:20px;padding:25px;margin:20px 0;
+  box-shadow:0 9px 28px rgba(7,26,54,.06)
+}
+.level.locked{opacity:.62}
+.level-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
+.level-title{display:flex;align-items:center;gap:13px}
+.level-number{
+  width:42px;height:42px;border-radius:12px;background:var(--navy);color:var(--gold-2);
+  display:grid;place-items:center;font-weight:900
+}
+.level h3{font-size:21px;color:var(--navy)}
+.level-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.level-badge{padding:8px 12px;border-radius:30px;background:var(--aqua);color:var(--navy);font-size:12px;font-weight:850;white-space:nowrap}
+.locked .level-badge{background:#e7e9ed}
+.games{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.game-card{
+  border:1px solid var(--line);border-radius:15px;padding:19px;background:#fff;
+  transition:.2s;display:flex;flex-direction:column;min-height:205px
+}
+.game-card:hover{transform:translateY(-3px);box-shadow:0 12px 25px rgba(7,26,54,.08);border-color:#cbd3df}
+.game-icon{
+  width:42px;height:42px;border-radius:11px;background:#eef8f6;color:var(--navy);
+  display:grid;place-items:center;font-size:20px;margin-bottom:14px
+}
+.game-card h4{color:var(--navy);font-size:17px;margin-bottom:6px}
+.game-card p{font-size:13px;line-height:1.5;color:var(--muted);flex:1}
+.play{
+  margin-top:15px;border:0;border-radius:9px;padding:11px;background:var(--navy);color:#fff;font-weight:750
+}
+.play:hover{background:var(--navy-2)}
+.play:disabled{background:#aab1bb;cursor:not-allowed}
+.done{font-size:12px;color:var(--success);font-weight:800;margin-top:8px}
+#gameScreen{display:none}
+.game-shell{max-width:850px;margin:0 auto}
+.game-top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:18px}
+.game-top small{color:var(--gold);font-weight:850}
+.game-top h2{color:var(--navy);font-size:28px;margin-top:4px}
+.game-back{border:1px solid var(--navy);background:#fff;color:var(--navy);padding:9px 13px;border-radius:9px;font-weight:750}
+.game-card-big{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:30px}
+.game-info{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-size:13px;margin-bottom:22px}
+.question{font-size:26px;font-weight:800;color:var(--navy);line-height:1.3;margin-bottom:22px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.answer{
+  border:2px solid var(--line);background:#fff;color:var(--text);border-radius:11px;
+  padding:15px;text-align:left;font-weight:650;transition:.15s
+}
+.answer:hover{border-color:var(--gold);background:#fffdf6}
+.answer.correct{border-color:var(--aqua);background:#eefaf7}
+.answer.wrong{border-color:#e3a0a0;background:#fff4f4}
+.answer:disabled{cursor:default}
+.feedback{min-height:26px;margin-top:18px;font-weight:800}
+.feedback.ok{color:var(--success)}.feedback.no{color:var(--danger)}
+.input-game{display:flex;gap:10px;flex-wrap:wrap}
+.input-game input{
+  flex:1;min-width:220px;border:2px solid var(--line);border-radius:10px;padding:14px;
+  outline:0;color:var(--text);font-size:16px
+}
+.input-game input:focus{border-color:var(--gold)}
+.check{border:0;border-radius:10px;background:var(--navy);color:#fff;padding:14px 20px;font-weight:800}
+.match-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match-item{padding:15px;border:2px solid var(--line);border-radius:10px;background:#fff;font-weight:700;text-align:center}
+.match-item.selected{border-color:var(--gold);background:#fffdf4}
+.sequence{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+.word-btn{border:2px solid var(--line);background:#fff;padding:12px 15px;border-radius:10px;font-weight:750}
+.word-btn.selected{border-color:var(--gold);background:#fffdf4}
+.result{
+  text-align:center;padding:30px;background:#f7fbfa;border:1px solid #dcefea;border-radius:15px
+}
+.result h3{color:var(--navy);font-size:28px;margin-bottom:8px}
+.result p{color:var(--muted);line-height:1.6;margin-bottom:18px}
+.hidden{display:none!important}
+footer{background:var(--navy);color:#fff;text-align:center;padding:30px 20px}
+footer strong{color:var(--gold-2)}
+@media(max-width:900px){.nav{display:none}.nav-right a:first-child{display:none}.dashboard{grid-template-columns:1fr}.games{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){
+  .topbar{height:64px;padding:0 18px}.nav-right a{display:none}.hero{padding:48px 20px}.wrap{padding:28px 15px 55px}
+  .games{grid-template-columns:1fr}.level{padding:19px}.level-head{align-items:flex-start;flex-direction:column}
+  .answers,.match-grid{grid-template-columns:1fr}.game-card-big{padding:21px}.question{font-size:22px}
+}
+</style>
 </head>
 <body>
 
-  <header>
-    <div class="brand">EVA ACADEMY</div>
-    <a class="back" href="index.html">Voltar ao site</a>
-  </header>
+<header class="topbar">
+  <a class="brand" href="index.html">EVA ACADEMY</a>
+  <nav class="nav">
+    <a href="#inicio" class="active">Início</a>
+    <a href="#jogos">Jogos</a>
+    <a href="#fabulas">Fábulas</a>
+    <a href="#atividades">Atividades</a>
+    <a href="#materiais">Materiais</a>
+  </nav>
+  <div class="nav-right">
+    <a href="https://www.instagram.com/eva.academy1/" target="_blank" rel="noopener">Instagram</a>
+    <a href="index.html">Voltar ao site</a>
+  </div>
+</header>
 
-  <section class="hero">
-    <span class="eyebrow">ÁREA DO ALUNO</span>
-    <h1>Aprenda inglês de um jeito <span>divertido.</span></h1>
-    <p>Este é o espaço dos alunos da EVA Academy, com jogos, fábulas e atividades para praticar inglês.</p>
+<section class="hero" id="inicio">
+  <div class="hero-inner">
+    <div class="eyebrow">ÁREA DO ALUNO</div>
+    <h1>Aprender inglês pode ser divertido.</h1>
+    <p>Uma área de estudos da EVA Academy com jogos, desafios de vocabulário, leitura e atividades para desenvolver o inglês passo a passo.</p>
+    <div class="hero-actions">
+      <button class="btn btn-gold" onclick="document.getElementById('jogos').scrollIntoView()">Ver jogos</button>
+      <a class="btn btn-light" href="index.html">Conhecer a EVA</a>
+    </div>
+  </div>
+</section>
+
+<main class="wrap">
+  <section class="dashboard">
+    <div class="panel progress-panel">
+      <div class="panel-title"><h2>Seu progresso</h2><span class="stat" id="progressText">0 / 24 jogos</span></div>
+      <div class="progress-track"><div class="progress-bar" id="progressBar"></div></div>
+      <div class="progress-note" id="progressNote">Comece pelo Nível 1 para liberar os próximos níveis.</div>
+    </div>
+    <div class="panel quick-panel">
+      <strong>Estude no seu ritmo</strong>
+      <span>Seu progresso é salvo neste navegador. Você pode voltar depois e continuar de onde parou.</span>
+    </div>
   </section>
 
-  <main class="container">
-    <div class="grid">
-
-      <article class="card">
-        <div class="icon">🎮</div>
-        <h2>Jogos em Inglês</h2>
-        <p>Aprenda palavras, frases e expressões enquanto joga e resolve desafios.</p>
-        <a class="button" href="jogos.html">Entrar nos jogos</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">📖</div>
-        <h2>Fábulas em Inglês</h2>
-        <p>Leia histórias e fábulas em inglês e pratique compreensão, vocabulário e leitura.</p>
-        <a class="button" href="#" onclick="alert('As fábulas da EVA serão adicionadas aqui!');return false">Ler fábulas</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">🧩</div>
-        <h2>Atividades</h2>
-        <p>Exercícios para reforçar o que foi aprendido nas aulas.</p>
-        <a class="button" href="#" onclick="alert('As atividades da EVA serão adicionadas aqui!');return false">Ver atividades</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">📚</div>
-        <h2>Materiais</h2>
-        <p>Um espaço para reunir materiais de estudo, leituras e conteúdos complementares.</p>
-        <a class="button" href="#" onclick="alert('Os materiais da EVA serão adicionados aqui!');return false">Ver materiais</a>
-      </article>
-
+  <section id="jogos">
+    <div class="section-heading">
+      <h2>Jogos em Inglês</h2>
+      <p>24 jogos organizados em quatro níveis de aprendizagem.</p>
     </div>
+    <div id="levels"></div>
+  </section>
 
-    <div class="notice">
-      <strong>Próxima etapa:</strong> podemos transformar esta área em um portal completo, com jogos de verdade, fábulas interativas e progresso individual.
+  <section id="gameScreen">
+    <div class="game-shell">
+      <div class="game-top">
+        <div><small id="gameLevel"></small><h2 id="gameTitle"></h2></div>
+        <button class="game-back" onclick="backToGames()">Trocar de jogo</button>
+      </div>
+      <div class="game-card-big">
+        <div class="game-info"><span id="questionCount"></span><strong id="scoreLabel">Pontos: 0</strong></div>
+        <div id="gameContent"></div>
+      </div>
     </div>
-  </main>
+  </section>
 
-  <footer>© 2026 EVA Academy</footer>
+  <section id="fabulas" class="section-heading">
+    <h2>Fábulas em Inglês</h2>
+    <p>Espaço preparado para adicionar histórias, leitura guiada e compreensão de texto.</p>
+  </section>
+  <section class="panel" style="padding:25px;margin-top:0">
+    <h3 style="color:var(--navy);margin-bottom:7px">Biblioteca de Fábulas</h3>
+    <p style="color:var(--muted);line-height:1.6">As fábulas podem ser adicionadas aqui com texto em inglês, tradução, áudio e perguntas de compreensão.</p>
+  </section>
 
+  <section id="atividades" class="section-heading">
+    <h2>Atividades</h2>
+    <p>Exercícios complementares para continuar praticando.</p>
+  </section>
+  <section class="panel" style="padding:25px">
+    <h3 style="color:var(--navy);margin-bottom:7px">Atividades de Inglês</h3>
+    <p style="color:var(--muted);line-height:1.6">Área preparada para fichas de exercícios, interpretação, escrita e vocabulário.</p>
+  </section>
+
+  <section id="materiais" class="section-heading">
+    <h2>Materiais</h2>
+    <p>Um espaço para reunir materiais didáticos da EVA Academy.</p>
+  </section>
+  <section class="panel" style="padding:25px">
+    <h3 style="color:var(--navy);margin-bottom:7px">Materiais de estudo</h3>
+    <p style="color:var(--muted);line-height:1.6">PDFs, listas de vocabulário, guias de estudo e outros materiais podem ser adicionados nesta área.</p>
+  </section>
+</main>
+
+<footer><strong>EVA Academy</strong> • Área do Aluno</footer>
+
+<script>
+const levels=[
+{name:"Nível 1 • Iniciante",desc:"Primeiras palavras e vocabulário essencial.",games:[
+{id:"1-1",name:"Colors",icon:"●",desc:"Identifique cores em inglês.",type:"mc",qs:[
+["What color is the sky?","Blue",["Blue","Red","Green","Black"]],
+["What color is grass?","Green",["Yellow","Green","Pink","White"]],
+["What color is a banana?","Yellow",["Blue","Yellow","Purple","Black"]]]},
+{id:"1-2",name:"Numbers",icon:"123",desc:"Pratique números e quantidades.",type:"mc",qs:[
+["What number is 'five'?","5",["3","4","5","6"]],["What number is 'ten'?","10",["8","9","10","12"]],["What comes after seven?","Eight",["Six","Eight","Nine","Ten"]]]},
+{id:"1-3",name:"Animals",icon:"🐾",desc:"Aprenda nomes de animais.",type:"mc",qs:[
+["Which word means 'cachorro'?","Dog",["Cat","Dog","Bird","Fish"]],["Which animal says 'meow'?","Cat",["Dog","Cat","Cow","Horse"]],["Which animal can fly?","Bird",["Fish","Dog","Bird","Cow"]]]},
+{id:"1-4",name:"Food",icon:"●",desc:"Vocabulário de alimentos.",type:"mc",qs:[
+["Which one is a fruit?","Apple",["Bread","Apple","Rice","Milk"]],["What do you drink?","Water",["Water","Bread","Apple","Rice"]],["Which food is usually yellow?","Banana",["Banana","Carrot","Rice","Bread"]]]},
+{id:"1-5",name:"Family",icon:"♥",desc:"Palavras para falar da família.",type:"mc",qs:[
+["What does 'mother' mean?","Mãe",["Irmã","Mãe","Tia","Avó"]],["What does 'brother' mean?","Irmão",["Pai","Irmão","Primo","Filho"]],["What does 'father' mean?","Pai",["Pai","Tio","Avô","Irmão"]]]},
+{id:"1-6",name:"Body Parts",icon:"✦",desc:"Conheça partes do corpo.",type:"input",qs:[
+["Complete: H _ ND","HAND","HAND"],["Complete: F _ OT","FOOT","FOOT"],["Complete: H _ AD","HEAD","HEAD"]]}
+]},
+{name:"Nível 2 • Básico",desc:"Vocabulário e estruturas simples.",games:[
+{id:"2-1",name:"Word Match",icon:"↔",desc:"Ligue a palavra ao significado.",type:"mc",qs:[
+["What does 'house' mean?","Casa",["Escola","Casa","Rua","Carro"]],["What does 'book' mean?","Livro",["Mesa","Livro","Janela","Caneta"]],["What does 'water' mean?","Água",["Leite","Água","Comida","Café"]]]},
+{id:"2-2",name:"School Words",icon:"▣",desc:"Vocabulário da escola.",type:"mc",qs:[
+["What do you write with?","Pencil",["Chair","Pencil","Door","Window"]],["Where do students study?","School",["Kitchen","School","Garden","Garage"]],["What do you read?","Book",["Book","Shoe","Table","Bag"]]]},
+{id:"2-3",name:"Days & Months",icon:"▦",desc:"Dias da semana e meses.",type:"mc",qs:[
+["Which is a day of the week?","Monday",["January","Monday","Summer","April"]],["Which is a month?","March",["Friday","March","Sunday","Winter"]],["What comes after Monday?","Tuesday",["Sunday","Tuesday","Friday","Saturday"]]]},
+{id:"2-4",name:"Opposite Words",icon:"⇄",desc:"Encontre palavras opostas.",type:"mc",qs:[
+["Opposite of 'hot'?","Cold",["Big","Fast","Cold","Tall"]],["Opposite of 'big'?","Small",["Small","Long","Happy","Fast"]],["Opposite of 'old'?","Young",["Young","Tall","Slow","Cold"]]]},
+{id:"2-5",name:"Complete the Word",icon:"Aa",desc:"Complete palavras em inglês.",type:"input",qs:[
+["Complete: B _ OK","BOOK","BOOK"],["Complete: SCH _ OL","SCHOOL","SCHOOL"],["Complete: FR _ END","FRIEND","FRIEND"]]},
+{id:"2-6",name:"Clothes",icon:"◇",desc:"Vocabulário de roupas.",type:"mc",qs:[
+["What do you wear on your feet?","Shoes",["Hat","Shoes","Shirt","Coat"]],["What do you wear on your head?","Hat",["Hat","Socks","Pants","Shoes"]],["What do you wear when it is cold?","Coat",["Shorts","Coat","T-shirt","Sandals"]]]}
+]},
+{name:"Nível 3 • Intermediário",desc:"Mais compreensão, gramática e vocabulário.",games:[
+{id:"3-1",name:"English Quiz",icon:"?",desc:"Teste seus conhecimentos.",type:"mc",qs:[
+["Which sentence is correct?","I am happy.",["I happy am.","I am happy.","Am I happy.","Happy I am."]],["Choose the correct form.","She likes music.",["She like music.","She likes music.","She liking music.","She liked music every."]],["Choose the correct sentence.","They are students.",["They is students.","They are students.","They am students.","They be students."]]]},
+{id:"3-2",name:"Spelling",icon:"ABC",desc:"Pratique a escrita das palavras.",type:"input",qs:[
+["How do you spell 'school'?","SCHOOL","SCHOOL"],["How do you spell 'friend'?","FRIEND","FRIEND"],["How do you spell 'beautiful'?","BEAUTIFUL","BEAUTIFUL"]]},
+{id:"3-3",name:"Synonym Challenge",icon:"≈",desc:"Encontre palavras de significado parecido.",type:"mc",qs:[
+["Which word is similar to 'big'?","Large",["Small","Large","Short","Thin"]],["Which word is similar to 'happy'?","Glad",["Sad","Glad","Angry","Tired"]],["Which word is similar to 'fast'?","Quick",["Slow","Quick","Late","Weak"]]]},
+{id:"3-4",name:"Prepositions",icon:"↳",desc:"Pratique preposições.",type:"mc",qs:[
+["The book is ___ the table.","on",["at","on","to","by"]],["The cat is ___ the box.","in",["in","at","to","on"]],["We go ___ school every day.","to",["on","in","to","by"]]]},
+{id:"3-5",name:"Articles",icon:"A",desc:"Use a, an ou the.",type:"mc",qs:[
+["I have ___ apple.","an",["a","an","the","no article"]],["She has ___ dog.","a",["a","an","the","no article"]],["___ sun is bright.","The",["A","An","The","No article"]]]},
+{id:"3-6",name:"Weather & Seasons",icon:"☼",desc:"Clima e estações.",type:"mc",qs:[
+["Which word means 'chuva'?","Rain",["Snow","Rain","Wind","Cloud"]],["Which season is usually cold?","Winter",["Summer","Spring","Winter","Autumn"]],["What falls from the sky in a storm?","Rain",["Sand","Rain","Leaves","Grass"]]]}
+]},
+{name:"Nível 4 • Avançado",desc:"Leitura, interpretação e construção de frases.",games:[
+{id:"4-1",name:"Daily Routine",icon:"◷",desc:"Vocabulário da rotina diária.",type:"mc",qs:[
+["What do you do in the morning?","Wake up",["Wake up","Go to bed","Have dinner","Sleep"]],["What do you do at night?","Go to bed",["Have breakfast","Go to bed","Go to school","Wake up"]],["When do you usually have breakfast?","In the morning",["At night","In the morning","At midnight","In the afternoon"]]]},
+{id:"4-2",name:"True or False",icon:"✓",desc:"Leia e decida se a frase é verdadeira.",type:"mc",qs:[
+["The sun is hot.","True",["True","False"]],["Fish can usually fly.","False",["True","False"]],["A week has seven days.","True",["True","False"]]]},
+{id:"4-3",name:"Sentence Builder",icon:"☷",desc:"Escolha a construção correta.",type:"mc",qs:[
+["Which sentence is correct?","She likes music.",["She music likes.","Likes she music.","She likes music.","Music she likes."]],["Which sentence is correct?","We study English.",["We English study.","Study we English.","We study English.","English we studies."]],["Which sentence is correct?","He plays soccer.",["He soccer plays.","He plays soccer.","Plays he soccer.","Soccer plays he."]]]},
+{id:"4-4",name:"Vocabulary Mix",icon:"✚",desc:"Misture vocabulários de vários temas.",type:"mc",qs:[
+["What does 'beautiful' mean?","Bonito",["Rápido","Bonito","Forte","Pequeno"]],["What does 'strong' mean?","Forte",["Fraco","Forte","Lento","Novo"]],["What does 'careful' mean?","Cuidadoso",["Cuidadoso","Barulhento","Rápido","Cansado"]]]},
+{id:"4-5",name:"Choose the Word",icon:"✓",desc:"Escolha a palavra que completa a frase.",type:"mc",qs:[
+["I ___ English every day.","study",["studies","study","studying","studied"]],["She ___ to school every day.","goes",["go","goes","going","gone"]],["They ___ happy.","are",["is","am","are","be"]]]},
+{id:"4-6",name:"Reading Challenge",icon:"▤",desc:"Leia e interprete pequenas frases.",type:"mc",qs:[
+["Tom has a red bicycle. What color is it?","Red",["Blue","Green","Red","Yellow"]],["Anna has two cats. How many cats does Anna have?","Two",["One","Two","Three","Four"]],["Peter reads a book every night. What does Peter read?","A book",["A newspaper","A book","A letter","A map"]]]}
+]}];
+
+let completed=JSON.parse(localStorage.getItem("evaGamesCompleted")||"[]");
+let activeGame=null, qIndex=0, points=0;
+
+function isLevelUnlocked(li){
+  return li===0 || levels[li-1].games.every(g=>completed.includes(g.id));
+}
+function renderLevels(){
+  const root=document.getElementById("levels");root.innerHTML="";
+  levels.forEach((level,li)=>{
+    const unlocked=isLevelUnlocked(li);
+    const done=level.games.filter(g=>completed.includes(g.id)).length;
+    const sec=document.createElement("section");
+    sec.className="level"+(unlocked?"":" locked");
+    sec.innerHTML=`
+      <div class="level-head">
+        <div class="level-title">
+          <div class="level-number">${li+1}</div>
+          <div><h3>${level.name}</h3><div class="level-sub">${level.desc}</div></div>
+        </div>
+        <div class="level-badge">${unlocked?done+" / "+level.games.length+" concluídos":"🔒 Bloqueado"}</div>
+      </div>
+      <div class="games"></div>`;
+    const games=sec.querySelector(".games");
+    level.games.forEach(game=>{
+      const doneGame=completed.includes(game.id);
+      const card=document.createElement("article");card.className="game-card";
+      card.innerHTML=`
+        <div class="game-icon">${game.icon}</div>
+        <h4>${game.name}</h4><p>${game.desc}</p>
+        <button class="play" ${unlocked?"":"disabled"} onclick="startGame('${game.id}')">${doneGame?"Jogar novamente":"Jogar agora"}</button>
+        ${doneGame?'<div class="done">✓ Jogo concluído</div>':""}`;
+      games.appendChild(card);
+    });
+    root.appendChild(sec);
+  });
+  updateProgress();
+}
+function findGame(id){
+  for(const level of levels) for(const game of level.games) if(game.id===id) return {level,game};
+}
+function startGame(id){
+  const found=findGame(id);if(!found)return;
+  activeGame=found;qIndex=0;points=0;
+  document.getElementById("jogos").style.display="none";
+  document.getElementById("gameScreen").style.display="block";
+  document.getElementById("gameLevel").textContent=found.level.name;
+  document.getElementById("gameTitle").textContent=found.game.name;
+  renderQuestion();
+  document.getElementById("gameScreen").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderQuestion(){
+  const g=activeGame.game,q=g.qs[qIndex];
+  document.getElementById("questionCount").textContent="Pergunta "+(qIndex+1)+" de "+g.qs.length;
+  document.getElementById("scoreLabel").textContent="Pontos: "+points;
+  const c=document.getElementById("gameContent");
+  c.innerHTML="";
+  if(g.type==="input") renderInput(c,q);
+  else renderMC(c,q);
+}
+function renderMC(c,q){
+  const title=document.createElement("div");title.className="question";title.textContent=q[0];c.appendChild(title);
+  const answers=document.createElement("div");answers.className="answers";
+  q[2].forEach(ans=>{
+    const b=document.createElement("button");b.className="answer";b.textContent=ans;
+    b.onclick=()=>checkAnswer(ans,q[1],b,answers);
+    answers.appendChild(b);
+  });
+  c.appendChild(answers);
+  const f=document.createElement("div");f.className="feedback";f.id="feedback";c.appendChild(f);
+}
+function renderInput(c,q){
+  const title=document.createElement("div");title.className="question";title.textContent=q[0];c.appendChild(title);
+  const row=document.createElement("div");row.className="input-game";
+  const input=document.createElement("input");input.id="answerInput";input.placeholder="Digite sua resposta...";
+  const btn=document.createElement("button");btn.className="check";btn.textContent="Conferir";
+  btn.onclick=()=>checkInput(input,q[1]);
+  row.append(input,btn);c.appendChild(row);
+  const f=document.createElement("div");f.className="feedback";f.id="feedback";c.appendChild(f);
+  input.addEventListener("keydown",e=>{if(e.key==="Enter")btn.click()});
+}
+function checkAnswer(ans,correct,clicked,container){
+  [...container.children].forEach(b=>b.disabled=true);
+  if(ans===correct){clicked.classList.add("correct");points++;showFeedback("✓ Muito bem!","ok")}
+  else{clicked.classList.add("wrong");[...container.children].find(b=>b.textContent===correct)?.classList.add("correct");showFeedback("A resposta correta é: "+correct,"no")}
+  setTimeout(nextQuestion,800);
+}
+function checkInput(input,correct){
+  const value=input.value.trim().toUpperCase();
+  if(!value){showFeedback("Digite uma resposta para continuar.","no");return}
+  input.disabled=true;
+  document.querySelector(".check").disabled=true;
+  if(value===correct.toUpperCase()){points++;showFeedback("✓ Muito bem!","ok")}
+  else showFeedback("A resposta correta é: "+correct,"no");
+  setTimeout(nextQuestion,900);
+}
+function showFeedback(text,kind){const f=document.getElementById("feedback");f.textContent=text;f.className="feedback "+kind}
+function nextQuestion(){
+  qIndex++;
+  if(qIndex<activeGame.game.qs.length) renderQuestion();
+  else finishGame();
+}
+function finishGame(){
+  const g=activeGame.game;
+  if(!completed.includes(g.id)){completed.push(g.id);localStorage.setItem("evaGamesCompleted",JSON.stringify(completed))}
+  const total=g.qs.length;
+  document.getElementById("questionCount").textContent="Jogo concluído";
+  document.getElementById("scoreLabel").textContent="Pontuação: "+points+"/"+total;
+  document.getElementById("gameContent").innerHTML=`
+    <div class="result">
+      <h3>Parabéns!</h3>
+      <p>Você terminou <strong>${g.name}</strong> com <strong>${points} de ${total}</strong> pontos.</p>
+      <button class="btn btn-gold" onclick="backToGames()">Voltar aos jogos</button>
+    </div>`;
+}
+function backToGames(){
+  document.getElementById("gameScreen").style.display="none";
+  document.getElementById("jogos").style.display="block";
+  renderLevels();
+  document.getElementById("jogos").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function updateProgress(){
+  const total=24,done=completed.length,pct=Math.round(done/total*100);
+  document.getElementById("progressText").textContent=done+" / "+total+" jogos";
+  document.getElementById("progressBar").style.width=pct+"%";
+  document.getElementById("progressNote").textContent=done===0?"Comece pelo Nível 1 para liberar os próximos níveis.":done===total?"Você concluiu todos os 24 jogos!":"Continue estudando para desbloquear o próximo nível.";
+}
+renderLevels();
+</script>
 </body>
-</html>
+</html>'''
+
+out=Path("/mnt/data/alunos-eva-profissional.html")
+out.write_text(html,encoding="utf-8")
+print(f"Arquivo criado: {out}")
+print(f"Tamanho: {out.stat().st_size} bytes")
