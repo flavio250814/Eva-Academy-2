@@ -162,7 +162,7 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 </main>
 
 <script>
-/* =====================================================
+  /* =====================================================
    BANCO DE DADOS — INGLÊS
 ===================================================== */
 const banco = {
@@ -325,6 +325,30 @@ const rotuloNivel = {iniciante:"Iniciante", intermediario:"Intermediário", avan
 const paresGrupo = {iniciante:4, intermediario:5, avancado:6};
 
 let pontos = 0;
+
+/* =====================================================
+   CONEXÃO COM O RANKING (XP estilo Duolingo)
+===================================================== */
+function adicionarXP(quantidade) {
+  let xp = parseInt(localStorage.getItem("eva_xp_semana") || "0", 10);
+  xp += quantidade;
+  localStorage.setItem("eva_xp_semana", xp);
+}
+
+function mostrarGanhoXP(qtd) {
+  const aviso = document.createElement("div");
+  aviso.style.cssText = "position:fixed;top:20px;right:20px;z-index:9999;background:#071a36;color:#8be6d6;padding:12px 18px;border-radius:12px;font-weight:800;font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);animation:fadeInOut 2.2s ease forwards;";
+  aviso.textContent = "+" + qtd + " XP";
+  document.body.appendChild(aviso);
+  setTimeout(() => aviso.remove(), 2300);
+}
+
+(function(){
+  const styleXP = document.createElement("style");
+  styleXP.textContent = "@keyframes fadeInOut{0%{opacity:0;transform:translateY(-10px)}15%{opacity:1;transform:translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}";
+  document.head.appendChild(styleXP);
+})();
+
 let nivelAtual = null;
 let jogoSelecionado = null;
 let idiomaAtual = null;
@@ -339,13 +363,38 @@ function mostrarTela(id){
 function voltarIdioma(){ mostrarTela('idioma'); }
 function voltarSelecao(){ mostrarTela('selecao'); }
 function atualizarPlacar(){
-  document.getElementById('placar').textContent = 'Pontos: '+pontos;
+  document.getElementById('placar').textContent = 'Pontos: ' + pontos;
   const tag = document.getElementById('tagNivel');
-  tag.textContent = rotuloNivel[nivelAtual] || '';
-  tag.className = 'tag-nivel ' + nivelAtual;
+  if(nivelAtual){
+    tag.textContent = rotuloNivel[nivelAtual];
+    tag.className = 'tag-nivel ' + nivelAtual;
+  }
 }
-function opcoesDistratoras(pool, campo, excluir, qtd){
-  return embaralhar(pool.filter(p=>p[campo]!==excluir)).slice(0,qtd).map(p=>p[campo]);
+
+function selecionarIdioma(idioma){
+  idiomaAtual = idioma;
+  JOGOS_ATUAL = idioma === 'en' ? JOGOS_EN : JOGOS_PT;
+  document.getElementById('tituloSelecao').textContent = idioma === 'en' ? 'Jogos de Inglês' : 'Jogos de Português';
+  const grid = document.getElementById('gridModos');
+  grid.innerHTML = JOGOS_ATUAL.map(j => `
+    <article class="modo-card" onclick="escolherJogo('${j.id}')">
+      <div class="icon">${j.icone}</div>
+      <h3>${j.nome}</h3>
+      <p>${j.desc}</p>
+    </article>
+  `).join('');
+  mostrarTela('selecao');
+}
+
+function escolherJogo(id){
+  jogoSelecionado = JOGOS_ATUAL.find(j => j.id === id);
+  document.getElementById('tituloNivel').textContent = jogoSelecionado.nome;
+  mostrarTela('niveis');
+}
+
+function iniciarComNivel(nivel){
+  if(!jogoSelecionado) return;
+  jogoSelecionado.iniciar(nivel);
 }
 
 /* =====================================================
@@ -357,47 +406,26 @@ function pegarUsados(jogo, nivel){
 }
 function marcarUsado(jogo, nivel, id){
   const usados = pegarUsados(jogo, nivel);
-  if(!usados.includes(id)){ usados.push(id); try{ localStorage.setItem(chaveUsados(jogo, nivel), JSON.stringify(usados)); }catch(e){} }
+  if(!usados.includes(id)){
+    usados.push(id);
+    localStorage.setItem(chaveUsados(jogo, nivel), JSON.stringify(usados));
+  }
 }
 function poolDisponivel(jogo, nivel, poolCompleto, idFn){
   const usados = pegarUsados(jogo, nivel);
   let disponiveis = poolCompleto.filter(item => !usados.includes(idFn(item)));
   if(disponiveis.length === 0){
-    try{ localStorage.removeItem(chaveUsados(jogo, nivel)); }catch(e){}
-    disponiveis = poolCompleto;
+    localStorage.removeItem(chaveUsados(jogo, nivel));
+    disponiveis = [...poolCompleto];
   }
   return disponiveis;
 }
-
-/* =====================================================
-   SELEÇÃO DE IDIOMA, JOGO E NÍVEL
-===================================================== */
-function selecionarIdioma(idioma){
-  idiomaAtual = idioma;
-  JOGOS_ATUAL = idioma==='en' ? JOGOS_EN : JOGOS_PT;
-  document.getElementById('tituloSelecao').textContent = idioma==='en' ? 'Jogos de Inglês' : 'Jogos de Português';
-  document.getElementById('gridModos').innerHTML = JOGOS_ATUAL.map(j=>`
-    <article class="modo-card" onclick="mostrarNiveis('${j.id}')">
-      <div class="icon">${j.icone}</div>
-      <h3>${j.nome}</h3>
-      <p>${j.desc}</p>
-    </article>
-  `).join('');
-  mostrarTela('selecao');
-}
-function mostrarNiveis(id){
-  jogoSelecionado = id;
-  const jogo = JOGOS_ATUAL.find(j=>j.id===id);
-  document.getElementById('tituloNivel').textContent = jogo.nome + ' — escolha o nível';
-  mostrarTela('niveis');
-}
-function iniciarComNivel(nivel){
-  const jogo = JOGOS_ATUAL.find(j=>j.id===jogoSelecionado);
-  jogo.iniciar(nivel);
+function opcoesDistratoras(pool, campo, correta, qtd){
+  return embaralhar(pool.filter(p => p[campo] !== correta).map(p => p[campo])).slice(0, qtd);
 }
 
 /* =====================================================
-   MOTOR GENÉRICO 1: MÚLTIPLA ESCOLHA
+   MOTOR GENÉRICO 1: QUIZ MÚLTIPLA ESCOLHA
 ===================================================== */
 let quizItens = [], quizIndice = 0, quizJogoId = '';
 function iniciarQuizGenerico(jogoId, itens){
@@ -418,7 +446,7 @@ function renderQuizGenerico(){
 }
 function responderQuizGenerico(botao, escolhida, correta){
   document.querySelectorAll('#areaJogo .opcao').forEach(b=>{ b.onclick=null; if(b.textContent===correta) b.classList.add('certa'); });
-  if(escolhida!==correta) botao.classList.add('errada'); else pontos++;
+  if(escolhida!==correta) botao.classList.add('errada'); else { pontos++; adicionarXP(10); mostrarGanhoXP(10); }
   atualizarPlacar();
   setTimeout(()=>{ quizIndice++; renderQuizGenerico(); }, 900);
 }
@@ -429,24 +457,24 @@ function iniciarQuizComTempo(jogoId, itens){
   atualizarPlacar(); mostrarTela('jogo'); renderQuizComTempo();
 }
 function renderQuizComTempo(){
-  clearInterval(temporizadorId);
   if(quizIndice >= quizItens.length) return fimDeJogo();
   const q = quizItens[quizIndice];
   marcarUsado(quizJogoId, nivelAtual, q.id);
-  let tempo = 10;
+  let tempo = 8;
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
-    <div class="tag-nivel avancado" id="tempoRestante" style="margin-bottom:14px;display:inline-block">⏱️ ${tempo}s</div>
+    <div style="font-weight:800;color:var(--erro);margin-bottom:10px">Tempo: <span id="timer">${tempo}</span>s</div>
     <div class="pergunta">${q.pergunta}</div>
     <div class="opcoes">${q.opcoes.map(o=>`<button class="opcao" onclick="responderQuizComTempo(this,'${o.replace(/'/g,"\\'")}','${q.correta.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
   `;
+  clearInterval(temporizadorId);
   temporizadorId = setInterval(()=>{
     tempo--;
-    const el = document.getElementById('tempoRestante');
-    if(el) el.textContent = '⏱️ '+tempo+'s';
-    if(tempo<=0){
+    const t = document.getElementById('timer');
+    if(t) t.textContent = tempo;
+    if(tempo <= 0){
       clearInterval(temporizadorId);
-      document.querySelectorAll('#areaJogo .opcao').forEach(b=>{ b.onclick=null; if(b.textContent===q.correta) b.classList.add('certa'); });
+      document.querySelectorAll('#areaJogo .opcao').forEach(b=>b.onclick=null);
       setTimeout(()=>{ quizIndice++; renderQuizComTempo(); }, 900);
     }
   }, 1000);
@@ -454,7 +482,7 @@ function renderQuizComTempo(){
 function responderQuizComTempo(botao, escolhida, correta){
   clearInterval(temporizadorId);
   document.querySelectorAll('#areaJogo .opcao').forEach(b=>{ b.onclick=null; if(b.textContent===correta) b.classList.add('certa'); });
-  if(escolhida!==correta) botao.classList.add('errada'); else pontos++;
+  if(escolhida!==correta) botao.classList.add('errada'); else { pontos++; adicionarXP(10); mostrarGanhoXP(10); }
   atualizarPlacar();
   setTimeout(()=>{ quizIndice++; renderQuizComTempo(); }, 900);
 }
@@ -473,10 +501,11 @@ function renderDigiteGenerico(){
   marcarUsado(digiteJogoId, nivelAtual, q.id);
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
-    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir de novo</button><br>` : ''}
+    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir</button>` : ''}
     <div class="pergunta">${q.pergunta}</div>
-    <input type="text" id="respostaTexto" class="input-resposta" autocomplete="off" placeholder="Digite aqui" onkeydown="if(event.key==='Enter')responderDigiteGenerico()">
-    <br><button class="proxima" onclick="responderDigiteGenerico()">Confirmar</button>
+    <input class="input-resposta" id="respostaTexto" type="text" placeholder="Digite aqui..." autocomplete="off">
+    <br>
+    <button class="proxima" onclick="responderDigiteGenerico()">Confirmar</button>
   `;
   document.getElementById('respostaTexto').focus();
   if(q.falar) falar(q.falar, q.falarIdioma||'en-US');
@@ -488,7 +517,7 @@ function responderDigiteGenerico(){
   const area = document.getElementById('areaJogo');
   campo.disabled = true;
   const acertou = digitado === q.correta.toLowerCase();
-  if(acertou) pontos++;
+  if(acertou){ pontos++; adicionarXP(10); mostrarGanhoXP(10); }
   atualizarPlacar();
   area.insertAdjacentHTML('beforeend', `<p style="margin-top:16px;font-weight:800;color:${acertou?'var(--agua)':'var(--erro)'}">${acertou?'Certo! ✅':'A resposta certa era: '+q.correta}</p>`);
   setTimeout(()=>{ digiteIndice++; renderDigiteGenerico(); }, 1200);
@@ -504,89 +533,118 @@ function falar(texto, lang){
 }
 
 /* =====================================================
-   MOTOR GENÉRICO 3: MEMÓRIA (usado por EN e PT)
+   MOTOR GENÉRICO 3: MEMÓRIA
 ===================================================== */
 let memCartas = [], memViradas = [], memBloqueado = false, memPares = 0, memRotulo = '';
 function iniciarMemoriaBase(jogoId, nivel, pool, rotulo){
   nivelAtual = nivel; pontos = 0; memPares = 0; memViradas = []; memBloqueado = false; memRotulo = rotulo;
-  const qtdPares = Math.min(paresGrupo[nivel], pool.length);
-  const disponiveis = poolDisponivel(jogoId, nivel, pool, item=>item.en);
-  const base = disponiveis.length >= qtdPares ? disponiveis : pool;
-  const pares = embaralhar(base).slice(0, qtdPares);
-  pares.forEach(p => marcarUsado(jogoId, nivel, p.en));
-  memCartas = embaralhar(pares.flatMap(p=>[{chave:p.en+p.pt, texto:p.en},{chave:p.en+p.pt, texto:p.pt}]));
+  const disponiveis = poolDisponivel(jogoId, nivel, pool, x => x.en || x.palavra);
+  const selecionados = embaralhar(disponiveis).slice(0, paresGrupo[nivel] || 4);
+  memCartas = [];
+  selecionados.forEach(item => {
+    const chave = item.en || item.palavra;
+    const frente = item.en || item.palavra;
+    const verso = item.pt || item.sinonimo;
+    memCartas.push({chave, texto: frente, tipo: 'en'});
+    memCartas.push({chave, texto: verso, tipo: 'pt'});
+  });
+  memCartas = embaralhar(memCartas);
   atualizarPlacar(); mostrarTela('jogo'); renderMemoria();
 }
 function renderMemoria(){
   const area = document.getElementById('areaJogo');
-  area.innerHTML = `
-    <div class="pergunta">Encontre os pares (${memRotulo})</div>
-    <div class="memoria-grid">${memCartas.map((c,i)=>`<div class="mem-carta" id="mc${i}" onclick="virarCarta(${i})">?</div>`).join('')}</div>
-  `;
+  area.innerHTML = `<div class="pergunta">Encontre os pares</div><div class="memoria-grid" id="memGrid"></div>`;
+  const grid = document.getElementById('memGrid');
+  memCartas.forEach((c, i) => {
+    const div = document.createElement('div');
+    div.className = 'mem-carta';
+    div.dataset.idx = i;
+    div.onclick = () => virarCarta(i);
+    grid.appendChild(div);
+  });
 }
 function virarCarta(i){
-  const el = document.getElementById('mc'+i);
-  if(memBloqueado || el.classList.contains('virada') || el.classList.contains('acertou')) return;
-  el.classList.add('virada'); el.textContent = memCartas[i].texto; memViradas.push(i);
-  if(memViradas.length===2){
+  if(memBloqueado || memViradas.includes(i) || memCartas[i].acertou) return;
+  const carta = document.querySelector(`.mem-carta[data-idx="${i}"]`);
+  carta.classList.add('virada');
+  carta.textContent = memCartas[i].texto;
+  memViradas.push(i);
+  if(memViradas.length === 2){
     memBloqueado = true;
-    const [a,b] = memViradas;
-    if(memCartas[a].chave === memCartas[b].chave){
-      document.getElementById('mc'+a).classList.add('acertou'); document.getElementById('mc'+b).classList.add('acertou');
-      pontos++; memPares++; atualizarPlacar(); memViradas=[]; memBloqueado=false;
+    const [a, b] = memViradas;
+    if(memCartas[a].chave === memCartas[b].chave && memCartas[a].tipo !== memCartas[b].tipo){
+      pontos++; adicionarXP(10); mostrarGanhoXP(10); memPares++; atualizarPlacar(); memViradas=[]; memBloqueado=false;
+      document.querySelector(`.mem-carta[data-idx="${a}"]`).classList.add('acertou');
+      document.querySelector(`.mem-carta[data-idx="${b}"]`).classList.add('acertou');
+      memCartas[a].acertou = true; memCartas[b].acertou = true;
       if(memPares === memCartas.length/2){ setTimeout(fimDeJogo, 500); }
     } else {
       setTimeout(()=>{
-        document.getElementById('mc'+a).classList.remove('virada'); document.getElementById('mc'+b).classList.remove('virada');
-        document.getElementById('mc'+a).textContent='?'; document.getElementById('mc'+b).textContent='?';
-        memViradas=[]; memBloqueado=false;
+        document.querySelector(`.mem-carta[data-idx="${a}"]`).classList.remove('virada');
+        document.querySelector(`.mem-carta[data-idx="${b}"]`).classList.remove('virada');
+        document.querySelector(`.mem-carta[data-idx="${a}"]`).textContent = '';
+        document.querySelector(`.mem-carta[data-idx="${b}"]`).textContent = '';
+        memViradas = []; memBloqueado = false;
       }, 800);
     }
   }
 }
-function iniciarMemoria(nivel){ iniciarMemoriaBase('memoria', nivel, banco[nivel], 'inglês ↔ português'); }
-function iniciarMemoriaPt(nivel){ iniciarMemoriaBase('memoria_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo})), 'palavra ↔ sinônimo'); }
+function iniciarMemoria(nivel){ iniciarMemoriaBase('memoria', nivel, banco[nivel], 'en-pt'); }
+function iniciarMemoriaPt(nivel){ iniciarMemoriaBase('memoria_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo})), 'pt'); }
 
 /* =====================================================
    MOTOR GENÉRICO 4: FORCA
 ===================================================== */
-let forcaPalavra = null, forcaLetrasCertas = [], forcaErros = 0;
 const FORCA_MAX_ERROS = 6;
+let forcaPalavra = null, forcaReveladas = [], forcaErros = 0;
 function iniciarForcaBase(jogoId, nivel, pool){
   nivelAtual = nivel; pontos = 0;
-  const disponiveis = poolDisponivel(jogoId, nivel, pool, item=>item.en);
+  const disponiveis = poolDisponivel(jogoId, nivel, pool, x => x.en || x.palavra);
   forcaPalavra = embaralhar(disponiveis)[0];
-  marcarUsado(jogoId, nivel, forcaPalavra.en);
-  forcaLetrasCertas = []; forcaErros = 0;
+  forcaReveladas = [];
+  forcaErros = 0;
+  marcarUsado(jogoId, nivel, forcaPalavra.en || forcaPalavra.palavra);
   atualizarPlacar(); mostrarTela('jogo'); renderForca();
 }
 function renderForca(){
+  const palavra = (forcaPalavra.en || forcaPalavra.palavra).toLowerCase();
+  const dica = forcaPalavra.pt || forcaPalavra.sinonimo;
+  const display = palavra.split('').map(l => forcaReveladas.includes(l) ? l.toUpperCase() : '_').join(' ');
+  const vidas = '❤️'.repeat(FORCA_MAX_ERROS - forcaErros) + '🖤'.repeat(forcaErros);
   const area = document.getElementById('areaJogo');
-  const palavraMostrada = forcaPalavra.en.split('').map(l => forcaLetrasCertas.includes(l) ? l : '_').join(' ');
-  const alfabeto = 'abcdefghijklmnopqrstuvwxyz'.split('');
   area.innerHTML = `
-    <div class="forca-vidas">${'❤️'.repeat(FORCA_MAX_ERROS - forcaErros)}${'🖤'.repeat(forcaErros)}</div>
-    <div class="forca-dica">Dica: <strong>${forcaPalavra.pt}</strong></div>
-    <div class="forca-palavra">${palavraMostrada}</div>
-    <div class="teclado">${alfabeto.map(l => `<button class="tecla" id="tecla-${l}" onclick="tentarLetra('${l}')">${l.toUpperCase()}</button>`).join('')}</div>
+    <div class="forca-vidas">${vidas}</div>
+    <div class="forca-dica">Dica: ${dica}</div>
+    <div class="forca-palavra">${display}</div>
+    <div class="teclado" id="tecladoForca"></div>
   `;
+  const teclado = document.getElementById('tecladoForca');
+  'abcdefghijklmnopqrstuvwxyz'.split('').forEach(letra => {
+    const btn = document.createElement('button');
+    btn.className = 'tecla';
+    btn.textContent = letra.toUpperCase();
+    btn.onclick = () => tentarLetra(letra, btn);
+    teclado.appendChild(btn);
+  });
 }
-function tentarLetra(letra){
-  const botao = document.getElementById('tecla-'+letra);
-  botao.disabled = true;
-  if(forcaPalavra.en.includes(letra)){ forcaLetrasCertas.push(letra); botao.classList.add('acertou'); }
-  else { forcaErros++; botao.classList.add('errou'); }
-  const todasReveladas = forcaPalavra.en.split('').every(l => forcaLetrasCertas.includes(l));
-  if(todasReveladas){ pontos++; atualizarPlacar(); setTimeout(fimDeJogo, 700); return; }
-  if(forcaErros >= FORCA_MAX_ERROS){ setTimeout(()=>fimDeJogo(true), 700); return; }
-  const vidas = document.querySelector('.forca-vidas');
-  if(vidas) vidas.innerHTML = '❤️'.repeat(FORCA_MAX_ERROS - forcaErros) + '🖤'.repeat(forcaErros);
-  const palavra = document.querySelector('.forca-palavra');
-  if(palavra) palavra.textContent = forcaPalavra.en.split('').map(l => forcaLetrasCertas.includes(l) ? l : '_').join(' ');
+function tentarLetra(letra, btn){
+  btn.disabled = true;
+  const palavra = (forcaPalavra.en || forcaPalavra.palavra).toLowerCase();
+  if(palavra.includes(letra)){
+    btn.classList.add('acertou');
+    forcaReveladas.push(letra);
+    renderForca();
+    const todasReveladas = palavra.split('').every(l => forcaReveladas.includes(l));
+    if(todasReveladas){ pontos++; adicionarXP(10); mostrarGanhoXP(10); atualizarPlacar(); setTimeout(fimDeJogo, 700); return; }
+  } else {
+    btn.classList.add('errou');
+    forcaErros++;
+    renderForca();
+    if(forcaErros >= FORCA_MAX_ERROS){ setTimeout(()=>fimDeJogo(true), 700); return; }
+  }
 }
 function iniciarForca(nivel){ iniciarForcaBase('forca', nivel, banco[nivel]); }
 function iniciarForcaPt(nivel){ iniciarForcaBase('forca_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo}))); }
-
 /* =====================================================
    MOTOR GENÉRICO 5: LIGAR OS PARES
 ===================================================== */
@@ -620,7 +678,7 @@ function selecionarPar(botao, chave, coluna){
   botao.classList.add('certa');
   if(ligarSelecionadoEn && ligarSelecionadoPt){
     if(ligarSelecionadoEn.chave === ligarSelecionadoPt.chave){
-      ligarAcertados.push(ligarSelecionadoEn.chave); pontos++; atualizarPlacar();
+      ligarAcertados.push(ligarSelecionadoEn.chave); pontos++; adicionarXP(10); mostrarGanhoXP(10); atualizarPlacar();
       ligarSelecionadoEn=null; ligarSelecionadoPt=null;
       if(ligarAcertados.length === ligarPool.length){ setTimeout(fimDeJogo, 500); return; }
       renderLigarPares();
@@ -671,7 +729,7 @@ function conferirOrdenar(){
   const montada = ordeneIndicesSelecionados.map(i=>ordenePalavras[i]).join(' ');
   const correta = ordeneCorretas.join(' ');
   const acertou = montada.toLowerCase() === correta.toLowerCase();
-  if(acertou) pontos++;
+  if(acertou){ pontos++; adicionarXP(10); mostrarGanhoXP(10); }
   atualizarPlacar();
   const area = document.getElementById('areaJogo');
   area.insertAdjacentHTML('beforeend', `<p style="margin-top:16px;font-weight:800;color:${acertou?'var(--agua)':'var(--erro)'}">${acertou?'Certo! ✅':'Frase correta: '+correta}</p>`);
@@ -689,7 +747,10 @@ function fimDeJogo(perdeuForca){
     area.innerHTML = `<div class="fim"><h2>Não foi dessa vez 😅</h2><p>A palavra era: <strong>${forcaPalavra.en}</strong> (${forcaPalavra.pt})</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
     return;
   }
-  area.innerHTML = `<div class="fim"><h2>Muito bem! 🎉</h2><p>Você fez ${pontos} ponto(s) no nível ${rotuloNivel[nivelAtual]}.</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
+  // Bônus por completar o jogo (estilo Duolingo)
+  adicionarXP(25);
+  mostrarGanhoXP(25);
+  area.innerHTML = `<div class="fim"><h2>Muito bem! 🎉</h2><p>Você fez ${pontos} ponto(s) no nível ${rotuloNivel[nivelAtual]}.</p><p style="margin-top:10px;color:var(--agua);font-weight:700;">+25 XP de bônus por completar o jogo!</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
 }
 
 /* =====================================================
