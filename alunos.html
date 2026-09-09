@@ -459,25 +459,20 @@
       return parseInt(localStorage.getItem("eva_liga") || "0", 10);
     }
 
-    function salvarXP(xp) {
-      localStorage.setItem("eva_xp_semana", xp);
-    }
-
-    // Gera um ranking realista com base no XP do usuário
     function gerarRanking() {
       const meuXP = carregarXP();
       const liga = carregarLiga();
 
-      // Cria outros jogadores com XP aleatório em torno do usuário
-      let ranking = NOMES.map((nome, i) => {
-        // XP variado para ficar realista
-        const base = Math.max(0, meuXP + Math.floor(Math.random() * 180) - 90);
-        return {
-          nome,
-          xp: base + Math.floor(Math.random() * 40),
+      // Gera outros alunos genéricos (sem nomes reais)
+      let ranking = [];
+      for (let i = 1; i <= 15; i++) {
+        const base = Math.max(0, meuXP + Math.floor(Math.random() * 160) - 80);
+        ranking.push({
+          nome: "Aluno " + i,
+          xp: base + Math.floor(Math.random() * 35),
           voce: false
-        };
-      });
+        });
+      }
 
       // Adiciona o usuário
       ranking.push({
@@ -489,7 +484,7 @@
       // Ordena por XP (maior primeiro)
       ranking.sort((a, b) => b.xp - a.xp);
 
-      // Garante que ninguém fique com XP negativo
+      // Garante XP mínimo 0
       ranking = ranking.map(r => ({ ...r, xp: Math.max(0, r.xp) }));
 
       return { ranking, liga, meuXP };
@@ -502,7 +497,7 @@
 
       document.getElementById("nomeLiga").textContent = LIGAS[liga] || "Bronze";
       document.getElementById("meuXP").textContent = meuXP;
-      document.getElementById("minhaPosicao").textContent = `#${posicaoUsuario}`;
+      document.getElementById("minhaPosicao").textContent = "#" + posicaoUsuario;
 
       lista.innerHTML = ranking.map((item, index) => {
         const pos = index + 1;
@@ -512,7 +507,7 @@
         if (pos === 2) classes += " top2";
         if (pos === 3) classes += " top3";
 
-        const inicial = item.voce ? "EU" : item.nome.split(" ").map(n => n[0]).join("").slice(0, 2);
+        const inicial = item.voce ? "EU" : "A" + pos;
 
         return `
           <div class="${classes}">
@@ -540,9 +535,6 @@
       document.getElementById("cardsArea").style.display = "grid";
       document.getElementById("aviso").style.display = "block";
     }
-
-    // Exemplo: se quiser testar, pode aumentar o XP manualmente no console:
-    // localStorage.setItem("eva_xp_semana", "150");
   </script>
 
 </body>
