@@ -85,7 +85,7 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 22px;
     }
 
@@ -125,6 +125,9 @@
       color: white;
       text-decoration: none;
       font-weight: 700;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
     }
 
     .button:hover {
@@ -150,13 +153,208 @@
       padding: 25px;
     }
 
-    @media (max-width: 700px) {
+    /* ===== RANKING (estilo Duolingo) ===== */
+    #ranking {
+      display: none;
+      margin-top: 30px;
+    }
+
+    #ranking.ativo {
+      display: block;
+    }
+
+    .ranking-header {
+      background: white;
+      border-radius: 18px;
+      padding: 28px;
+      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    .liga-atual {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--azul);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 15px;
+      margin-bottom: 12px;
+    }
+
+    .liga-atual span {
+      color: var(--agua2);
+    }
+
+    .ranking-header h2 {
+      color: var(--azul);
+      margin-bottom: 6px;
+    }
+
+    .ranking-header p {
+      color: var(--cinza);
+      font-size: 14px;
+    }
+
+    .xp-box {
+      margin-top: 18px;
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .xp-item {
+      background: var(--creme);
+      border-radius: 12px;
+      padding: 12px 20px;
+      min-width: 120px;
+    }
+
+    .xp-item strong {
+      display: block;
+      color: var(--azul);
+      font-size: 22px;
+    }
+
+    .xp-item small {
+      color: var(--cinza);
+      font-size: 12px;
+    }
+
+    .leaderboard {
+      background: white;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
+    }
+
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(7, 26, 54, .08);
+      transition: .15s;
+    }
+
+    .leaderboard-item:last-child {
+      border-bottom: none;
+    }
+
+    .leaderboard-item.voce {
+      background: rgba(85, 214, 194, 0.12);
+    }
+
+    .leaderboard-item.top1 {
+      background: linear-gradient(90deg, rgba(201, 162, 39, 0.15), transparent);
+    }
+
+    .leaderboard-item.top2 {
+      background: linear-gradient(90deg, rgba(192, 192, 192, 0.18), transparent);
+    }
+
+    .leaderboard-item.top3 {
+      background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent);
+    }
+
+    .posicao {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--azul);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .leaderboard-item.top1 .posicao { background: #c9a227; color: #071a36; }
+    .leaderboard-item.top2 .posicao { background: #a8a8a8; color: #071a36; }
+    .leaderboard-item.top3 .posicao { background: #cd7f32; color: white; }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--azul);
+      color: var(--agua2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .nome {
+      flex: 1;
+      font-weight: 700;
+      color: var(--azul);
+    }
+
+    .nome small {
+      display: block;
+      font-weight: 400;
+      color: var(--cinza);
+      font-size: 12px;
+    }
+
+    .xp {
+      font-weight: 800;
+      color: var(--azul);
+      font-size: 15px;
+    }
+
+    .xp span {
+      color: var(--dourado);
+      font-size: 12px;
+    }
+
+    .voltar-ranking {
+      display: inline-block;
+      margin-bottom: 18px;
+      background: none;
+      border: none;
+      color: var(--azul);
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .como-funciona {
+      margin-top: 22px;
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
+    }
+
+    .como-funciona h3 {
+      color: var(--azul);
+      margin-bottom: 12px;
+    }
+
+    .como-funciona ul {
+      color: var(--cinza);
+      padding-left: 20px;
+      line-height: 1.7;
+      font-size: 14px;
+    }
+
+    .como-funciona li {
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 800px) {
       .grid {
         grid-template-columns: 1fr;
-      }
-
-      .hero {
-        padding-top: 50px;
       }
     }
   </style>
@@ -171,11 +369,12 @@
   <section class="hero">
     <span class="eyebrow">ÁREA DO ALUNO</span>
     <h1>Aprenda inglês de um jeito <span>divertido.</span></h1>
-    <p>Este é o espaço dos alunos da EVA Academy, com jogos, fábulas e atividades para praticar inglês.</p>
+    <p>Este é o espaço dos alunos da EVA Academy, com jogos, fábulas e ranking para praticar inglês.</p>
   </section>
 
   <main class="container">
-    <div class="grid">
+
+    <div class="grid" id="cardsArea">
 
       <article class="card">
         <div class="icon">🎮</div>
@@ -192,27 +391,167 @@
       </article>
 
       <article class="card">
-        <div class="icon">🧩</div>
-        <h2>Atividades</h2>
-        <p>Exercícios para reforçar o que foi aprendido nas aulas.</p>
-        <a class="button" href="#" onclick="alert('As atividades da EVA serão adicionadas aqui!');return false">Ver atividades</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">📚</div>
-        <h2>Materiais</h2>
-        <p>Um espaço para reunir materiais de estudo, leituras e conteúdos complementares.</p>
-        <a class="button" href="#" onclick="alert('Os materiais da EVA serão adicionados aqui!');return false">Ver materiais</a>
+        <div class="icon">🏆</div>
+        <h2>Ranking</h2>
+        <p>Compete com outros alunos e suba de liga. Sistema de XP e ligas igual ao Duolingo.</p>
+        <button class="button" onclick="mostrarRanking()">Ver ranking</button>
       </article>
 
     </div>
 
-    <div class="notice">
+    <!-- RANKING -->
+    <section id="ranking">
+      <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
+
+      <div class="ranking-header">
+        <div class="liga-atual">
+          Liga atual: <span id="nomeLiga">Bronze</span>
+        </div>
+        <h2>Leaderboard da semana</h2>
+        <p>Os 3 primeiros sobem de liga. Os últimos descem. XP é resetado toda segunda-feira.</p>
+
+        <div class="xp-box">
+          <div class="xp-item">
+            <strong id="meuXP">0</strong>
+            <small>Seu XP esta semana</small>
+          </div>
+          <div class="xp-item">
+            <strong id="minhaPosicao">—</strong>
+            <small>Sua posição</small>
+          </div>
+        </div>
+      </div>
+
+      <div class="leaderboard" id="listaRanking"></div>
+
+      <div class="como-funciona">
+        <h3>Como funciona (igual ao Duolingo)</h3>
+        <ul>
+          <li>Cada acerto nos jogos vale <strong>+10 XP</strong>.</li>
+          <li>Completar um jogo inteiro dá bônus de <strong>+25 XP</strong>.</li>
+          <li>Você compete em uma liga com outros alunos.</li>
+          <li><strong>Top 3</strong> da semana sobem para a próxima liga.</li>
+          <li>Os últimos colocados descem de liga.</li>
+          <li>Ligas: Bronze → Prata → Ouro → Safira → Rubi → Esmeralda → Ametista → Pérola → Obsidiana → Diamante</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="notice" id="aviso">
       <strong>Próxima etapa:</strong> podemos transformar esta área em um portal completo, com jogos de verdade, fábulas interativas e progresso individual.
     </div>
   </main>
 
   <footer>© 2026 EVA Academy</footer>
+
+  <script>
+    /* ===== SISTEMA DE RANKING ESTILO DUOLINGO ===== */
+    const LIGAS = [
+      "Bronze", "Prata", "Ouro", "Safira", "Rubi",
+      "Esmeralda", "Ametista", "Pérola", "Obsidiana", "Diamante"
+    ];
+
+    // Nomes fictícios para o ranking (simulando outros alunos)
+    const NOMES = [
+      "Ana Clara", "Pedro Lima", "Sofia Mendes", "Lucas Rocha", "Beatriz Nunes",
+      "Gabriel Costa", "Mariana Alves", "Rafael Souza", "Julia Ferreira", "Thiago Martins",
+      "Larissa Oliveira", "Bruno Carvalho", "Camila Dias", "Felipe Barbosa", "Isabela Ribeiro",
+      "André Gomes", "Laura Pinto", "Mateus Araujo", "Helena Castro", "Diego Moreira"
+    ];
+
+    function carregarXP() {
+      return parseInt(localStorage.getItem("eva_xp_semana") || "0", 10);
+    }
+
+    function carregarLiga() {
+      return parseInt(localStorage.getItem("eva_liga") || "0", 10);
+    }
+
+    function salvarXP(xp) {
+      localStorage.setItem("eva_xp_semana", xp);
+    }
+
+    // Gera um ranking realista com base no XP do usuário
+    function gerarRanking() {
+      const meuXP = carregarXP();
+      const liga = carregarLiga();
+
+      // Cria outros jogadores com XP aleatório em torno do usuário
+      let ranking = NOMES.map((nome, i) => {
+        // XP variado para ficar realista
+        const base = Math.max(0, meuXP + Math.floor(Math.random() * 180) - 90);
+        return {
+          nome,
+          xp: base + Math.floor(Math.random() * 40),
+          voce: false
+        };
+      });
+
+      // Adiciona o usuário
+      ranking.push({
+        nome: "Você",
+        xp: meuXP,
+        voce: true
+      });
+
+      // Ordena por XP (maior primeiro)
+      ranking.sort((a, b) => b.xp - a.xp);
+
+      // Garante que ninguém fique com XP negativo
+      ranking = ranking.map(r => ({ ...r, xp: Math.max(0, r.xp) }));
+
+      return { ranking, liga, meuXP };
+    }
+
+    function renderRanking() {
+      const { ranking, liga, meuXP } = gerarRanking();
+      const lista = document.getElementById("listaRanking");
+      const posicaoUsuario = ranking.findIndex(r => r.voce) + 1;
+
+      document.getElementById("nomeLiga").textContent = LIGAS[liga] || "Bronze";
+      document.getElementById("meuXP").textContent = meuXP;
+      document.getElementById("minhaPosicao").textContent = `#${posicaoUsuario}`;
+
+      lista.innerHTML = ranking.map((item, index) => {
+        const pos = index + 1;
+        let classes = "leaderboard-item";
+        if (item.voce) classes += " voce";
+        if (pos === 1) classes += " top1";
+        if (pos === 2) classes += " top2";
+        if (pos === 3) classes += " top3";
+
+        const inicial = item.voce ? "EU" : item.nome.split(" ").map(n => n[0]).join("").slice(0, 2);
+
+        return `
+          <div class="${classes}">
+            <div class="posicao">${pos}</div>
+            <div class="avatar">${inicial}</div>
+            <div class="nome">
+              ${item.nome}
+              ${item.voce ? "<small>Você</small>" : ""}
+            </div>
+            <div class="xp">${item.xp} <span>XP</span></div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function mostrarRanking() {
+      document.getElementById("cardsArea").style.display = "none";
+      document.getElementById("aviso").style.display = "none";
+      document.getElementById("ranking").classList.add("ativo");
+      renderRanking();
+    }
+
+    function voltarCards() {
+      document.getElementById("ranking").classList.remove("ativo");
+      document.getElementById("cardsArea").style.display = "grid";
+      document.getElementById("aviso").style.display = "block";
+    }
+
+    // Exemplo: se quiser testar, pode aumentar o XP manualmente no console:
+    // localStorage.setItem("eva_xp_semana", "150");
+  </script>
 
 </body>
 </html>
