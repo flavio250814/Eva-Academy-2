@@ -13,9 +13,20 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .back{color:var(--agua2);text-decoration:none;font-weight:700;font-size:14px}
 .wrap{width:min(1000px,92%);margin:40px auto 70px}
 
+#idioma h1{color:var(--azul);font-size:clamp(26px,4vw,38px);margin-bottom:8px}
+#idioma p{color:var(--cinza);margin-bottom:30px}
+.idioma-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+@media(max-width:600px){.idioma-grid{grid-template-columns:1fr}}
+.idioma-card{background:white;border-radius:18px;padding:40px 24px;text-align:center;box-shadow:0 15px 40px rgba(7,26,54,.1);cursor:pointer;transition:.2s;border:2px solid transparent}
+.idioma-card:hover{transform:translateY(-5px);border-color:var(--dourado)}
+.idioma-card .icon{font-size:48px;margin-bottom:14px}
+.idioma-card h2{color:var(--azul);margin-bottom:8px}
+.idioma-card p{color:var(--cinza);font-size:14px}
+
 /* ---- tela de seleção de jogo ---- */
+#selecao{display:none}
 #selecao h1{color:var(--azul);font-size:clamp(26px,4vw,38px);margin-bottom:8px}
-#selecao p{color:var(--cinza);margin-bottom:30px}
+#selecao p{color:var(--cinza);margin-bottom:20px}
 .modos{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px}
 .modo-card{background:white;border-radius:16px;padding:22px 16px;text-align:center;box-shadow:0 12px 30px rgba(7,26,54,.08);cursor:pointer;transition:.2s;border:2px solid transparent}
 .modo-card:hover{transform:translateY(-4px);border-color:var(--dourado)}
@@ -64,14 +75,12 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .input-resposta:focus{outline:none;border-color:var(--dourado)}
 .ordene-strip{min-height:44px;border:2px dashed rgba(7,26,54,.2);border-radius:12px;padding:10px;margin-bottom:18px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
 
-/* ---- jogo da memória ---- */
 .memoria-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 @media(max-width:550px){.memoria-grid{grid-template-columns:repeat(3,1fr)}}
 .mem-carta{aspect-ratio:1/1;border-radius:12px;background:var(--azul);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;text-align:center;padding:6px;cursor:pointer;user-select:none;transition:.2s;box-shadow:0 8px 18px rgba(7,26,54,.12)}
 .mem-carta.virada{background:white;color:var(--azul);border:2px solid var(--dourado)}
 .mem-carta.acertou{background:var(--agua);color:var(--azul);cursor:default}
 
-/* ---- forca ---- */
 .forca-vidas{font-size:22px;margin-bottom:18px;letter-spacing:4px}
 .forca-dica{color:var(--cinza);font-size:14px;margin-bottom:18px}
 .forca-palavra{font-size:28px;font-weight:800;color:var(--azul);letter-spacing:8px;margin-bottom:26px;word-break:break-all}
@@ -81,8 +90,6 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .tecla:disabled{cursor:default;opacity:.4}
 .tecla.acertou{background:var(--agua);border-color:var(--agua);color:var(--azul)}
 .tecla.errou{background:var(--erro);border-color:var(--erro);color:white}
-
-/* ---- ligar pares ---- */
 .par-item{width:100%}
 </style>
 </head>
@@ -94,9 +101,27 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 
 <main class="wrap">
 
+  <section id="idioma">
+    <h1>Qual idioma você quer praticar?</h1>
+    <p>A EVA Academy ensina inglês e português — escolha um para ver os jogos.</p>
+    <div class="idioma-grid">
+      <article class="idioma-card" onclick="selecionarIdioma('en')">
+        <div class="icon">🇬🇧</div>
+        <h2>Inglês</h2>
+        <p>21 jogos para praticar vocabulário e gramática em inglês.</p>
+      </article>
+      <article class="idioma-card" onclick="selecionarIdioma('pt')">
+        <div class="icon">🇧🇷</div>
+        <h2>Português</h2>
+        <p>21 jogos para praticar vocabulário e gramática em português.</p>
+      </article>
+    </div>
+  </section>
+
   <section id="selecao">
-    <h1>Jogos em Inglês &amp; Português</h1>
-    <p>Escolha um dos jogos abaixo para praticar vocabulário.</p>
+    <button class="voltar-link" onclick="voltarIdioma()">← Trocar idioma</button>
+    <h1 id="tituloSelecao">Jogos</h1>
+    <p>Escolha um dos jogos abaixo para praticar.</p>
     <div class="modos" id="gridModos"></div>
   </section>
 
@@ -138,170 +163,163 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 
 <script>
 /* =====================================================
-   BANCO DE DADOS POR NÍVEL
-   (adicione mais itens em cada lista quando quiser)
+   BANCO DE DADOS — INGLÊS
 ===================================================== */
 const banco = {
   iniciante: [
-    {en:"dog", pt:"cachorro", categoria:"animais"},
-    {en:"cat", pt:"gato", categoria:"animais"},
-    {en:"bird", pt:"pássaro", categoria:"animais"},
-    {en:"fish", pt:"peixe", categoria:"animais"},
-    {en:"house", pt:"casa", categoria:"casa"},
-    {en:"door", pt:"porta", categoria:"casa"},
-    {en:"window", pt:"janela", categoria:"casa"},
-    {en:"table", pt:"mesa", categoria:"casa"},
-    {en:"friend", pt:"amigo", categoria:"pessoas"},
-    {en:"family", pt:"família", categoria:"pessoas"},
-    {en:"mother", pt:"mãe", categoria:"pessoas"},
-    {en:"father", pt:"pai", categoria:"pessoas"},
-    {en:"book", pt:"livro", categoria:"escola"},
-    {en:"pen", pt:"caneta", categoria:"escola"},
-    {en:"teacher", pt:"professora", categoria:"escola"},
-    {en:"class", pt:"aula", categoria:"escola"}
+    {en:"dog", pt:"cachorro", categoria:"animais"},{en:"cat", pt:"gato", categoria:"animais"},
+    {en:"bird", pt:"pássaro", categoria:"animais"},{en:"fish", pt:"peixe", categoria:"animais"},
+    {en:"house", pt:"casa", categoria:"casa"},{en:"door", pt:"porta", categoria:"casa"},
+    {en:"window", pt:"janela", categoria:"casa"},{en:"table", pt:"mesa", categoria:"casa"},
+    {en:"friend", pt:"amigo", categoria:"pessoas"},{en:"family", pt:"família", categoria:"pessoas"},
+    {en:"mother", pt:"mãe", categoria:"pessoas"},{en:"father", pt:"pai", categoria:"pessoas"},
+    {en:"book", pt:"livro", categoria:"escola"},{en:"pen", pt:"caneta", categoria:"escola"},
+    {en:"teacher", pt:"professora", categoria:"escola"},{en:"class", pt:"aula", categoria:"escola"}
   ],
   intermediario: [
-    {en:"forest", pt:"floresta", categoria:"natureza"},
-    {en:"mountain", pt:"montanha", categoria:"natureza"},
-    {en:"river", pt:"rio", categoria:"natureza"},
-    {en:"sky", pt:"céu", categoria:"natureza"},
-    {en:"love", pt:"amor", categoria:"sentimentos"},
-    {en:"fear", pt:"medo", categoria:"sentimentos"},
-    {en:"anger", pt:"raiva", categoria:"sentimentos"},
-    {en:"hope", pt:"esperança", categoria:"sentimentos"},
-    {en:"journey", pt:"viagem", categoria:"viagem"},
-    {en:"airport", pt:"aeroporto", categoria:"viagem"},
-    {en:"ticket", pt:"passagem", categoria:"viagem"},
-    {en:"luggage", pt:"bagagem", categoria:"viagem"},
-    {en:"job", pt:"emprego", categoria:"trabalho"},
-    {en:"meeting", pt:"reunião", categoria:"trabalho"},
-    {en:"salary", pt:"salário", categoria:"trabalho"},
-    {en:"deadline", pt:"prazo", categoria:"trabalho"}
+    {en:"forest", pt:"floresta", categoria:"natureza"},{en:"mountain", pt:"montanha", categoria:"natureza"},
+    {en:"river", pt:"rio", categoria:"natureza"},{en:"sky", pt:"céu", categoria:"natureza"},
+    {en:"love", pt:"amor", categoria:"sentimentos"},{en:"fear", pt:"medo", categoria:"sentimentos"},
+    {en:"anger", pt:"raiva", categoria:"sentimentos"},{en:"hope", pt:"esperança", categoria:"sentimentos"},
+    {en:"journey", pt:"viagem", categoria:"viagem"},{en:"airport", pt:"aeroporto", categoria:"viagem"},
+    {en:"ticket", pt:"passagem", categoria:"viagem"},{en:"luggage", pt:"bagagem", categoria:"viagem"},
+    {en:"job", pt:"emprego", categoria:"trabalho"},{en:"meeting", pt:"reunião", categoria:"trabalho"},
+    {en:"salary", pt:"salário", categoria:"trabalho"},{en:"deadline", pt:"prazo", categoria:"trabalho"}
   ],
   avancado: [
-    {en:"courage", pt:"coragem", categoria:"virtudes"},
-    {en:"patience", pt:"paciência", categoria:"virtudes"},
-    {en:"wisdom", pt:"sabedoria", categoria:"virtudes"},
-    {en:"honesty", pt:"honestidade", categoria:"virtudes"},
-    {en:"opportunity", pt:"oportunidade", categoria:"abstrato"},
-    {en:"knowledge", pt:"conhecimento", categoria:"abstrato"},
-    {en:"freedom", pt:"liberdade", categoria:"abstrato"},
-    {en:"justice", pt:"justiça", categoria:"abstrato"},
-    {en:"responsibility", pt:"responsabilidade", categoria:"sociedade"},
-    {en:"community", pt:"comunidade", categoria:"sociedade"},
-    {en:"economy", pt:"economia", categoria:"sociedade"},
-    {en:"government", pt:"governo", categoria:"sociedade"},
-    {en:"gratitude", pt:"gratidão", categoria:"emocoes"},
-    {en:"empathy", pt:"empatia", categoria:"emocoes"},
-    {en:"ambition", pt:"ambição", categoria:"emocoes"},
-    {en:"resilience", pt:"resiliência", categoria:"emocoes"}
+    {en:"courage", pt:"coragem", categoria:"virtudes"},{en:"patience", pt:"paciência", categoria:"virtudes"},
+    {en:"wisdom", pt:"sabedoria", categoria:"virtudes"},{en:"honesty", pt:"honestidade", categoria:"virtudes"},
+    {en:"opportunity", pt:"oportunidade", categoria:"abstrato"},{en:"knowledge", pt:"conhecimento", categoria:"abstrato"},
+    {en:"freedom", pt:"liberdade", categoria:"abstrato"},{en:"justice", pt:"justiça", categoria:"abstrato"},
+    {en:"responsibility", pt:"responsabilidade", categoria:"sociedade"},{en:"community", pt:"comunidade", categoria:"sociedade"},
+    {en:"economy", pt:"economia", categoria:"sociedade"},{en:"government", pt:"governo", categoria:"sociedade"},
+    {en:"gratitude", pt:"gratidão", categoria:"emocoes"},{en:"empathy", pt:"empatia", categoria:"emocoes"},
+    {en:"ambition", pt:"ambição", categoria:"emocoes"},{en:"resilience", pt:"resiliência", categoria:"emocoes"}
   ]
 };
-
 const frasesBanco = {
   iniciante: [
-    {frase:"I live in a big {en}.", resposta:"house"},
-    {frase:"My {en} is very loyal.", resposta:"dog"},
-    {frase:"She is reading a {en}.", resposta:"book"},
-    {frase:"The teacher gave us a new {en}.", resposta:"pen"}
+    {frase:"I live in a big {en}.", resposta:"house"},{frase:"My {en} is very loyal.", resposta:"dog"},
+    {frase:"She is reading a {en}.", resposta:"book"},{frase:"The teacher gave us a new {en}.", resposta:"pen"}
   ],
   intermediario: [
-    {frase:"We walked through the {en} for hours.", resposta:"forest"},
-    {frase:"I felt so much {en} for my family.", resposta:"love"},
-    {frase:"He booked a {en} for the trip.", resposta:"ticket"},
-    {frase:"The {en} starts at nine o'clock.", resposta:"meeting"}
+    {frase:"We walked through the {en} for hours.", resposta:"forest"},{frase:"I felt so much {en} for my family.", resposta:"love"},
+    {frase:"He booked a {en} for the trip.", resposta:"ticket"},{frase:"The {en} starts at nine o'clock.", resposta:"meeting"}
   ],
   avancado: [
-    {frase:"It takes real {en} to admit a mistake.", resposta:"courage"},
-    {frase:"She showed great {en} while waiting.", resposta:"patience"},
-    {frase:"True {en} comes only with experience.", resposta:"wisdom"},
-    {frase:"Everyone deserves equal {en} in life.", resposta:"opportunity"}
+    {frase:"It takes real {en} to admit a mistake.", resposta:"courage"},{frase:"She showed great {en} while waiting.", resposta:"patience"},
+    {frase:"True {en} comes only with experience.", resposta:"wisdom"},{frase:"Everyone deserves equal {en} in life.", resposta:"opportunity"}
   ]
 };
-
 const sinonimosBanco = {
-  iniciante: [
-    {palavra:"big", correta:"large", opcoes:["large","small","fast"]},
-    {palavra:"happy", correta:"glad", opcoes:["glad","angry","tired"]},
-    {palavra:"fast", correta:"quick", opcoes:["quick","slow","heavy"]},
-    {palavra:"small", correta:"little", opcoes:["little","huge","tall"]}
-  ],
-  intermediario: [
-    {palavra:"begin", correta:"start", opcoes:["start","finish","stop"]},
-    {palavra:"buy", correta:"purchase", opcoes:["purchase","sell","borrow"]},
-    {palavra:"difficult", correta:"hard", opcoes:["hard","easy","simple"]},
-    {palavra:"answer", correta:"reply", opcoes:["reply","question","ignore"]}
-  ],
-  avancado: [
-    {palavra:"courage", correta:"bravery", opcoes:["bravery","fear","weakness"]},
-    {palavra:"wisdom", correta:"insight", opcoes:["insight","ignorance","confusion"]},
-    {palavra:"generous", correta:"giving", opcoes:["giving","selfish","greedy"]},
-    {palavra:"ancient", correta:"old", opcoes:["old","modern","new"]}
-  ]
+  iniciante: [{palavra:"big", correta:"large", opcoes:["large","small","fast"]},{palavra:"happy", correta:"glad", opcoes:["glad","angry","tired"]},{palavra:"fast", correta:"quick", opcoes:["quick","slow","heavy"]},{palavra:"small", correta:"little", opcoes:["little","huge","tall"]}],
+  intermediario: [{palavra:"begin", correta:"start", opcoes:["start","finish","stop"]},{palavra:"buy", correta:"purchase", opcoes:["purchase","sell","borrow"]},{palavra:"difficult", correta:"hard", opcoes:["hard","easy","simple"]},{palavra:"answer", correta:"reply", opcoes:["reply","question","ignore"]}],
+  avancado: [{palavra:"courage", correta:"bravery", opcoes:["bravery","fear","weakness"]},{palavra:"wisdom", correta:"insight", opcoes:["insight","ignorance","confusion"]},{palavra:"generous", correta:"giving", opcoes:["giving","selfish","greedy"]},{palavra:"ancient", correta:"old", opcoes:["old","modern","new"]}]
 };
-
 const antonimosBanco = {
-  iniciante: [
-    {palavra:"big", correta:"small", opcoes:["small","large","tall"]},
-    {palavra:"happy", correta:"sad", opcoes:["sad","glad","funny"]},
-    {palavra:"hot", correta:"cold", opcoes:["cold","warm","dry"]},
-    {palavra:"fast", correta:"slow", opcoes:["slow","quick","short"]}
-  ],
-  intermediario: [
-    {palavra:"begin", correta:"end", opcoes:["end","start","open"]},
-    {palavra:"buy", correta:"sell", opcoes:["sell","purchase","own"]},
-    {palavra:"difficult", correta:"easy", opcoes:["easy","hard","complex"]},
-    {palavra:"remember", correta:"forget", opcoes:["forget","recall","know"]}
-  ],
-  avancado: [
-    {palavra:"courage", correta:"cowardice", opcoes:["cowardice","bravery","strength"]},
-    {palavra:"freedom", correta:"captivity", opcoes:["captivity","liberty","choice"]},
-    {palavra:"generous", correta:"stingy", opcoes:["stingy","giving","kind"]},
-    {palavra:"ancient", correta:"modern", opcoes:["modern","old","antique"]}
-  ]
+  iniciante: [{palavra:"big", correta:"small", opcoes:["small","large","tall"]},{palavra:"happy", correta:"sad", opcoes:["sad","glad","funny"]},{palavra:"hot", correta:"cold", opcoes:["cold","warm","dry"]},{palavra:"fast", correta:"slow", opcoes:["slow","quick","short"]}],
+  intermediario: [{palavra:"begin", correta:"end", opcoes:["end","start","open"]},{palavra:"buy", correta:"sell", opcoes:["sell","purchase","own"]},{palavra:"difficult", correta:"easy", opcoes:["easy","hard","complex"]},{palavra:"remember", correta:"forget", opcoes:["forget","recall","know"]}],
+  avancado: [{palavra:"courage", correta:"cowardice", opcoes:["cowardice","bravery","strength"]},{palavra:"freedom", correta:"captivity", opcoes:["captivity","liberty","choice"]},{palavra:"generous", correta:"stingy", opcoes:["stingy","giving","kind"]},{palavra:"ancient", correta:"modern", opcoes:["modern","old","antique"]}]
 };
-
 const pluralBanco = {
-  iniciante: [
-    {singular:"dog", correta:"dogs", opcoes:["dogs","doges","dogies"]},
-    {singular:"book", correta:"books", opcoes:["books","bookes","bookies"]},
-    {singular:"cat", correta:"cats", opcoes:["cats","cates","catss"]},
-    {singular:"box", correta:"boxes", opcoes:["boxes","boxs","boxies"]}
-  ],
-  intermediario: [
-    {singular:"child", correta:"children", opcoes:["children","childs","childes"]},
-    {singular:"man", correta:"men", opcoes:["men","mans","manes"]},
-    {singular:"foot", correta:"feet", opcoes:["feet","foots","footes"]},
-    {singular:"city", correta:"cities", opcoes:["cities","citys","citties"]}
-  ],
-  avancado: [
-    {singular:"mouse", correta:"mice", opcoes:["mice","mouses","mices"]},
-    {singular:"criterion", correta:"criteria", opcoes:["criteria","criterions","criterias"]},
-    {singular:"analysis", correta:"analyses", opcoes:["analyses","analysises","analysis"]},
-    {singular:"person", correta:"people", opcoes:["people","persons","peoples"]}
-  ]
+  iniciante: [{singular:"dog", correta:"dogs", opcoes:["dogs","doges","dogies"]},{singular:"book", correta:"books", opcoes:["books","bookes","bookies"]},{singular:"cat", correta:"cats", opcoes:["cats","cates","catss"]},{singular:"box", correta:"boxes", opcoes:["boxes","boxs","boxies"]}],
+  intermediario: [{singular:"child", correta:"children", opcoes:["children","childs","childes"]},{singular:"man", correta:"men", opcoes:["men","mans","manes"]},{singular:"foot", correta:"feet", opcoes:["feet","foots","footes"]},{singular:"city", correta:"cities", opcoes:["cities","citys","citties"]}],
+  avancado: [{singular:"mouse", correta:"mice", opcoes:["mice","mouses","mices"]},{singular:"criterion", correta:"criteria", opcoes:["criteria","criterions","criterias"]},{singular:"analysis", correta:"analyses", opcoes:["analyses","analysises","analysis"]},{singular:"person", correta:"people", opcoes:["people","persons","peoples"]}]
+};
+const passadoBanco = {
+  iniciante: [{presente:"play", correta:"played", opcoes:["played","playd","plaied"]},{presente:"walk", correta:"walked", opcoes:["walked","walkd","walkied"]},{presente:"watch", correta:"watched", opcoes:["watched","watchs","watching"]},{presente:"like", correta:"liked", opcoes:["liked","likeed","likes"]}],
+  intermediario: [{presente:"go", correta:"went", opcoes:["went","goed","gone"]},{presente:"have", correta:"had", opcoes:["had","haved","have"]},{presente:"eat", correta:"ate", opcoes:["ate","eated","eaten"]},{presente:"see", correta:"saw", opcoes:["saw","seed","seen"]}],
+  avancado: [{presente:"think", correta:"thought", opcoes:["thought","thinked","thinken"]},{presente:"choose", correta:"chose", opcoes:["chose","choosed","chosen"]},{presente:"break", correta:"broke", opcoes:["broke","breaked","broken"]},{presente:"begin", correta:"began", opcoes:["began","begun","beginned"]}]
 };
 
-const passadoBanco = {
+/* =====================================================
+   BANCO DE DADOS — PORTUGUÊS
+===================================================== */
+const bancoPt = {
   iniciante: [
-    {presente:"play", correta:"played", opcoes:["played","playd","plaied"]},
-    {presente:"walk", correta:"walked", opcoes:["walked","walkd","walkied"]},
-    {presente:"watch", correta:"watched", opcoes:["watched","watchs","watching"]},
-    {presente:"like", correta:"liked", opcoes:["liked","likeed","likes"]}
+    {palavra:"grande", sinonimo:"enorme", categoria:"tamanho_velocidade"},{palavra:"pequeno", sinonimo:"minúsculo", categoria:"tamanho_velocidade"},
+    {palavra:"rápido", sinonimo:"veloz", categoria:"tamanho_velocidade"},{palavra:"devagar", sinonimo:"lento", categoria:"tamanho_velocidade"},
+    {palavra:"felicidade", sinonimo:"alegria", categoria:"emocoes"},{palavra:"tristeza", sinonimo:"mágoa", categoria:"emocoes"},
+    {palavra:"bonito", sinonimo:"lindo", categoria:"emocoes"},{palavra:"feio", sinonimo:"desagradável", categoria:"emocoes"},
+    {palavra:"casa", sinonimo:"lar", categoria:"lugares_coisas"},{palavra:"carro", sinonimo:"automóvel", categoria:"lugares_coisas"},
+    {palavra:"comida", sinonimo:"alimento", categoria:"lugares_coisas"},{palavra:"amigo", sinonimo:"companheiro", categoria:"lugares_coisas"},
+    {palavra:"começar", sinonimo:"iniciar", categoria:"acoes"},{palavra:"terminar", sinonimo:"finalizar", categoria:"acoes"},
+    {palavra:"ajudar", sinonimo:"auxiliar", categoria:"acoes"},{palavra:"gostar", sinonimo:"apreciar", categoria:"acoes"}
   ],
   intermediario: [
-    {presente:"go", correta:"went", opcoes:["went","goed","gone"]},
-    {presente:"have", correta:"had", opcoes:["had","haved","have"]},
-    {presente:"eat", correta:"ate", opcoes:["ate","eated","eaten"]},
-    {presente:"see", correta:"saw", opcoes:["saw","seed","seen"]}
+    {palavra:"emprego", sinonimo:"ocupação", categoria:"trabalho"},{palavra:"reunião", sinonimo:"encontro", categoria:"trabalho"},
+    {palavra:"salário", sinonimo:"remuneração", categoria:"trabalho"},{palavra:"prazo", sinonimo:"limite", categoria:"trabalho"},
+    {palavra:"viagem", sinonimo:"passeio", categoria:"viagem"},{palavra:"bagagem", sinonimo:"mala", categoria:"viagem"},
+    {palavra:"passagem", sinonimo:"bilhete", categoria:"viagem"},{palavra:"aeroporto", sinonimo:"terminal", categoria:"viagem"},
+    {palavra:"floresta", sinonimo:"mata", categoria:"natureza"},{palavra:"montanha", sinonimo:"serra", categoria:"natureza"},
+    {palavra:"praia", sinonimo:"litoral", categoria:"natureza"},{palavra:"céu", sinonimo:"firmamento", categoria:"natureza"},
+    {palavra:"amor", sinonimo:"afeto", categoria:"sentimentos"},{palavra:"medo", sinonimo:"pavor", categoria:"sentimentos"},
+    {palavra:"raiva", sinonimo:"fúria", categoria:"sentimentos"},{palavra:"esperança", sinonimo:"expectativa", categoria:"sentimentos"}
   ],
   avancado: [
-    {presente:"think", correta:"thought", opcoes:["thought","thinked","thinken"]},
-    {presente:"choose", correta:"chose", opcoes:["chose","choosed","chosen"]},
-    {presente:"break", correta:"broke", opcoes:["broke","breaked","broken"]},
-    {presente:"begin", correta:"began", opcoes:["began","begun","beginned"]}
+    {palavra:"coragem", sinonimo:"bravura", categoria:"virtudes"},{palavra:"paciência", sinonimo:"tolerância", categoria:"virtudes"},
+    {palavra:"sabedoria", sinonimo:"sagacidade", categoria:"virtudes"},{palavra:"honestidade", sinonimo:"integridade", categoria:"virtudes"},
+    {palavra:"oportunidade", sinonimo:"chance", categoria:"abstrato"},{palavra:"conhecimento", sinonimo:"saber", categoria:"abstrato"},
+    {palavra:"liberdade", sinonimo:"autonomia", categoria:"abstrato"},{palavra:"justiça", sinonimo:"equidade", categoria:"abstrato"},
+    {palavra:"responsabilidade", sinonimo:"dever", categoria:"sociedade"},{palavra:"comunidade", sinonimo:"coletividade", categoria:"sociedade"},
+    {palavra:"economia", sinonimo:"finanças", categoria:"sociedade"},{palavra:"governo", sinonimo:"administração", categoria:"sociedade"},
+    {palavra:"gratidão", sinonimo:"reconhecimento", categoria:"emocoes_c"},{palavra:"empatia", sinonimo:"compaixão", categoria:"emocoes_c"},
+    {palavra:"ambição", sinonimo:"aspiração", categoria:"emocoes_c"},{palavra:"resiliência", sinonimo:"perseverança", categoria:"emocoes_c"}
   ]
 };
+const frasesPt = {
+  iniciante: [
+    {frase:"Eu moro em uma {en} grande.", resposta:"casa"},{frase:"O meu cachorro é muito {en}.", resposta:"fiel"},
+    {frase:"Ela está lendo um {en}.", resposta:"livro"},{frase:"A professora nos deu uma {en} nova.", resposta:"caneta"}
+  ],
+  intermediario: [
+    {frase:"Nós caminhamos pela {en} por horas.", resposta:"floresta"},{frase:"Eu senti muito {en} pela minha família.", resposta:"amor"},
+    {frase:"Ele comprou uma {en} para a viagem.", resposta:"passagem"},{frase:"A {en} começa às nove horas.", resposta:"reunião"}
+  ],
+  avancado: [
+    {frase:"É preciso muita {en} para admitir um erro.", resposta:"coragem"},{frase:"Ela demonstrou muita {en} enquanto esperava.", resposta:"paciência"},
+    {frase:"A verdadeira {en} só vem com a experiência.", resposta:"sabedoria"},{frase:"Todos merecem igual {en} na vida.", resposta:"oportunidade"}
+  ]
+};
+const sinonimosPt = {
+  iniciante: [{palavra:"grande", correta:"enorme", opcoes:["enorme","pequeno","rápido"]},{palavra:"feliz", correta:"contente", opcoes:["contente","triste","cansado"]},{palavra:"rápido", correta:"veloz", opcoes:["veloz","lento","pesado"]},{palavra:"pequeno", correta:"miúdo", opcoes:["miúdo","enorme","alto"]}],
+  intermediario: [{palavra:"começar", correta:"iniciar", opcoes:["iniciar","terminar","parar"]},{palavra:"comprar", correta:"adquirir", opcoes:["adquirir","vender","emprestar"]},{palavra:"difícil", correta:"complicado", opcoes:["complicado","fácil","simples"]},{palavra:"resposta", correta:"réplica", opcoes:["réplica","pergunta","silêncio"]}],
+  avancado: [{palavra:"coragem", correta:"bravura", opcoes:["bravura","medo","fraqueza"]},{palavra:"sabedoria", correta:"discernimento", opcoes:["discernimento","ignorância","confusão"]},{palavra:"generoso", correta:"caridoso", opcoes:["caridoso","egoísta","ganancioso"]},{palavra:"antigo", correta:"arcaico", opcoes:["arcaico","moderno","novo"]}]
+};
+const antonimosPt = {
+  iniciante: [{palavra:"grande", correta:"pequeno", opcoes:["pequeno","enorme","alto"]},{palavra:"feliz", correta:"triste", opcoes:["triste","contente","engraçado"]},{palavra:"quente", correta:"frio", opcoes:["frio","morno","seco"]},{palavra:"rápido", correta:"lento", opcoes:["lento","veloz","curto"]}],
+  intermediario: [{palavra:"começar", correta:"terminar", opcoes:["terminar","iniciar","abrir"]},{palavra:"comprar", correta:"vender", opcoes:["vender","adquirir","possuir"]},{palavra:"difícil", correta:"fácil", opcoes:["fácil","complicado","complexo"]},{palavra:"lembrar", correta:"esquecer", opcoes:["esquecer","recordar","saber"]}],
+  avancado: [{palavra:"coragem", correta:"covardia", opcoes:["covardia","bravura","força"]},{palavra:"liberdade", correta:"prisão", opcoes:["prisão","liberdade","escolha"]},{palavra:"generoso", correta:"mesquinho", opcoes:["mesquinho","caridoso","gentil"]},{palavra:"antigo", correta:"moderno", opcoes:["moderno","velho","antiquado"]}]
+};
+const pluralPt = {
+  iniciante: [{singular:"casa", correta:"casas", opcoes:["casas","casaes","casás"]},{singular:"flor", correta:"flores", opcoes:["flores","florns","flors"]},{singular:"animal", correta:"animais", opcoes:["animais","animals","animales"]},{singular:"lápis", correta:"lápis", opcoes:["lápis","lápises","lápes"]}],
+  intermediario: [{singular:"pão", correta:"pães", opcoes:["pães","pãos","pãoes"]},{singular:"mão", correta:"mãos", opcoes:["mãos","mães","manos"]},{singular:"cidadão", correta:"cidadãos", opcoes:["cidadãos","cidadães","cidadões"]},{singular:"cão", correta:"cães", opcoes:["cães","cãos","canos"]}],
+  avancado: [{singular:"alemão", correta:"alemães", opcoes:["alemães","alemãos","alemões"]},{singular:"cristão", correta:"cristãos", opcoes:["cristãos","cristães","cristões"]},{singular:"fuzil", correta:"fuzis", opcoes:["fuzis","fuzies","fuziles"]},{singular:"túnel", correta:"túneis", opcoes:["túneis","túnels","túneles"]}]
+};
+const verbosPt = {
+  iniciante: [{presente:"eu falo", correta:"eu falei", opcoes:["eu falei","eu falo","eu falarei"]},{presente:"eu como", correta:"eu comi", opcoes:["eu comi","eu como","eu comerei"]},{presente:"eu brinco", correta:"eu brinquei", opcoes:["eu brinquei","eu brinco","eu brincarei"]},{presente:"eu estudo", correta:"eu estudei", opcoes:["eu estudei","eu estudo","eu estudarei"]}],
+  intermediario: [{presente:"eu vou", correta:"eu fui", opcoes:["eu fui","eu vou","eu irei"]},{presente:"eu tenho", correta:"eu tive", opcoes:["eu tive","eu tenho","eu terei"]},{presente:"eu faço", correta:"eu fiz", opcoes:["eu fiz","eu faço","eu farei"]},{presente:"eu vejo", correta:"eu vi", opcoes:["eu vi","eu vejo","eu verei"]}],
+  avancado: [{presente:"eu digo", correta:"eu disse", opcoes:["eu disse","eu digo","eu direi"]},{presente:"eu trago", correta:"eu trouxe", opcoes:["eu trouxe","eu trago","eu trarei"]},{presente:"eu ponho", correta:"eu pus", opcoes:["eu pus","eu ponho","eu porei"]},{presente:"eu quero", correta:"eu quis", opcoes:["eu quis","eu quero","eu quererei"]}]
+};
+const ortografiaPt = {
+  iniciante: [{correta:"cachorro", opcoes:["cachorro","cachoro","cachôrro"]},{correta:"exercício", opcoes:["exercício","exercicio","excersício"]},{correta:"almoço", opcoes:["almoço","almosso","almôço"]},{correta:"telefone", opcoes:["telefone","telefonne","telifone"]}],
+  intermediario: [{correta:"necessário", opcoes:["necessário","necessario","nescessário"]},{correta:"exceção", opcoes:["exceção","excessão","esseção"]},{correta:"privilégio", opcoes:["privilégio","previlégio","privilegio"]},{correta:"advogado", opcoes:["advogado","adivogado","adivogadu"]}],
+  avancado: [{correta:"paralelepípedo", opcoes:["paralelepípedo","paralelepipedo","paralelepípido"]},{correta:"discrepância", opcoes:["discrepância","descrepância","discrepáncia"]},{correta:"idiossincrasia", opcoes:["idiossincrasia","idiosincrasia","idiossincracia"]},{correta:"hemorragia", opcoes:["hemorragia","hemoragia","emorragia"]}]
+};
+const acentuacaoPt = {
+  iniciante: [{correta:"café", opcoes:["café","cafe","cáfe"]},{correta:"água", opcoes:["água","agua","áqua"]},{correta:"árvore", opcoes:["árvore","arvore","àrvore"]},{correta:"médico", opcoes:["médico","medico","mêdico"]}],
+  intermediario: [{correta:"você", opcoes:["você","voce","vôce"]},{correta:"também", opcoes:["também","tambem","tambén"]},{correta:"país", opcoes:["país","pais","páis"]},{correta:"fácil", opcoes:["fácil","facil","fàcil"]}],
+  avancado: [{correta:"gênero", opcoes:["gênero","genero","gênêro"]},{correta:"lâmpada", opcoes:["lâmpada","lampada","lâmpáda"]},{correta:"ônibus", opcoes:["ônibus","onibus","õnibus"]},{correta:"órgão", opcoes:["órgão","orgao","órgao"]}]
+};
+const classeGramaticalPt = {
+  iniciante: [{palavra:"casa", correta:"substantivo", opcoes:["substantivo","verbo","adjetivo"]},{palavra:"correr", correta:"verbo", opcoes:["verbo","substantivo","advérbio"]},{palavra:"bonito", correta:"adjetivo", opcoes:["adjetivo","substantivo","verbo"]},{palavra:"rapidamente", correta:"advérbio", opcoes:["advérbio","verbo","adjetivo"]}],
+  intermediario: [{palavra:"felicidade", correta:"substantivo", opcoes:["substantivo","adjetivo","verbo"]},{palavra:"estudar", correta:"verbo", opcoes:["verbo","substantivo","advérbio"]},{palavra:"inteligente", correta:"adjetivo", opcoes:["adjetivo","verbo","substantivo"]},{palavra:"facilmente", correta:"advérbio", opcoes:["advérbio","adjetivo","verbo"]}],
+  avancado: [{palavra:"perseverança", correta:"substantivo", opcoes:["substantivo","verbo","adjetivo"]},{palavra:"transcender", correta:"verbo", opcoes:["verbo","substantivo","adjetivo"]},{palavra:"perspicaz", correta:"adjetivo", opcoes:["adjetivo","substantivo","verbo"]},{palavra:"consequentemente", correta:"advérbio", opcoes:["advérbio","adjetivo","verbo"]}]
+};
+function poolPalavrasPt(nivel){
+  const todas = [...sinonimosPt[nivel].map(x=>x.palavra), ...antonimosPt[nivel].map(x=>x.palavra), ...frasesPt[nivel].map(x=>x.resposta)];
+  return [...new Set(todas)];
+}
 
 const rotuloNivel = {iniciante:"Iniciante", intermediario:"Intermediário", avancado:"Avançado"};
 const paresGrupo = {iniciante:4, intermediario:5, avancado:6};
@@ -309,14 +327,16 @@ const paresGrupo = {iniciante:4, intermediario:5, avancado:6};
 let pontos = 0;
 let nivelAtual = null;
 let jogoSelecionado = null;
+let idiomaAtual = null;
+let JOGOS_ATUAL = null;
 
 function embaralhar(arr){return [...arr].sort(()=>Math.random()-0.5)}
-function contarUsos(){}
 function mostrarTela(id){
-  document.getElementById('selecao').style.display = id==='selecao' ? 'block':'none';
-  document.getElementById('niveis').style.display = id==='niveis' ? 'block':'none';
-  document.getElementById('jogo').style.display = id==='jogo' ? 'block':'none';
+  ['idioma','selecao','niveis','jogo'].forEach(s=>{
+    document.getElementById(s).style.display = s===id ? 'block':'none';
+  });
 }
+function voltarIdioma(){ mostrarTela('idioma'); }
 function voltarSelecao(){ mostrarTela('selecao'); }
 function atualizarPlacar(){
   document.getElementById('placar').textContent = 'Pontos: '+pontos;
@@ -329,22 +349,15 @@ function opcoesDistratoras(pool, campo, excluir, qtd){
 }
 
 /* =====================================================
-   SISTEMA ANTI-REPETIÇÃO
-   Guarda no localStorage quais perguntas já foram usadas
-   em cada jogo+nível. Quando todas já tiverem sido usadas,
-   a lista reinicia automaticamente (o ciclo recomeça).
+   SISTEMA ANTI-REPETIÇÃO (localStorage por jogo+nível)
 ===================================================== */
 function chaveUsados(jogo, nivel){ return 'eva_usados_' + jogo + '_' + nivel; }
 function pegarUsados(jogo, nivel){
-  try{ return JSON.parse(localStorage.getItem(chaveUsados(jogo, nivel))) || []; }
-  catch(e){ return []; }
+  try{ return JSON.parse(localStorage.getItem(chaveUsados(jogo, nivel))) || []; }catch(e){ return []; }
 }
 function marcarUsado(jogo, nivel, id){
   const usados = pegarUsados(jogo, nivel);
-  if(!usados.includes(id)){
-    usados.push(id);
-    try{ localStorage.setItem(chaveUsados(jogo, nivel), JSON.stringify(usados)); }catch(e){}
-  }
+  if(!usados.includes(id)){ usados.push(id); try{ localStorage.setItem(chaveUsados(jogo, nivel), JSON.stringify(usados)); }catch(e){} }
 }
 function poolDisponivel(jogo, nivel, poolCompleto, idFn){
   const usados = pegarUsados(jogo, nivel);
@@ -357,30 +370,39 @@ function poolDisponivel(jogo, nivel, poolCompleto, idFn){
 }
 
 /* =====================================================
-   SELEÇÃO DE JOGO E NÍVEL
+   SELEÇÃO DE IDIOMA, JOGO E NÍVEL
 ===================================================== */
+function selecionarIdioma(idioma){
+  idiomaAtual = idioma;
+  JOGOS_ATUAL = idioma==='en' ? JOGOS_EN : JOGOS_PT;
+  document.getElementById('tituloSelecao').textContent = idioma==='en' ? 'Jogos de Inglês' : 'Jogos de Português';
+  document.getElementById('gridModos').innerHTML = JOGOS_ATUAL.map(j=>`
+    <article class="modo-card" onclick="mostrarNiveis('${j.id}')">
+      <div class="icon">${j.icone}</div>
+      <h3>${j.nome}</h3>
+      <p>${j.desc}</p>
+    </article>
+  `).join('');
+  mostrarTela('selecao');
+}
 function mostrarNiveis(id){
   jogoSelecionado = id;
-  const jogo = JOGOS.find(j=>j.id===id);
+  const jogo = JOGOS_ATUAL.find(j=>j.id===id);
   document.getElementById('tituloNivel').textContent = jogo.nome + ' — escolha o nível';
   mostrarTela('niveis');
 }
 function iniciarComNivel(nivel){
-  const jogo = JOGOS.find(j=>j.id===jogoSelecionado);
+  const jogo = JOGOS_ATUAL.find(j=>j.id===jogoSelecionado);
   jogo.iniciar(nivel);
 }
 
 /* =====================================================
-   MOTOR GENÉRICO 1: PERGUNTA DE MÚLTIPLA ESCOLHA
-   Usado por 13 dos jogos (todos que têm botões de opção)
+   MOTOR GENÉRICO 1: MÚLTIPLA ESCOLHA
 ===================================================== */
 let quizItens = [], quizIndice = 0, quizJogoId = '';
-
 function iniciarQuizGenerico(jogoId, itens){
   pontos = 0; quizIndice = 0; quizItens = itens; quizJogoId = jogoId;
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderQuizGenerico();
+  atualizarPlacar(); mostrarTela('jogo'); renderQuizGenerico();
 }
 function renderQuizGenerico(){
   if(quizIndice >= quizItens.length) return fimDeJogo();
@@ -388,29 +410,23 @@ function renderQuizGenerico(){
   marcarUsado(quizJogoId, nivelAtual, q.id);
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
-    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}')">🔊 Ouvir palavra</button>` : ''}
+    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir palavra</button>` : ''}
     <div class="pergunta">${q.pergunta}</div>
     <div class="opcoes">${q.opcoes.map(o=>`<button class="opcao" onclick="responderQuizGenerico(this,'${o.replace(/'/g,"\\'")}','${q.correta.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
   `;
-  if(q.falar) falar(q.falar);
+  if(q.falar) falar(q.falar, q.falarIdioma||'en-US');
 }
 function responderQuizGenerico(botao, escolhida, correta){
-  document.querySelectorAll('#areaJogo .opcao').forEach(b=>{
-    b.onclick=null;
-    if(b.textContent===correta) b.classList.add('certa');
-  });
+  document.querySelectorAll('#areaJogo .opcao').forEach(b=>{ b.onclick=null; if(b.textContent===correta) b.classList.add('certa'); });
   if(escolhida!==correta) botao.classList.add('errada'); else pontos++;
   atualizarPlacar();
   setTimeout(()=>{ quizIndice++; renderQuizGenerico(); }, 900);
 }
 
-/* Variante com cronômetro (Contra o Relógio) */
 let temporizadorId = null;
 function iniciarQuizComTempo(jogoId, itens){
   pontos = 0; quizIndice = 0; quizItens = itens; quizJogoId = jogoId;
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderQuizComTempo();
+  atualizarPlacar(); mostrarTela('jogo'); renderQuizComTempo();
 }
 function renderQuizComTempo(){
   clearInterval(temporizadorId);
@@ -437,10 +453,7 @@ function renderQuizComTempo(){
 }
 function responderQuizComTempo(botao, escolhida, correta){
   clearInterval(temporizadorId);
-  document.querySelectorAll('#areaJogo .opcao').forEach(b=>{
-    b.onclick=null;
-    if(b.textContent===correta) b.classList.add('certa');
-  });
+  document.querySelectorAll('#areaJogo .opcao').forEach(b=>{ b.onclick=null; if(b.textContent===correta) b.classList.add('certa'); });
   if(escolhida!==correta) botao.classList.add('errada'); else pontos++;
   atualizarPlacar();
   setTimeout(()=>{ quizIndice++; renderQuizComTempo(); }, 900);
@@ -448,16 +461,11 @@ function responderQuizComTempo(botao, escolhida, correta){
 
 /* =====================================================
    MOTOR GENÉRICO 2: RESPOSTA DIGITADA
-   Usado por Digite a Tradução, Digite em Inglês, Ordene
-   as Letras e Ditado
 ===================================================== */
 let digiteItens = [], digiteIndice = 0, digiteJogoId = '';
-
 function iniciarDigiteGenerico(jogoId, itens){
   pontos = 0; digiteIndice = 0; digiteItens = itens; digiteJogoId = jogoId;
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderDigiteGenerico();
+  atualizarPlacar(); mostrarTela('jogo'); renderDigiteGenerico();
 }
 function renderDigiteGenerico(){
   if(digiteIndice >= digiteItens.length) return fimDeJogo();
@@ -465,13 +473,13 @@ function renderDigiteGenerico(){
   marcarUsado(digiteJogoId, nivelAtual, q.id);
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
-    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}')">🔊 Ouvir de novo</button><br>` : ''}
+    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir de novo</button><br>` : ''}
     <div class="pergunta">${q.pergunta}</div>
     <input type="text" id="respostaTexto" class="input-resposta" autocomplete="off" placeholder="Digite aqui" onkeydown="if(event.key==='Enter')responderDigiteGenerico()">
     <br><button class="proxima" onclick="responderDigiteGenerico()">Confirmar</button>
   `;
   document.getElementById('respostaTexto').focus();
-  if(q.falar) falar(q.falar);
+  if(q.falar) falar(q.falar, q.falarIdioma||'en-US');
 }
 function responderDigiteGenerico(){
   const q = digiteItens[digiteIndice];
@@ -485,155 +493,72 @@ function responderDigiteGenerico(){
   area.insertAdjacentHTML('beforeend', `<p style="margin-top:16px;font-weight:800;color:${acertou?'var(--agua)':'var(--erro)'}">${acertou?'Certo! ✅':'A resposta certa era: '+q.correta}</p>`);
   setTimeout(()=>{ digiteIndice++; renderDigiteGenerico(); }, 1200);
 }
-function falar(texto){
+function falar(texto, lang){
   try{
     if(!('speechSynthesis' in window)) return;
     const utter = new SpeechSynthesisUtterance(texto);
-    utter.lang = 'en-US';
+    utter.lang = lang || 'en-US';
     speechSynthesis.cancel();
     speechSynthesis.speak(utter);
   }catch(e){}
 }
 
 /* =====================================================
-   1 e 2 — TRADUÇÃO EN↔PT (múltipla escolha)
+   MOTOR GENÉRICO 3: MEMÓRIA (usado por EN e PT)
 ===================================================== */
-function iniciarMultiplaEnPt(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('multipla_en_pt', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({
-    id:item.en,
-    pergunta:`Como se diz "<u>${item.en}</u>" em português?`,
-    correta:item.pt,
-    opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])
-  }));
-  iniciarQuizGenerico('multipla_en_pt', itens);
-}
-function iniciarMultiplaPtEn(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('multipla_pt_en', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({
-    id:item.en,
-    pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`,
-    correta:item.en,
-    opcoes: embaralhar([item.en, ...opcoesDistratoras(pool,'en',item.en,3)])
-  }));
-  iniciarQuizGenerico('multipla_pt_en', itens);
-}
-
-/* ---------------- 3. COMPLETAR FRASE ---------------- */
-function iniciarFraseGame(nivel){
-  nivelAtual = nivel;
-  const pool = frasesBanco[nivel];
-  const disponiveis = poolDisponivel('frase', nivel, pool, x=>x.frase);
-  const bancoPalavras = banco[nivel];
-  const itens = embaralhar(disponiveis).map(f=>({
-    id:f.frase,
-    pergunta:f.frase.replace('{en}','_____'),
-    correta:f.resposta,
-    opcoes: embaralhar([f.resposta, ...opcoesDistratoras(bancoPalavras,'en',f.resposta,3)])
-  }));
-  iniciarQuizGenerico('frase', itens);
-}
-
-/* ---------------- 4. VERDADEIRO OU FALSO ---------------- */
-function iniciarVerdadeiroFalso(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('verdadeiro_falso', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>{
-    const ehVerdadeiro = Math.random() < 0.5;
-    let afirmacaoPt = item.pt;
-    if(!ehVerdadeiro){
-      afirmacaoPt = embaralhar(pool.filter(p=>p.pt!==item.pt))[0].pt;
-    }
-    return {
-      id:item.en,
-      pergunta:`"${item.en}" significa "${afirmacaoPt}"?`,
-      correta: ehVerdadeiro ? 'Verdadeiro' : 'Falso',
-      opcoes:['Verdadeiro','Falso']
-    };
-  });
-  iniciarQuizGenerico('verdadeiro_falso', itens);
-}
-
-/* ---------------- 5. JOGO DA MEMÓRIA ---------------- */
-let memCartas = [], memViradas = [], memBloqueado = false, memPares = 0;
-
-function iniciarMemoria(nivel){
-  nivelAtual = nivel;
-  pontos = 0; memPares = 0; memViradas = []; memBloqueado = false;
-  const pool = banco[nivel];
+let memCartas = [], memViradas = [], memBloqueado = false, memPares = 0, memRotulo = '';
+function iniciarMemoriaBase(jogoId, nivel, pool, rotulo){
+  nivelAtual = nivel; pontos = 0; memPares = 0; memViradas = []; memBloqueado = false; memRotulo = rotulo;
   const qtdPares = Math.min(paresGrupo[nivel], pool.length);
-  const disponiveis = poolDisponivel('memoria', nivel, pool, item=>item.en);
+  const disponiveis = poolDisponivel(jogoId, nivel, pool, item=>item.en);
   const base = disponiveis.length >= qtdPares ? disponiveis : pool;
   const pares = embaralhar(base).slice(0, qtdPares);
-  pares.forEach(p => marcarUsado('memoria', nivel, p.en));
-  memCartas = embaralhar(pares.flatMap(p=>[
-    {chave:p.en+p.pt, texto:p.en},
-    {chave:p.en+p.pt, texto:p.pt}
-  ]));
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderMemoria();
+  pares.forEach(p => marcarUsado(jogoId, nivel, p.en));
+  memCartas = embaralhar(pares.flatMap(p=>[{chave:p.en+p.pt, texto:p.en},{chave:p.en+p.pt, texto:p.pt}]));
+  atualizarPlacar(); mostrarTela('jogo'); renderMemoria();
 }
 function renderMemoria(){
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
-    <div class="pergunta">Encontre os pares (inglês ↔ português)</div>
-    <div class="memoria-grid">
-      ${memCartas.map((c,i)=>`<div class="mem-carta" id="mc${i}" onclick="virarCarta(${i})">?</div>`).join('')}
-    </div>
+    <div class="pergunta">Encontre os pares (${memRotulo})</div>
+    <div class="memoria-grid">${memCartas.map((c,i)=>`<div class="mem-carta" id="mc${i}" onclick="virarCarta(${i})">?</div>`).join('')}</div>
   `;
 }
 function virarCarta(i){
   const el = document.getElementById('mc'+i);
   if(memBloqueado || el.classList.contains('virada') || el.classList.contains('acertou')) return;
-  el.classList.add('virada');
-  el.textContent = memCartas[i].texto;
-  memViradas.push(i);
+  el.classList.add('virada'); el.textContent = memCartas[i].texto; memViradas.push(i);
   if(memViradas.length===2){
     memBloqueado = true;
     const [a,b] = memViradas;
     if(memCartas[a].chave === memCartas[b].chave){
-      document.getElementById('mc'+a).classList.add('acertou');
-      document.getElementById('mc'+b).classList.add('acertou');
-      pontos++; memPares++; atualizarPlacar();
-      memViradas=[]; memBloqueado=false;
+      document.getElementById('mc'+a).classList.add('acertou'); document.getElementById('mc'+b).classList.add('acertou');
+      pontos++; memPares++; atualizarPlacar(); memViradas=[]; memBloqueado=false;
       if(memPares === memCartas.length/2){ setTimeout(fimDeJogo, 500); }
     } else {
       setTimeout(()=>{
-        document.getElementById('mc'+a).classList.remove('virada');
-        document.getElementById('mc'+b).classList.remove('virada');
-        document.getElementById('mc'+a).textContent='?';
-        document.getElementById('mc'+b).textContent='?';
+        document.getElementById('mc'+a).classList.remove('virada'); document.getElementById('mc'+b).classList.remove('virada');
+        document.getElementById('mc'+a).textContent='?'; document.getElementById('mc'+b).textContent='?';
         memViradas=[]; memBloqueado=false;
       }, 800);
     }
   }
 }
+function iniciarMemoria(nivel){ iniciarMemoriaBase('memoria', nivel, banco[nivel], 'inglês ↔ português'); }
+function iniciarMemoriaPt(nivel){ iniciarMemoriaBase('memoria_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo})), 'palavra ↔ sinônimo'); }
 
-/* ---------------- 6. FORCA ---------------- */
+/* =====================================================
+   MOTOR GENÉRICO 4: FORCA
+===================================================== */
 let forcaPalavra = null, forcaLetrasCertas = [], forcaErros = 0;
 const FORCA_MAX_ERROS = 6;
-
-function iniciarForca(nivel){
-  nivelAtual = nivel;
-  pontos = 0;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('forca', nivel, pool, item=>item.en);
+function iniciarForcaBase(jogoId, nivel, pool){
+  nivelAtual = nivel; pontos = 0;
+  const disponiveis = poolDisponivel(jogoId, nivel, pool, item=>item.en);
   forcaPalavra = embaralhar(disponiveis)[0];
-  marcarUsado('forca', nivel, forcaPalavra.en);
-  forcaLetrasCertas = [];
-  forcaErros = 0;
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderForca();
+  marcarUsado(jogoId, nivel, forcaPalavra.en);
+  forcaLetrasCertas = []; forcaErros = 0;
+  atualizarPlacar(); mostrarTela('jogo'); renderForca();
 }
 function renderForca(){
   const area = document.getElementById('areaJogo');
@@ -641,89 +566,89 @@ function renderForca(){
   const alfabeto = 'abcdefghijklmnopqrstuvwxyz'.split('');
   area.innerHTML = `
     <div class="forca-vidas">${'❤️'.repeat(FORCA_MAX_ERROS - forcaErros)}${'🖤'.repeat(forcaErros)}</div>
-    <div class="forca-dica">Dica (português): <strong>${forcaPalavra.pt}</strong></div>
+    <div class="forca-dica">Dica: <strong>${forcaPalavra.pt}</strong></div>
     <div class="forca-palavra">${palavraMostrada}</div>
-    <div class="teclado">
-      ${alfabeto.map(l => `<button class="tecla" id="tecla-${l}" onclick="tentarLetra('${l}')">${l.toUpperCase()}</button>`).join('')}
-    </div>
+    <div class="teclado">${alfabeto.map(l => `<button class="tecla" id="tecla-${l}" onclick="tentarLetra('${l}')">${l.toUpperCase()}</button>`).join('')}</div>
   `;
 }
 function tentarLetra(letra){
   const botao = document.getElementById('tecla-'+letra);
   botao.disabled = true;
-  if(forcaPalavra.en.includes(letra)){
-    forcaLetrasCertas.push(letra);
-    botao.classList.add('acertou');
-  } else {
-    forcaErros++;
-    botao.classList.add('errou');
-  }
+  if(forcaPalavra.en.includes(letra)){ forcaLetrasCertas.push(letra); botao.classList.add('acertou'); }
+  else { forcaErros++; botao.classList.add('errou'); }
   const todasReveladas = forcaPalavra.en.split('').every(l => forcaLetrasCertas.includes(l));
-  if(todasReveladas){
-    pontos++; atualizarPlacar();
-    setTimeout(fimDeJogo, 700);
-    return;
-  }
-  if(forcaErros >= FORCA_MAX_ERROS){
-    setTimeout(()=>fimDeJogo(true), 700);
-    return;
-  }
+  if(todasReveladas){ pontos++; atualizarPlacar(); setTimeout(fimDeJogo, 700); return; }
+  if(forcaErros >= FORCA_MAX_ERROS){ setTimeout(()=>fimDeJogo(true), 700); return; }
   const vidas = document.querySelector('.forca-vidas');
   if(vidas) vidas.innerHTML = '❤️'.repeat(FORCA_MAX_ERROS - forcaErros) + '🖤'.repeat(forcaErros);
   const palavra = document.querySelector('.forca-palavra');
   if(palavra) palavra.textContent = forcaPalavra.en.split('').map(l => forcaLetrasCertas.includes(l) ? l : '_').join(' ');
 }
+function iniciarForca(nivel){ iniciarForcaBase('forca', nivel, banco[nivel]); }
+function iniciarForcaPt(nivel){ iniciarForcaBase('forca_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo}))); }
 
-/* ---------------- 7 e 8. DIGITAR TRADUÇÃO ---------------- */
-function iniciarDigitePt(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('digite_pt', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt}));
-  iniciarDigiteGenerico('digite_pt', itens);
+/* =====================================================
+   MOTOR GENÉRICO 5: LIGAR OS PARES
+===================================================== */
+let ligarPool = [], ligarSelecionadoEn = null, ligarSelecionadoPt = null, ligarAcertados = [], ligarRotulo = '';
+function iniciarLigarParesBase(jogoId, nivel, pool, rotulo){
+  nivelAtual = nivel; pontos = 0; ligarRotulo = rotulo;
+  const qtdPares = Math.min(paresGrupo[nivel], pool.length);
+  const disponiveis = poolDisponivel(jogoId, nivel, pool, x=>x.en);
+  const base = disponiveis.length >= qtdPares ? disponiveis : pool;
+  ligarPool = embaralhar(base).slice(0, qtdPares);
+  ligarPool.forEach(p=>marcarUsado(jogoId, nivel, p.en));
+  ligarAcertados = []; ligarSelecionadoEn = null; ligarSelecionadoPt = null;
+  atualizarPlacar(); mostrarTela('jogo'); renderLigarPares();
 }
-function iniciarDigiteEn(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('digite_en', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en}));
-  iniciarDigiteGenerico('digite_en', itens);
+function renderLigarPares(){
+  const area = document.getElementById('areaJogo');
+  const colEn = embaralhar(ligarPool);
+  const colPt = embaralhar(ligarPool);
+  area.innerHTML = `
+    <div class="pergunta">${ligarRotulo}</div>
+    <div style="display:flex;gap:20px;justify-content:center">
+      <div style="display:flex;flex-direction:column;gap:10px;flex:1">${colEn.map(p=>`<button class="opcao par-item" onclick="selecionarPar(this,'${p.en}','en')" ${ligarAcertados.includes(p.en)?'disabled':''}>${p.en}</button>`).join('')}</div>
+      <div style="display:flex;flex-direction:column;gap:10px;flex:1">${colPt.map(p=>`<button class="opcao par-item" onclick="selecionarPar(this,'${p.en}','pt')" ${ligarAcertados.includes(p.en)?'disabled':''}>${p.pt}</button>`).join('')}</div>
+    </div>
+  `;
 }
+function selecionarPar(botao, chave, coluna){
+  if(botao.disabled) return;
+  if(coluna==='en'){ if(ligarSelecionadoEn) ligarSelecionadoEn.el.classList.remove('certa'); ligarSelecionadoEn = {chave, el:botao}; }
+  else { if(ligarSelecionadoPt) ligarSelecionadoPt.el.classList.remove('certa'); ligarSelecionadoPt = {chave, el:botao}; }
+  botao.classList.add('certa');
+  if(ligarSelecionadoEn && ligarSelecionadoPt){
+    if(ligarSelecionadoEn.chave === ligarSelecionadoPt.chave){
+      ligarAcertados.push(ligarSelecionadoEn.chave); pontos++; atualizarPlacar();
+      ligarSelecionadoEn=null; ligarSelecionadoPt=null;
+      if(ligarAcertados.length === ligarPool.length){ setTimeout(fimDeJogo, 500); return; }
+      renderLigarPares();
+    } else {
+      const a = ligarSelecionadoEn.el, b = ligarSelecionadoPt.el;
+      a.classList.remove('certa'); a.classList.add('errada'); b.classList.remove('certa'); b.classList.add('errada');
+      setTimeout(()=>{ ligarSelecionadoEn=null; ligarSelecionadoPt=null; renderLigarPares(); }, 700);
+    }
+  }
+}
+function iniciarLigarPares(nivel){ iniciarLigarParesBase('ligar_pares', nivel, banco[nivel], 'Clique numa palavra em inglês e depois na tradução correta'); }
+function iniciarLigarParesPt(nivel){ iniciarLigarParesBase('ligar_pares_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo})), 'Clique numa palavra e depois no sinônimo correto'); }
 
-/* ---------------- 9. ORDENE AS LETRAS (anagrama) ---------------- */
-function iniciarAnagrama(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const disponiveis = poolDisponivel('anagrama', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>{
-    let embaralhada;
-    do{ embaralhada = embaralhar(item.en.split('')).join(''); } while(embaralhada===item.en && item.en.length>1);
-    return {id:item.en, pergunta:`Desembaralhe: <u>${embaralhada.toUpperCase()}</u> (dica: ${item.pt})`, correta:item.en};
-  });
-  iniciarDigiteGenerico('anagrama', itens);
-}
-
-/* ---------------- 10. ORDENE A FRASE ---------------- */
-let ordeneItens = [], ordeneIndice = 0, ordenePalavras = [], ordeneCorretas = [];
+/* =====================================================
+   MOTOR GENÉRICO 6: ORDENE A FRASE
+===================================================== */
+let ordeneItens = [], ordeneIndice = 0, ordenePalavras = [], ordeneCorretas = [], ordeneJogoId = '';
 let ordeneIndicesDisponiveis = [], ordeneIndicesSelecionados = [];
-
-function iniciarOrdeneFrase(nivel){
-  nivelAtual = nivel;
-  pontos = 0; ordeneIndice = 0;
-  const pool = frasesBanco[nivel];
-  const disponiveis = poolDisponivel('ordene_frase', nivel, pool, x=>x.frase);
+function iniciarOrdeneFraseBase(jogoId, nivel, poolFrases){
+  nivelAtual = nivel; pontos = 0; ordeneIndice = 0; ordeneJogoId = jogoId;
+  const disponiveis = poolDisponivel(jogoId, nivel, poolFrases, x=>x.frase);
   ordeneItens = embaralhar(disponiveis);
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderOrdeneFrase();
+  atualizarPlacar(); mostrarTela('jogo'); renderOrdeneFrase();
 }
 function renderOrdeneFrase(){
   if(ordeneIndice >= ordeneItens.length) return fimDeJogo();
   const f = ordeneItens[ordeneIndice];
-  marcarUsado('ordene_frase', nivelAtual, f.frase);
+  marcarUsado(ordeneJogoId, nivelAtual, f.frase);
   const fraseCompleta = f.frase.replace('{en}', f.resposta).replace(/\.$/,'');
   ordeneCorretas = fraseCompleta.split(' ');
   ordenePalavras = embaralhar(ordeneCorretas);
@@ -735,25 +660,13 @@ function renderOrdeneTela(){
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
     <div class="pergunta">Organize as palavras para formar a frase correta:</div>
-    <div class="ordene-strip">
-      ${ordeneIndicesSelecionados.map(i=>`<button class="opcao" onclick="removerPalavraOrdene(${i})">${ordenePalavras[i]}</button>`).join('') || '<span style="color:var(--cinza)">clique as palavras abaixo, na ordem certa</span>'}
-    </div>
-    <div class="opcoes" style="grid-template-columns:repeat(auto-fit,minmax(90px,1fr))">
-      ${ordeneIndicesDisponiveis.map(i=>`<button class="opcao" onclick="adicionarPalavraOrdene(${i})">${ordenePalavras[i]}</button>`).join('')}
-    </div>
+    <div class="ordene-strip">${ordeneIndicesSelecionados.map(i=>`<button class="opcao" onclick="removerPalavraOrdene(${i})">${ordenePalavras[i]}</button>`).join('') || '<span style="color:var(--cinza)">clique as palavras abaixo, na ordem certa</span>'}</div>
+    <div class="opcoes" style="grid-template-columns:repeat(auto-fit,minmax(90px,1fr))">${ordeneIndicesDisponiveis.map(i=>`<button class="opcao" onclick="adicionarPalavraOrdene(${i})">${ordenePalavras[i]}</button>`).join('')}</div>
     ${ordeneIndicesDisponiveis.length===0 ? '<button class="proxima" onclick="conferirOrdenar()">Conferir</button>' : ''}
   `;
 }
-function adicionarPalavraOrdene(i){
-  ordeneIndicesSelecionados.push(i);
-  ordeneIndicesDisponiveis = ordeneIndicesDisponiveis.filter(x=>x!==i);
-  renderOrdeneTela();
-}
-function removerPalavraOrdene(i){
-  ordeneIndicesSelecionados = ordeneIndicesSelecionados.filter(x=>x!==i);
-  ordeneIndicesDisponiveis.push(i);
-  renderOrdeneTela();
-}
+function adicionarPalavraOrdene(i){ ordeneIndicesSelecionados.push(i); ordeneIndicesDisponiveis = ordeneIndicesDisponiveis.filter(x=>x!==i); renderOrdeneTela(); }
+function removerPalavraOrdene(i){ ordeneIndicesSelecionados = ordeneIndicesSelecionados.filter(x=>x!==i); ordeneIndicesDisponiveis.push(i); renderOrdeneTela(); }
 function conferirOrdenar(){
   const montada = ordeneIndicesSelecionados.map(i=>ordenePalavras[i]).join(' ');
   const correta = ordeneCorretas.join(' ');
@@ -764,235 +677,222 @@ function conferirOrdenar(){
   area.insertAdjacentHTML('beforeend', `<p style="margin-top:16px;font-weight:800;color:${acertou?'var(--agua)':'var(--erro)'}">${acertou?'Certo! ✅':'Frase correta: '+correta}</p>`);
   setTimeout(()=>{ ordeneIndice++; renderOrdeneFrase(); }, 1400);
 }
+function iniciarOrdeneFrase(nivel){ iniciarOrdeneFraseBase('ordene_frase', nivel, frasesBanco[nivel]); }
+function iniciarOrdeneFrasePt(nivel){ iniciarOrdeneFraseBase('ordene_frase_pt', nivel, frasesPt[nivel]); }
 
-/* ---------------- 11. INTRUSO ---------------- */
+/* =====================================================
+   FIM DE JOGO
+===================================================== */
+function fimDeJogo(perdeuForca){
+  const area = document.getElementById('areaJogo');
+  if(perdeuForca){
+    area.innerHTML = `<div class="fim"><h2>Não foi dessa vez 😅</h2><p>A palavra era: <strong>${forcaPalavra.en}</strong> (${forcaPalavra.pt})</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
+    return;
+  }
+  area.innerHTML = `<div class="fim"><h2>Muito bem! 🎉</h2><p>Você fez ${pontos} ponto(s) no nível ${rotuloNivel[nivelAtual]}.</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
+}
+
+/* =====================================================
+   JOGOS — INGLÊS (21)
+===================================================== */
+function iniciarMultiplaEnPt(nivel){
+  nivelAtual = nivel; const pool = banco[nivel];
+  const disponiveis = poolDisponivel('multipla_en_pt', nivel, pool, x=>x.en);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
+  iniciarQuizGenerico('multipla_en_pt', itens);
+}
+function iniciarMultiplaPtEn(nivel){
+  nivelAtual = nivel; const pool = banco[nivel];
+  const disponiveis = poolDisponivel('multipla_pt_en', nivel, pool, x=>x.en);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en, opcoes: embaralhar([item.en, ...opcoesDistratoras(pool,'en',item.en,3)])}));
+  iniciarQuizGenerico('multipla_pt_en', itens);
+}
+function iniciarFraseGame(nivel){
+  nivelAtual = nivel; const pool = frasesBanco[nivel]; const bp = banco[nivel];
+  const disponiveis = poolDisponivel('frase', nivel, pool, x=>x.frase);
+  const itens = embaralhar(disponiveis).map(f=>({id:f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...opcoesDistratoras(bp,'en',f.resposta,3)])}));
+  iniciarQuizGenerico('frase', itens);
+}
+function iniciarVerdadeiroFalso(nivel){
+  nivelAtual = nivel; const pool = banco[nivel];
+  const disponiveis = poolDisponivel('verdadeiro_falso', nivel, pool, x=>x.en);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+    const ehVerdadeiro = Math.random() < 0.5;
+    const afirmacaoPt = ehVerdadeiro ? item.pt : embaralhar(pool.filter(p=>p.pt!==item.pt))[0].pt;
+    return {id:item.en, pergunta:`"${item.en}" significa "${afirmacaoPt}"?`, correta: ehVerdadeiro?'Verdadeiro':'Falso', opcoes:['Verdadeiro','Falso']};
+  });
+  iniciarQuizGenerico('verdadeiro_falso', itens);
+}
+function iniciarDigitePt(nivel){
+  nivelAtual = nivel; const pool = banco[nivel];
+  const disponiveis = poolDisponivel('digite_pt', nivel, pool, x=>x.en);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt}));
+  iniciarDigiteGenerico('digite_pt', itens);
+}
+function iniciarDigiteEn(nivel){
+  nivelAtual = nivel; const pool = banco[nivel];
+  const disponiveis = poolDisponivel('digite_en', nivel, pool, x=>x.en);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en}));
+  iniciarDigiteGenerico('digite_en', itens);
+}
+function iniciarAnagrama(nivel){
+  nivelAtual = nivel; const pool = banco[nivel];
+  const disponiveis = poolDisponivel('anagrama', nivel, pool, x=>x.en);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+    let embaralhada; do{ embaralhada = embaralhar(item.en.split('')).join(''); } while(embaralhada===item.en && item.en.length>1);
+    return {id:item.en, pergunta:`Desembaralhe: <u>${embaralhada.toUpperCase()}</u> (dica: ${item.pt})`, correta:item.en};
+  });
+  iniciarDigiteGenerico('anagrama', itens);
+}
 function iniciarIntruso(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
+  nivelAtual = nivel; const pool = banco[nivel];
   const categorias = [...new Set(pool.map(p=>p.categoria))];
   const rounds = [];
   categorias.forEach(cat=>{
     const doGrupo = embaralhar(pool.filter(p=>p.categoria===cat)).slice(0,3);
     const outros = pool.filter(p=>p.categoria!==cat);
-    if(doGrupo.length===3 && outros.length>0){
-      rounds.push({grupo:doGrupo, intruso: embaralhar(outros)[0]});
-    }
+    if(doGrupo.length===3 && outros.length>0) rounds.push({grupo:doGrupo, intruso: embaralhar(outros)[0]});
   });
   const disponiveis = poolDisponivel('intruso', nivel, rounds, r=>r.intruso.en);
-  const itens = embaralhar(disponiveis).map(r=>({
-    id:r.intruso.en,
-    pergunta:'Qual palavra não pertence ao grupo?',
-    correta:r.intruso.en,
-    opcoes: embaralhar([r.intruso.en, ...r.grupo.map(g=>g.en)])
-  }));
+  const itens = embaralhar(disponiveis).map(r=>({id:r.intruso.en, pergunta:'Qual palavra não pertence ao grupo?', correta:r.intruso.en, opcoes: embaralhar([r.intruso.en, ...r.grupo.map(g=>g.en)])}));
   iniciarQuizGenerico('intruso', itens);
 }
-
-/* ---------------- 12, 13, 14, 15 — GRAMÁTICA ---------------- */
-function iniciarSinonimos(nivel){
-  nivelAtual = nivel;
-  const pool = sinonimosBanco[nivel];
-  const disponiveis = poolDisponivel('sinonimos', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).map(e=>({id:e.palavra, pergunta:`Qual é um sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes: embaralhar(e.opcoes)}));
-  iniciarQuizGenerico('sinonimos', itens);
-}
-function iniciarAntonimos(nivel){
-  nivelAtual = nivel;
-  const pool = antonimosBanco[nivel];
-  const disponiveis = poolDisponivel('antonimos', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).map(e=>({id:e.palavra, pergunta:`Qual é o antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes: embaralhar(e.opcoes)}));
-  iniciarQuizGenerico('antonimos', itens);
-}
-function iniciarPlural(nivel){
-  nivelAtual = nivel;
-  const pool = pluralBanco[nivel];
-  const disponiveis = poolDisponivel('plural', nivel, pool, x=>x.singular);
-  const itens = embaralhar(disponiveis).map(e=>({id:e.singular, pergunta:`Qual é o plural de "<u>${e.singular}</u>"?`, correta:e.correta, opcoes: embaralhar(e.opcoes)}));
-  iniciarQuizGenerico('plural', itens);
-}
-function iniciarPassado(nivel){
-  nivelAtual = nivel;
-  const pool = passadoBanco[nivel];
-  const disponiveis = poolDisponivel('passado', nivel, pool, x=>x.presente);
-  const itens = embaralhar(disponiveis).map(e=>({id:e.presente, pergunta:`Qual é o passado de "<u>${e.presente}</u>"?`, correta:e.correta, opcoes: embaralhar(e.opcoes)}));
-  iniciarQuizGenerico('passado', itens);
-}
-
-/* ---------------- 16. LIGAR OS PARES ---------------- */
-let ligarPool = [], ligarSelecionadoEn = null, ligarSelecionadoPt = null, ligarAcertados = [];
-
-function iniciarLigarPares(nivel){
-  nivelAtual = nivel;
-  pontos = 0;
-  const pool = banco[nivel];
-  const qtdPares = Math.min(paresGrupo[nivel], pool.length);
-  const disponiveis = poolDisponivel('ligar_pares', nivel, pool, x=>x.en);
-  const base = disponiveis.length >= qtdPares ? disponiveis : pool;
-  ligarPool = embaralhar(base).slice(0, qtdPares);
-  ligarPool.forEach(p=>marcarUsado('ligar_pares', nivel, p.en));
-  ligarAcertados = []; ligarSelecionadoEn = null; ligarSelecionadoPt = null;
-  atualizarPlacar();
-  mostrarTela('jogo');
-  renderLigarPares();
-}
-function renderLigarPares(){
-  const area = document.getElementById('areaJogo');
-  const colEn = embaralhar(ligarPool);
-  const colPt = embaralhar(ligarPool);
-  area.innerHTML = `
-    <div class="pergunta">Clique numa palavra em inglês e depois na tradução correta</div>
-    <div style="display:flex;gap:20px;justify-content:center">
-      <div style="display:flex;flex-direction:column;gap:10px;flex:1">
-        ${colEn.map(p=>`<button class="opcao par-item" onclick="selecionarPar(this,'${p.en}','en')" ${ligarAcertados.includes(p.en)?'disabled':''}>${p.en}</button>`).join('')}
-      </div>
-      <div style="display:flex;flex-direction:column;gap:10px;flex:1">
-        ${colPt.map(p=>`<button class="opcao par-item" onclick="selecionarPar(this,'${p.en}','pt')" ${ligarAcertados.includes(p.en)?'disabled':''}>${p.pt}</button>`).join('')}
-      </div>
-    </div>
-  `;
-  ligarAcertados.forEach(en=>{
-    document.querySelectorAll('.par-item').forEach(b=>{ if(b.disabled && (b.textContent===en || ligarPool.find(p=>p.en===en && p.pt===b.textContent))) b.classList.add('certa'); });
-  });
-}
-function selecionarPar(botao, chave, coluna){
-  if(botao.disabled) return;
-  if(coluna==='en'){
-    if(ligarSelecionadoEn) ligarSelecionadoEn.el.classList.remove('certa');
-    ligarSelecionadoEn = {chave, el:botao};
-  } else {
-    if(ligarSelecionadoPt) ligarSelecionadoPt.el.classList.remove('certa');
-    ligarSelecionadoPt = {chave, el:botao};
-  }
-  botao.classList.add('certa');
-  if(ligarSelecionadoEn && ligarSelecionadoPt){
-    if(ligarSelecionadoEn.chave === ligarSelecionadoPt.chave){
-      ligarAcertados.push(ligarSelecionadoEn.chave);
-      pontos++; atualizarPlacar();
-      ligarSelecionadoEn=null; ligarSelecionadoPt=null;
-      if(ligarAcertados.length === ligarPool.length){ setTimeout(fimDeJogo, 500); return; }
-      renderLigarPares();
-    } else {
-      const a = ligarSelecionadoEn.el, b = ligarSelecionadoPt.el;
-      a.classList.remove('certa'); a.classList.add('errada');
-      b.classList.remove('certa'); b.classList.add('errada');
-      setTimeout(()=>{
-        ligarSelecionadoEn=null; ligarSelecionadoPt=null;
-        renderLigarPares();
-      }, 700);
-    }
-  }
-}
-
-/* ---------------- 17. OUÇA E ESCOLHA ---------------- */
+function iniciarSinonimos(nivel){ nivelAtual=nivel; const pool=sinonimosBanco[nivel]; const d=poolDisponivel('sinonimos',nivel,pool,x=>x.palavra); iniciarQuizGenerico('sinonimos', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é um sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarAntonimos(nivel){ nivelAtual=nivel; const pool=antonimosBanco[nivel]; const d=poolDisponivel('antonimos',nivel,pool,x=>x.palavra); iniciarQuizGenerico('antonimos', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é o antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarPlural(nivel){ nivelAtual=nivel; const pool=pluralBanco[nivel]; const d=poolDisponivel('plural',nivel,pool,x=>x.singular); iniciarQuizGenerico('plural', embaralhar(d).map(e=>({id:e.singular, pergunta:`Qual é o plural de "<u>${e.singular}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarPassado(nivel){ nivelAtual=nivel; const pool=passadoBanco[nivel]; const d=poolDisponivel('passado',nivel,pool,x=>x.presente); iniciarQuizGenerico('passado', embaralhar(d).map(e=>({id:e.presente, pergunta:`Qual é o passado de "<u>${e.presente}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarOucaEscolha(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
+  nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('ouca_escolha', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({
-    id:item.en,
-    pergunta:'Ouça a palavra e escolha a tradução correta:',
-    correta:item.pt,
-    opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)]),
-    falar:item.en
-  }));
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:'Ouça a palavra e escolha a tradução correta:', correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)]), falar:item.en, falarIdioma:'en-US'}));
   iniciarQuizGenerico('ouca_escolha', itens);
 }
-
-/* ---------------- 18. DITADO ---------------- */
 function iniciarDitado(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
+  nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('ditado', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({id:item.en, pergunta:'Ouça e digite a palavra em inglês:', correta:item.en, falar:item.en}));
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:'Ouça e digite a palavra em inglês:', correta:item.en, falar:item.en, falarIdioma:'en-US'}));
   iniciarDigiteGenerico('ditado', itens);
 }
-
-/* ---------------- 19. CONTRA O RELÓGIO ---------------- */
 function iniciarContraRelogio(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
+  nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('contra_relogio', nivel, pool, x=>x.en);
-  const qtd = Math.min(8, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>({
-    id:item.en,
-    pergunta:`Como se diz "<u>${item.en}</u>" em português?`,
-    correta:item.pt,
-    opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])
-  }));
+  const itens = embaralhar(disponiveis).slice(0,Math.min(8,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
   iniciarQuizComTempo('contra_relogio', itens);
 }
-
-/* ---------------- 20. COMPLETE A PALAVRA ---------------- */
 function iniciarCompleteLetra(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel].filter(p=>p.en.length>=3);
+  nivelAtual = nivel; const pool = banco[nivel].filter(p=>p.en.length>=3);
   const disponiveis = poolDisponivel('complete_letra', nivel, pool, x=>x.en);
-  const qtd = Math.min(6, disponiveis.length);
-  const itens = embaralhar(disponiveis).slice(0,qtd).map(item=>{
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
     const idx = Math.floor(Math.random()*item.en.length);
     const letraCorreta = item.en[idx];
     const palavraLacuna = item.en.split('').map((l,i)=> i===idx ? '_' : l).join('');
     const outrasLetras = 'abcdefghijklmnopqrstuvwxyz'.split('').filter(l=>l!==letraCorreta);
-    return {
-      id:item.en,
-      pergunta:`Complete a palavra: <u>${palavraLacuna}</u> (dica: ${item.pt})`,
-      correta:letraCorreta,
-      opcoes: embaralhar([letraCorreta, ...embaralhar(outrasLetras).slice(0,3)])
-    };
+    return {id:item.en, pergunta:`Complete a palavra: <u>${palavraLacuna}</u> (dica: ${item.pt})`, correta:letraCorreta, opcoes: embaralhar([letraCorreta, ...embaralhar(outrasLetras).slice(0,3)])};
   });
   iniciarQuizGenerico('complete_letra', itens);
 }
-
-/* ---------------- 21. DESAFIO FINAL ---------------- */
 function iniciarDesafioFinal(nivel){
-  nivelAtual = nivel;
-  const pool = banco[nivel];
-  const partes = [];
-  embaralhar(pool).slice(0,3).forEach(item=>{
-    partes.push({id:'df_'+item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])});
-  });
-  embaralhar(frasesBanco[nivel]).slice(0,2).forEach(f=>{
-    partes.push({id:'df_'+f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...opcoesDistratoras(pool,'en',f.resposta,3)])});
-  });
-  embaralhar(sinonimosBanco[nivel]).slice(0,1).forEach(e=>{
-    partes.push({id:'df_'+e.palavra, pergunta:`Sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)});
-  });
-  embaralhar(antonimosBanco[nivel]).slice(0,1).forEach(e=>{
-    partes.push({id:'df_'+e.palavra+'_a', pergunta:`Antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)});
-  });
+  nivelAtual = nivel; const pool = banco[nivel]; const partes = [];
+  embaralhar(pool).slice(0,3).forEach(item=>partes.push({id:'df_'+item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
+  embaralhar(frasesBanco[nivel]).slice(0,2).forEach(f=>partes.push({id:'df_'+f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...opcoesDistratoras(pool,'en',f.resposta,3)])}));
+  embaralhar(sinonimosBanco[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra, pergunta:`Sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
+  embaralhar(antonimosBanco[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra+'_a', pergunta:`Antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
   const disponiveis = poolDisponivel('desafio_final', nivel, partes, x=>x.id);
-  const itens = disponiveis.length ? disponiveis : partes;
-  iniciarQuizGenerico('desafio_final', embaralhar(itens));
-}
-
-/* ---------------- FIM DE JOGO ---------------- */
-function fimDeJogo(perdeuForca){
-  const area = document.getElementById('areaJogo');
-  if(perdeuForca){
-    area.innerHTML = `
-      <div class="fim">
-        <h2>Não foi dessa vez 😅</h2>
-        <p>A palavra era: <strong>${forcaPalavra.en}</strong> (${forcaPalavra.pt})</p>
-        <button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button>
-      </div>
-    `;
-    return;
-  }
-  area.innerHTML = `
-    <div class="fim">
-      <h2>Muito bem! 🎉</h2>
-      <p>Você fez ${pontos} ponto(s) no nível ${rotuloNivel[nivelAtual]}.</p>
-      <button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button>
-    </div>
-  `;
+  iniciarQuizGenerico('desafio_final', embaralhar(disponiveis.length?disponiveis:partes));
 }
 
 /* =====================================================
-   LISTA DE TODOS OS JOGOS (21 no total)
+   JOGOS — PORTUGUÊS (21)
 ===================================================== */
-const JOGOS = [
+function iniciarSinonimosPt(nivel){ nivelAtual=nivel; const pool=sinonimosPt[nivel]; const d=poolDisponivel('sinonimos_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('sinonimos_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é um sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarAntonimosPt(nivel){ nivelAtual=nivel; const pool=antonimosPt[nivel]; const d=poolDisponivel('antonimos_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('antonimos_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é o antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarFraseGamePt(nivel){
+  nivelAtual = nivel; const pool = frasesPt[nivel]; const palavras = poolPalavrasPt(nivel);
+  const disponiveis = poolDisponivel('frase_pt', nivel, pool, x=>x.frase);
+  const itens = embaralhar(disponiveis).map(f=>({id:f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...embaralhar(palavras.filter(w=>w!==f.resposta)).slice(0,3)])}));
+  iniciarQuizGenerico('frase_pt', itens);
+}
+function iniciarVerdadeiroFalsoPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('verdadeiro_falso_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+    const ehVerdadeiro = Math.random() < 0.5;
+    const afirmacao = ehVerdadeiro ? item.sinonimo : embaralhar(pool.filter(p=>p.sinonimo!==item.sinonimo))[0].sinonimo;
+    return {id:item.palavra, pergunta:`"${item.palavra}" é sinônimo de "${afirmacao}"?`, correta: ehVerdadeiro?'Verdadeiro':'Falso', opcoes:['Verdadeiro','Falso']};
+  });
+  iniciarQuizGenerico('verdadeiro_falso_pt', itens);
+}
+function iniciarDigiteSinonimoPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('digite_sinonimo_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:`Digite um sinônimo de "<u>${item.palavra}</u>"`, correta:item.sinonimo}));
+  iniciarDigiteGenerico('digite_sinonimo_pt', itens);
+}
+function iniciarDigitePalavraPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('digite_palavra_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:`Qual palavra tem o sinônimo "<u>${item.sinonimo}</u>"? (digite)`, correta:item.palavra}));
+  iniciarDigiteGenerico('digite_palavra_pt', itens);
+}
+function iniciarAnagramaPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('anagrama_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+    let embaralhada; do{ embaralhada = embaralhar(item.palavra.split('')).join(''); } while(embaralhada===item.palavra && item.palavra.length>1);
+    return {id:item.palavra, pergunta:`Desembaralhe: <u>${embaralhada.toUpperCase()}</u> (dica: sinônimo de "${item.sinonimo}")`, correta:item.palavra};
+  });
+  iniciarDigiteGenerico('anagrama_pt', itens);
+}
+function iniciarIntrusoPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const categorias = [...new Set(pool.map(p=>p.categoria))];
+  const rounds = [];
+  categorias.forEach(cat=>{
+    const doGrupo = embaralhar(pool.filter(p=>p.categoria===cat)).slice(0,3);
+    const outros = pool.filter(p=>p.categoria!==cat);
+    if(doGrupo.length===3 && outros.length>0) rounds.push({grupo:doGrupo, intruso: embaralhar(outros)[0]});
+  });
+  const disponiveis = poolDisponivel('intruso_pt', nivel, rounds, r=>r.intruso.palavra);
+  const itens = embaralhar(disponiveis).map(r=>({id:r.intruso.palavra, pergunta:'Qual palavra não pertence ao grupo?', correta:r.intruso.palavra, opcoes: embaralhar([r.intruso.palavra, ...r.grupo.map(g=>g.palavra)])}));
+  iniciarQuizGenerico('intruso_pt', itens);
+}
+function iniciarOrtografiaPt(nivel){ nivelAtual=nivel; const pool=ortografiaPt[nivel]; const d=poolDisponivel('ortografia_pt',nivel,pool,x=>x.correta); iniciarQuizGenerico('ortografia_pt', embaralhar(d).map(e=>({id:e.correta, pergunta:'Qual é a forma correta?', correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarAcentuacaoPt(nivel){ nivelAtual=nivel; const pool=acentuacaoPt[nivel]; const d=poolDisponivel('acentuacao_pt',nivel,pool,x=>x.correta); iniciarQuizGenerico('acentuacao_pt', embaralhar(d).map(e=>({id:e.correta, pergunta:'Qual palavra está corretamente acentuada?', correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarPluralPt(nivel){ nivelAtual=nivel; const pool=pluralPt[nivel]; const d=poolDisponivel('plural_pt',nivel,pool,x=>x.singular); iniciarQuizGenerico('plural_pt', embaralhar(d).map(e=>({id:e.singular, pergunta:`Qual é o plural de "<u>${e.singular}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarVerboPassadoPt(nivel){ nivelAtual=nivel; const pool=verbosPt[nivel]; const d=poolDisponivel('verbo_passado_pt',nivel,pool,x=>x.presente); iniciarQuizGenerico('verbo_passado_pt', embaralhar(d).map(e=>({id:e.presente, pergunta:`Qual é a forma correta no passado de "<u>${e.presente}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarOucaEscolhaPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('ouca_escolha_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:'Ouça a palavra e escolha o sinônimo correto:', correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)]), falar:item.palavra, falarIdioma:'pt-BR'}));
+  iniciarQuizGenerico('ouca_escolha_pt', itens);
+}
+function iniciarDitadoPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('ditado_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:'Ouça e escreva a palavra corretamente:', correta:item.palavra, falar:item.palavra, falarIdioma:'pt-BR'}));
+  iniciarDigiteGenerico('ditado_pt', itens);
+}
+function iniciarContraRelogioPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel];
+  const disponiveis = poolDisponivel('contra_relogio_pt', nivel, pool, x=>x.palavra);
+  const itens = embaralhar(disponiveis).slice(0,Math.min(8,disponiveis.length)).map(item=>({id:item.palavra, pergunta:`Qual é o sinônimo de "<u>${item.palavra}</u>"?`, correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)])}));
+  iniciarQuizComTempo('contra_relogio_pt', itens);
+}
+function iniciarClasseGramaticalPt(nivel){ nivelAtual=nivel; const pool=classeGramaticalPt[nivel]; const d=poolDisponivel('classe_gramatical_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('classe_gramatical_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é a classe gramatical de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarDesafioFinalPt(nivel){
+  nivelAtual = nivel; const pool = bancoPt[nivel]; const partes = [];
+  embaralhar(pool).slice(0,3).forEach(item=>partes.push({id:'df_'+item.palavra, pergunta:`Qual é o sinônimo de "<u>${item.palavra}</u>"?`, correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)])}));
+  embaralhar(frasesPt[nivel]).slice(0,2).forEach(f=>partes.push({id:'df_'+f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...embaralhar(poolPalavrasPt(nivel).filter(w=>w!==f.resposta)).slice(0,3)])}));
+  embaralhar(sinonimosPt[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra, pergunta:`Sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
+  embaralhar(antonimosPt[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra+'_a', pergunta:`Antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
+  const disponiveis = poolDisponivel('desafio_final_pt', nivel, partes, x=>x.id);
+  iniciarQuizGenerico('desafio_final_pt', embaralhar(disponiveis.length?disponiveis:partes));
+}
+
+/* =====================================================
+   LISTAS DE JOGOS
+===================================================== */
+const JOGOS_EN = [
   {id:'multipla_en_pt', icone:'🇬🇧', nome:'Tradução EN → PT', desc:'Escolha a tradução certa em português.', iniciar:iniciarMultiplaEnPt},
   {id:'multipla_pt_en', icone:'🇧🇷', nome:'Tradução PT → EN', desc:'Escolha a palavra certa em inglês.', iniciar:iniciarMultiplaPtEn},
   {id:'frase', icone:'✏️', nome:'Complete a Frase', desc:'Escolha a palavra que completa a frase.', iniciar:iniciarFraseGame},
@@ -1016,13 +916,29 @@ const JOGOS = [
   {id:'desafio_final', icone:'🏆', nome:'Desafio Final', desc:'Uma mistura de vários tipos de pergunta.', iniciar:iniciarDesafioFinal}
 ];
 
-document.getElementById('gridModos').innerHTML = JOGOS.map(j=>`
-  <article class="modo-card" onclick="mostrarNiveis('${j.id}')">
-    <div class="icon">${j.icone}</div>
-    <h3>${j.nome}</h3>
-    <p>${j.desc}</p>
-  </article>
-`).join('');
+const JOGOS_PT = [
+  {id:'sinonimos_pt', icone:'🟰', nome:'Sinônimos', desc:'Escolha a palavra com o mesmo sentido.', iniciar:iniciarSinonimosPt},
+  {id:'antonimos_pt', icone:'↔️', nome:'Antônimos', desc:'Escolha a palavra com sentido oposto.', iniciar:iniciarAntonimosPt},
+  {id:'frase_pt', icone:'✏️', nome:'Complete a Frase', desc:'Escolha a palavra que completa a frase.', iniciar:iniciarFraseGamePt},
+  {id:'verdadeiro_falso_pt', icone:'⚖️', nome:'Verdadeiro ou Falso', desc:'O sinônimo mostrado está certo?', iniciar:iniciarVerdadeiroFalsoPt},
+  {id:'memoria_pt', icone:'🧠', nome:'Jogo da Memória', desc:'Encontre os pares de palavra e sinônimo.', iniciar:iniciarMemoriaPt},
+  {id:'forca_pt', icone:'🪢', nome:'Forca', desc:'Descubra a palavra letra por letra.', iniciar:iniciarForcaPt},
+  {id:'digite_sinonimo_pt', icone:'⌨️', nome:'Digite o Sinônimo', desc:'Digite um sinônimo da palavra mostrada.', iniciar:iniciarDigiteSinonimoPt},
+  {id:'digite_palavra_pt', icone:'💬', nome:'Digite a Palavra', desc:'Descubra e digite a palavra certa.', iniciar:iniciarDigitePalavraPt},
+  {id:'anagrama_pt', icone:'🔀', nome:'Ordene as Letras', desc:'Desembaralhe as letras e descubra a palavra.', iniciar:iniciarAnagramaPt},
+  {id:'ordene_frase_pt', icone:'🧩', nome:'Ordene a Frase', desc:'Organize as palavras na ordem certa.', iniciar:iniciarOrdeneFrasePt},
+  {id:'intruso_pt', icone:'🔍', nome:'Intruso', desc:'Descubra a palavra que não pertence ao grupo.', iniciar:iniciarIntrusoPt},
+  {id:'ortografia_pt', icone:'🔤', nome:'Ortografia Certa', desc:'Escolha a forma corretamente escrita.', iniciar:iniciarOrtografiaPt},
+  {id:'acentuacao_pt', icone:'✔️', nome:'Acentuação Correta', desc:'Escolha a palavra corretamente acentuada.', iniciar:iniciarAcentuacaoPt},
+  {id:'plural_pt', icone:'➕', nome:'Plural Correto', desc:'Escolha o plural certo em português.', iniciar:iniciarPluralPt},
+  {id:'verbo_passado_pt', icone:'⏳', nome:'Verbo no Passado', desc:'Escolha a forma certa do verbo no passado.', iniciar:iniciarVerboPassadoPt},
+  {id:'ligar_pares_pt', icone:'🔗', nome:'Ligar os Pares', desc:'Clique para ligar cada palavra ao sinônimo.', iniciar:iniciarLigarParesPt},
+  {id:'ouca_escolha_pt', icone:'🔊', nome:'Ouça e Escolha', desc:'Ouça a palavra e escolha o sinônimo certo.', iniciar:iniciarOucaEscolhaPt},
+  {id:'ditado_pt', icone:'🎧', nome:'Ditado', desc:'Ouça e escreva a palavra corretamente.', iniciar:iniciarDitadoPt},
+  {id:'contra_relogio_pt', icone:'⏱️', nome:'Contra o Relógio', desc:'Responda rápido antes que o tempo acabe.', iniciar:iniciarContraRelogioPt},
+  {id:'classe_gramatical_pt', icone:'🔡', nome:'Classe Gramatical', desc:'Identifique a classe gramatical da palavra.', iniciar:iniciarClasseGramaticalPt},
+  {id:'desafio_final_pt', icone:'🏆', nome:'Desafio Final', desc:'Uma mistura de vários tipos de pergunta.', iniciar:iniciarDesafioFinalPt}
+];
 </script>
 </body>
 </html>
