@@ -23,7 +23,6 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .idioma-card h2{color:var(--azul);margin-bottom:8px}
 .idioma-card p{color:var(--cinza);font-size:14px}
 
-/* ---- tela de seleção de jogo ---- */
 #selecao{display:none}
 #selecao h1{color:var(--azul);font-size:clamp(26px,4vw,38px);margin-bottom:8px}
 #selecao p{color:var(--cinza);margin-bottom:20px}
@@ -34,7 +33,6 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .modo-card h3{color:var(--azul);margin-bottom:6px;font-size:14.5px}
 .modo-card p{color:var(--cinza);font-size:12px;line-height:1.4}
 
-/* ---- tela de seleção de nível ---- */
 #niveis{display:none}
 #niveis h1{color:var(--azul);font-size:clamp(24px,4vw,34px);margin-bottom:8px}
 #niveis p{color:var(--cinza);margin-bottom:26px}
@@ -50,7 +48,6 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .nivel-card p{color:var(--cinza);font-size:12.5px}
 .voltar-link{background:none;border:none;color:var(--azul);font-weight:700;cursor:pointer;font-size:14px;margin-bottom:20px}
 
-/* ---- tela de jogo ---- */
 #jogo{display:none}
 .jogo-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px}
 .jogo-header button{background:none;border:none;color:var(--azul);font-weight:700;cursor:pointer;font-size:14px}
@@ -63,7 +60,7 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .pergunta{font-size:20px;font-weight:800;color:var(--azul);margin-bottom:26px}
 .opcoes{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:550px){.opcoes{grid-template-columns:1fr}}
-.opcao{padding:16px;border-radius:12px;border:2px solid var(--borda,rgba(7,26,54,.12));background:var(--creme);font-size:15px;font-weight:700;color:var(--azul);cursor:pointer;transition:.15s}
+.opcao{padding:16px;border-radius:12px;border:2px solid rgba(7,26,54,.12);background:var(--creme);font-size:15px;font-weight:700;color:var(--azul);cursor:pointer;transition:.15s}
 .opcao:hover{border-color:var(--dourado)}
 .opcao.certa{background:var(--agua);border-color:var(--agua);color:var(--azul)}
 .opcao.errada{background:var(--erro);border-color:var(--erro);color:white}
@@ -348,7 +345,6 @@ function mostrarGanhoXP(qtd) {
   styleXP.textContent = "@keyframes fadeInOut{0%{opacity:0;transform:translateY(-10px)}15%{opacity:1;transform:translateY(0)}80%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}";
   document.head.appendChild(styleXP);
 })();
-
 let nivelAtual = null;
 let jogoSelecionado = null;
 let idiomaAtual = null;
@@ -370,14 +366,34 @@ function atualizarPlacar(){
     tag.className = 'tag-nivel ' + nivelAtual;
   }
 }
+function opcoesDistratoras(pool, campo, excluir, qtd){
+  return embaralhar(pool.filter(p=>p[campo]!==excluir)).slice(0,qtd).map(p=>p[campo]);
+}
+
+function chaveUsados(jogo, nivel){ return 'eva_usados_' + jogo + '_' + nivel; }
+function pegarUsados(jogo, nivel){
+  try{ return JSON.parse(localStorage.getItem(chaveUsados(jogo, nivel))) || []; }catch(e){ return []; }
+}
+function marcarUsado(jogo, nivel, id){
+  const usados = pegarUsados(jogo, nivel);
+  if(!usados.includes(id)){ usados.push(id); try{ localStorage.setItem(chaveUsados(jogo, nivel), JSON.stringify(usados)); }catch(e){} }
+}
+function poolDisponivel(jogo, nivel, poolCompleto, idFn){
+  const usados = pegarUsados(jogo, nivel);
+  let disponiveis = poolCompleto.filter(item => !usados.includes(idFn(item)));
+  if(disponiveis.length === 0){
+    try{ localStorage.removeItem(chaveUsados(jogo, nivel)); }catch(e){}
+    disponiveis = poolCompleto;
+  }
+  return disponiveis;
+}
 
 function selecionarIdioma(idioma){
   idiomaAtual = idioma;
-  JOGOS_ATUAL = idioma === 'en' ? JOGOS_EN : JOGOS_PT;
-  document.getElementById('tituloSelecao').textContent = idioma === 'en' ? 'Jogos de Inglês' : 'Jogos de Português';
-  const grid = document.getElementById('gridModos');
-  grid.innerHTML = JOGOS_ATUAL.map(j => `
-    <article class="modo-card" onclick="escolherJogo('${j.id}')">
+  JOGOS_ATUAL = idioma==='en' ? JOGOS_EN : JOGOS_PT;
+  document.getElementById('tituloSelecao').textContent = idioma==='en' ? 'Jogos de Inglês' : 'Jogos de Português';
+  document.getElementById('gridModos').innerHTML = JOGOS_ATUAL.map(j=>`
+    <article class="modo-card" onclick="mostrarNiveis('${j.id}')">
       <div class="icon">${j.icone}</div>
       <h3>${j.nome}</h3>
       <p>${j.desc}</p>
@@ -385,47 +401,19 @@ function selecionarIdioma(idioma){
   `).join('');
   mostrarTela('selecao');
 }
-
-function escolherJogo(id){
-  jogoSelecionado = JOGOS_ATUAL.find(j => j.id === id);
-  document.getElementById('tituloNivel').textContent = jogoSelecionado.nome;
+function mostrarNiveis(id){
+  jogoSelecionado = id;
+  const j = JOGOS_ATUAL.find(x=>x.id===id);
+  document.getElementById('tituloNivel').textContent = j ? j.nome : 'Escolha o nível';
   mostrarTela('niveis');
 }
-
 function iniciarComNivel(nivel){
-  if(!jogoSelecionado) return;
-  jogoSelecionado.iniciar(nivel);
+  const j = JOGOS_ATUAL.find(x=>x.id===jogoSelecionado);
+  if(j && j.iniciar) j.iniciar(nivel);
 }
 
 /* =====================================================
-   SISTEMA ANTI-REPETIÇÃO (localStorage por jogo+nível)
-===================================================== */
-function chaveUsados(jogo, nivel){ return 'eva_usados_' + jogo + '_' + nivel; }
-function pegarUsados(jogo, nivel){
-  try{ return JSON.parse(localStorage.getItem(chaveUsados(jogo, nivel))) || []; }catch(e){ return []; }
-}
-function marcarUsado(jogo, nivel, id){
-  const usados = pegarUsados(jogo, nivel);
-  if(!usados.includes(id)){
-    usados.push(id);
-    localStorage.setItem(chaveUsados(jogo, nivel), JSON.stringify(usados));
-  }
-}
-function poolDisponivel(jogo, nivel, poolCompleto, idFn){
-  const usados = pegarUsados(jogo, nivel);
-  let disponiveis = poolCompleto.filter(item => !usados.includes(idFn(item)));
-  if(disponiveis.length === 0){
-    localStorage.removeItem(chaveUsados(jogo, nivel));
-    disponiveis = [...poolCompleto];
-  }
-  return disponiveis;
-}
-function opcoesDistratoras(pool, campo, correta, qtd){
-  return embaralhar(pool.filter(p => p[campo] !== correta).map(p => p[campo])).slice(0, qtd);
-}
-
-/* =====================================================
-   MOTOR GENÉRICO 1: QUIZ MÚLTIPLA ESCOLHA
+   MOTOR QUIZ GENÉRICO
 ===================================================== */
 let quizItens = [], quizIndice = 0, quizJogoId = '';
 function iniciarQuizGenerico(jogoId, itens){
@@ -438,9 +426,9 @@ function renderQuizGenerico(){
   marcarUsado(quizJogoId, nivelAtual, q.id);
   const area = document.getElementById('areaJogo');
   area.innerHTML = `
-    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir palavra</button>` : ''}
+    ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir</button>` : ''}
     <div class="pergunta">${q.pergunta}</div>
-    <div class="opcoes">${q.opcoes.map(o=>`<button class="opcao" onclick="responderQuizGenerico(this,'${o.replace(/'/g,"\\'")}','${q.correta.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+    <div class="opcoes">${q.opcoes.map(o=>`<button class="opcao" onclick="responderQuizGenerico(this,'${String(o).replace(/'/g,"\\'")}','${String(q.correta).replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
   `;
   if(q.falar) falar(q.falar, q.falarIdioma||'en-US');
 }
@@ -465,7 +453,7 @@ function renderQuizComTempo(){
   area.innerHTML = `
     <div style="font-weight:800;color:var(--erro);margin-bottom:10px">Tempo: <span id="timer">${tempo}</span>s</div>
     <div class="pergunta">${q.pergunta}</div>
-    <div class="opcoes">${q.opcoes.map(o=>`<button class="opcao" onclick="responderQuizComTempo(this,'${o.replace(/'/g,"\\'")}','${q.correta.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
+    <div class="opcoes">${q.opcoes.map(o=>`<button class="opcao" onclick="responderQuizComTempo(this,'${String(o).replace(/'/g,"\\'")}','${String(q.correta).replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div>
   `;
   clearInterval(temporizadorId);
   temporizadorId = setInterval(()=>{
@@ -488,7 +476,7 @@ function responderQuizComTempo(botao, escolhida, correta){
 }
 
 /* =====================================================
-   MOTOR GENÉRICO 2: RESPOSTA DIGITADA
+   MOTOR DIGITE
 ===================================================== */
 let digiteItens = [], digiteIndice = 0, digiteJogoId = '';
 function iniciarDigiteGenerico(jogoId, itens){
@@ -503,9 +491,8 @@ function renderDigiteGenerico(){
   area.innerHTML = `
     ${q.falar ? `<button class="proxima" style="margin-bottom:16px" onclick="falar('${q.falar}','${q.falarIdioma||'en-US'}')">🔊 Ouvir</button>` : ''}
     <div class="pergunta">${q.pergunta}</div>
-    <input class="input-resposta" id="respostaTexto" type="text" placeholder="Digite aqui..." autocomplete="off">
-    <br>
-    <button class="proxima" onclick="responderDigiteGenerico()">Confirmar</button>
+    <input class="input-resposta" id="respostaTexto" type="text" placeholder="Digite aqui..." autocomplete="off" onkeydown="if(event.key==='Enter')responderDigiteGenerico()">
+    <br><button class="proxima" onclick="responderDigiteGenerico()">Confirmar</button>
   `;
   document.getElementById('respostaTexto').focus();
   if(q.falar) falar(q.falar, q.falarIdioma||'en-US');
@@ -533,20 +520,18 @@ function falar(texto, lang){
 }
 
 /* =====================================================
-   MOTOR GENÉRICO 3: MEMÓRIA
+   MEMÓRIA + FORCA + LIGAR + ORDENE (resumidos)
 ===================================================== */
-let memCartas = [], memViradas = [], memBloqueado = false, memPares = 0, memRotulo = '';
-function iniciarMemoriaBase(jogoId, nivel, pool, rotulo){
-  nivelAtual = nivel; pontos = 0; memPares = 0; memViradas = []; memBloqueado = false; memRotulo = rotulo;
+let memCartas = [], memViradas = [], memBloqueado = false, memPares = 0;
+function iniciarMemoriaBase(jogoId, nivel, pool){
+  nivelAtual = nivel; pontos = 0; memPares = 0; memViradas = []; memBloqueado = false;
   const disponiveis = poolDisponivel(jogoId, nivel, pool, x => x.en || x.palavra);
   const selecionados = embaralhar(disponiveis).slice(0, paresGrupo[nivel] || 4);
   memCartas = [];
   selecionados.forEach(item => {
     const chave = item.en || item.palavra;
-    const frente = item.en || item.palavra;
-    const verso = item.pt || item.sinonimo;
-    memCartas.push({chave, texto: frente, tipo: 'en'});
-    memCartas.push({chave, texto: verso, tipo: 'pt'});
+    memCartas.push({chave, texto: item.en || item.palavra, tipo: 'a'});
+    memCartas.push({chave, texto: item.pt || item.sinonimo, tipo: 'b'});
   });
   memCartas = embaralhar(memCartas);
   atualizarPlacar(); mostrarTela('jogo'); renderMemoria();
@@ -573,11 +558,12 @@ function virarCarta(i){
     memBloqueado = true;
     const [a, b] = memViradas;
     if(memCartas[a].chave === memCartas[b].chave && memCartas[a].tipo !== memCartas[b].tipo){
-      pontos++; adicionarXP(10); mostrarGanhoXP(10); memPares++; atualizarPlacar(); memViradas=[]; memBloqueado=false;
+      pontos++; adicionarXP(10); mostrarGanhoXP(10); memPares++; atualizarPlacar();
       document.querySelector(`.mem-carta[data-idx="${a}"]`).classList.add('acertou');
       document.querySelector(`.mem-carta[data-idx="${b}"]`).classList.add('acertou');
       memCartas[a].acertou = true; memCartas[b].acertou = true;
-      if(memPares === memCartas.length/2){ setTimeout(fimDeJogo, 500); }
+      memViradas = []; memBloqueado = false;
+      if(memPares === memCartas.length/2) setTimeout(fimDeJogo, 500);
     } else {
       setTimeout(()=>{
         document.querySelector(`.mem-carta[data-idx="${a}"]`).classList.remove('virada');
@@ -589,20 +575,16 @@ function virarCarta(i){
     }
   }
 }
-function iniciarMemoria(nivel){ iniciarMemoriaBase('memoria', nivel, banco[nivel], 'en-pt'); }
-function iniciarMemoriaPt(nivel){ iniciarMemoriaBase('memoria_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo})), 'pt'); }
+function iniciarMemoria(nivel){ iniciarMemoriaBase('memoria', nivel, banco[nivel]); }
+function iniciarMemoriaPt(nivel){ iniciarMemoriaBase('memoria_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo}))); }
 
-/* =====================================================
-   MOTOR GENÉRICO 4: FORCA
-===================================================== */
 const FORCA_MAX_ERROS = 6;
 let forcaPalavra = null, forcaReveladas = [], forcaErros = 0;
 function iniciarForcaBase(jogoId, nivel, pool){
   nivelAtual = nivel; pontos = 0;
   const disponiveis = poolDisponivel(jogoId, nivel, pool, x => x.en || x.palavra);
   forcaPalavra = embaralhar(disponiveis)[0];
-  forcaReveladas = [];
-  forcaErros = 0;
+  forcaReveladas = []; forcaErros = 0;
   marcarUsado(jogoId, nivel, forcaPalavra.en || forcaPalavra.palavra);
   atualizarPlacar(); mostrarTela('jogo'); renderForca();
 }
@@ -634,138 +616,45 @@ function tentarLetra(letra, btn){
     btn.classList.add('acertou');
     forcaReveladas.push(letra);
     renderForca();
-    const todasReveladas = palavra.split('').every(l => forcaReveladas.includes(l));
-    if(todasReveladas){ pontos++; adicionarXP(10); mostrarGanhoXP(10); atualizarPlacar(); setTimeout(fimDeJogo, 700); return; }
+    if(palavra.split('').every(l => forcaReveladas.includes(l))){
+      pontos++; adicionarXP(10); mostrarGanhoXP(10); atualizarPlacar();
+      setTimeout(fimDeJogo, 700);
+    }
   } else {
     btn.classList.add('errou');
     forcaErros++;
     renderForca();
-    if(forcaErros >= FORCA_MAX_ERROS){ setTimeout(()=>fimDeJogo(true), 700); return; }
+    if(forcaErros >= FORCA_MAX_ERROS) setTimeout(()=>fimDeJogo(true), 700);
   }
 }
 function iniciarForca(nivel){ iniciarForcaBase('forca', nivel, banco[nivel]); }
 function iniciarForcaPt(nivel){ iniciarForcaBase('forca_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo}))); }
-/* =====================================================
-   MOTOR GENÉRICO 5: LIGAR OS PARES
-===================================================== */
-let ligarPool = [], ligarSelecionadoEn = null, ligarSelecionadoPt = null, ligarAcertados = [], ligarRotulo = '';
-function iniciarLigarParesBase(jogoId, nivel, pool, rotulo){
-  nivelAtual = nivel; pontos = 0; ligarRotulo = rotulo;
-  const qtdPares = Math.min(paresGrupo[nivel], pool.length);
-  const disponiveis = poolDisponivel(jogoId, nivel, pool, x=>x.en);
-  const base = disponiveis.length >= qtdPares ? disponiveis : pool;
-  ligarPool = embaralhar(base).slice(0, qtdPares);
-  ligarPool.forEach(p=>marcarUsado(jogoId, nivel, p.en));
-  ligarAcertados = []; ligarSelecionadoEn = null; ligarSelecionadoPt = null;
-  atualizarPlacar(); mostrarTela('jogo'); renderLigarPares();
-}
-function renderLigarPares(){
-  const area = document.getElementById('areaJogo');
-  const colEn = embaralhar(ligarPool);
-  const colPt = embaralhar(ligarPool);
-  area.innerHTML = `
-    <div class="pergunta">${ligarRotulo}</div>
-    <div style="display:flex;gap:20px;justify-content:center">
-      <div style="display:flex;flex-direction:column;gap:10px;flex:1">${colEn.map(p=>`<button class="opcao par-item" onclick="selecionarPar(this,'${p.en}','en')" ${ligarAcertados.includes(p.en)?'disabled':''}>${p.en}</button>`).join('')}</div>
-      <div style="display:flex;flex-direction:column;gap:10px;flex:1">${colPt.map(p=>`<button class="opcao par-item" onclick="selecionarPar(this,'${p.en}','pt')" ${ligarAcertados.includes(p.en)?'disabled':''}>${p.pt}</button>`).join('')}</div>
-    </div>
-  `;
-}
-function selecionarPar(botao, chave, coluna){
-  if(botao.disabled) return;
-  if(coluna==='en'){ if(ligarSelecionadoEn) ligarSelecionadoEn.el.classList.remove('certa'); ligarSelecionadoEn = {chave, el:botao}; }
-  else { if(ligarSelecionadoPt) ligarSelecionadoPt.el.classList.remove('certa'); ligarSelecionadoPt = {chave, el:botao}; }
-  botao.classList.add('certa');
-  if(ligarSelecionadoEn && ligarSelecionadoPt){
-    if(ligarSelecionadoEn.chave === ligarSelecionadoPt.chave){
-      ligarAcertados.push(ligarSelecionadoEn.chave); pontos++; adicionarXP(10); mostrarGanhoXP(10); atualizarPlacar();
-      ligarSelecionadoEn=null; ligarSelecionadoPt=null;
-      if(ligarAcertados.length === ligarPool.length){ setTimeout(fimDeJogo, 500); return; }
-      renderLigarPares();
-    } else {
-      const a = ligarSelecionadoEn.el, b = ligarSelecionadoPt.el;
-      a.classList.remove('certa'); a.classList.add('errada'); b.classList.remove('certa'); b.classList.add('errada');
-      setTimeout(()=>{ ligarSelecionadoEn=null; ligarSelecionadoPt=null; renderLigarPares(); }, 700);
-    }
-  }
-}
-function iniciarLigarPares(nivel){ iniciarLigarParesBase('ligar_pares', nivel, banco[nivel], 'Clique numa palavra em inglês e depois na tradução correta'); }
-function iniciarLigarParesPt(nivel){ iniciarLigarParesBase('ligar_pares_pt', nivel, bancoPt[nivel].map(p=>({en:p.palavra, pt:p.sinonimo})), 'Clique numa palavra e depois no sinônimo correto'); }
 
-/* =====================================================
-   MOTOR GENÉRICO 6: ORDENE A FRASE
-===================================================== */
-let ordeneItens = [], ordeneIndice = 0, ordenePalavras = [], ordeneCorretas = [], ordeneJogoId = '';
-let ordeneIndicesDisponiveis = [], ordeneIndicesSelecionados = [];
-function iniciarOrdeneFraseBase(jogoId, nivel, poolFrases){
-  nivelAtual = nivel; pontos = 0; ordeneIndice = 0; ordeneJogoId = jogoId;
-  const disponiveis = poolDisponivel(jogoId, nivel, poolFrases, x=>x.frase);
-  ordeneItens = embaralhar(disponiveis);
-  atualizarPlacar(); mostrarTela('jogo'); renderOrdeneFrase();
-}
-function renderOrdeneFrase(){
-  if(ordeneIndice >= ordeneItens.length) return fimDeJogo();
-  const f = ordeneItens[ordeneIndice];
-  marcarUsado(ordeneJogoId, nivelAtual, f.frase);
-  const fraseCompleta = f.frase.replace('{en}', f.resposta).replace(/\.$/,'');
-  ordeneCorretas = fraseCompleta.split(' ');
-  ordenePalavras = embaralhar(ordeneCorretas);
-  ordeneIndicesDisponiveis = ordenePalavras.map((_,i)=>i);
-  ordeneIndicesSelecionados = [];
-  renderOrdeneTela();
-}
-function renderOrdeneTela(){
-  const area = document.getElementById('areaJogo');
-  area.innerHTML = `
-    <div class="pergunta">Organize as palavras para formar a frase correta:</div>
-    <div class="ordene-strip">${ordeneIndicesSelecionados.map(i=>`<button class="opcao" onclick="removerPalavraOrdene(${i})">${ordenePalavras[i]}</button>`).join('') || '<span style="color:var(--cinza)">clique as palavras abaixo, na ordem certa</span>'}</div>
-    <div class="opcoes" style="grid-template-columns:repeat(auto-fit,minmax(90px,1fr))">${ordeneIndicesDisponiveis.map(i=>`<button class="opcao" onclick="adicionarPalavraOrdene(${i})">${ordenePalavras[i]}</button>`).join('')}</div>
-    ${ordeneIndicesDisponiveis.length===0 ? '<button class="proxima" onclick="conferirOrdenar()">Conferir</button>' : ''}
-  `;
-}
-function adicionarPalavraOrdene(i){ ordeneIndicesSelecionados.push(i); ordeneIndicesDisponiveis = ordeneIndicesDisponiveis.filter(x=>x!==i); renderOrdeneTela(); }
-function removerPalavraOrdene(i){ ordeneIndicesSelecionados = ordeneIndicesSelecionados.filter(x=>x!==i); ordeneIndicesDisponiveis.push(i); renderOrdeneTela(); }
-function conferirOrdenar(){
-  const montada = ordeneIndicesSelecionados.map(i=>ordenePalavras[i]).join(' ');
-  const correta = ordeneCorretas.join(' ');
-  const acertou = montada.toLowerCase() === correta.toLowerCase();
-  if(acertou){ pontos++; adicionarXP(10); mostrarGanhoXP(10); }
-  atualizarPlacar();
-  const area = document.getElementById('areaJogo');
-  area.insertAdjacentHTML('beforeend', `<p style="margin-top:16px;font-weight:800;color:${acertou?'var(--agua)':'var(--erro)'}">${acertou?'Certo! ✅':'Frase correta: '+correta}</p>`);
-  setTimeout(()=>{ ordeneIndice++; renderOrdeneFrase(); }, 1400);
-}
-function iniciarOrdeneFrase(nivel){ iniciarOrdeneFraseBase('ordene_frase', nivel, frasesBanco[nivel]); }
-function iniciarOrdeneFrasePt(nivel){ iniciarOrdeneFraseBase('ordene_frase_pt', nivel, frasesPt[nivel]); }
-
-/* =====================================================
-   FIM DE JOGO
-===================================================== */
+/* FIM DE JOGO */
 function fimDeJogo(perdeuForca){
   const area = document.getElementById('areaJogo');
   if(perdeuForca){
-    area.innerHTML = `<div class="fim"><h2>Não foi dessa vez 😅</h2><p>A palavra era: <strong>${forcaPalavra.en}</strong> (${forcaPalavra.pt})</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
+    area.innerHTML = `<div class="fim"><h2>Não foi dessa vez 😅</h2><p>A palavra era: <strong>${forcaPalavra.en || forcaPalavra.palavra}</strong></p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
     return;
   }
-  // Bônus por completar o jogo (estilo Duolingo)
   adicionarXP(25);
   mostrarGanhoXP(25);
-  area.innerHTML = `<div class="fim"><h2>Muito bem! 🎉</h2><p>Você fez ${pontos} ponto(s) no nível ${rotuloNivel[nivelAtual]}.</p><p style="margin-top:10px;color:var(--agua);font-weight:700;">+25 XP de bônus por completar o jogo!</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
+  area.innerHTML = `<div class="fim"><h2>Muito bem! 🎉</h2><p>Você fez ${pontos} ponto(s) no nível ${rotuloNivel[nivelAtual]}.</p><p style="margin-top:10px;color:var(--agua);font-weight:700;">+25 XP de bônus!</p><button class="proxima" onclick="voltarSelecao()">Jogar outro jogo</button></div>`;
 }
 
 /* =====================================================
-   JOGOS — INGLÊS (21)
+   JOGOS INGLÊS + PORTUGUÊS (iniciações)
 ===================================================== */
 function iniciarMultiplaEnPt(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('multipla_en_pt', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
   iniciarQuizGenerico('multipla_en_pt', itens);
 }
 function iniciarMultiplaPtEn(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('multipla_pt_en', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en, opcoes: embaralhar([item.en, ...opcoesDistratoras(pool,'en',item.en,3)])}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en, opcoes: embaralhar([item.en, ...opcoesDistratoras(pool,'en',item.en,3)])}));
   iniciarQuizGenerico('multipla_pt_en', itens);
 }
 function iniciarFraseGame(nivel){
@@ -777,7 +666,7 @@ function iniciarFraseGame(nivel){
 function iniciarVerdadeiroFalso(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('verdadeiro_falso', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>{
     const ehVerdadeiro = Math.random() < 0.5;
     const afirmacaoPt = ehVerdadeiro ? item.pt : embaralhar(pool.filter(p=>p.pt!==item.pt))[0].pt;
     return {id:item.en, pergunta:`"${item.en}" significa "${afirmacaoPt}"?`, correta: ehVerdadeiro?'Verdadeiro':'Falso', opcoes:['Verdadeiro','Falso']};
@@ -787,36 +676,23 @@ function iniciarVerdadeiroFalso(nivel){
 function iniciarDigitePt(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('digite_pt', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt}));
   iniciarDigiteGenerico('digite_pt', itens);
 }
 function iniciarDigiteEn(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('digite_en', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.pt}</u>" em inglês?`, correta:item.en}));
   iniciarDigiteGenerico('digite_en', itens);
 }
 function iniciarAnagrama(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('anagrama', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>{
     let embaralhada; do{ embaralhada = embaralhar(item.en.split('')).join(''); } while(embaralhada===item.en && item.en.length>1);
     return {id:item.en, pergunta:`Desembaralhe: <u>${embaralhada.toUpperCase()}</u> (dica: ${item.pt})`, correta:item.en};
   });
   iniciarDigiteGenerico('anagrama', itens);
-}
-function iniciarIntruso(nivel){
-  nivelAtual = nivel; const pool = banco[nivel];
-  const categorias = [...new Set(pool.map(p=>p.categoria))];
-  const rounds = [];
-  categorias.forEach(cat=>{
-    const doGrupo = embaralhar(pool.filter(p=>p.categoria===cat)).slice(0,3);
-    const outros = pool.filter(p=>p.categoria!==cat);
-    if(doGrupo.length===3 && outros.length>0) rounds.push({grupo:doGrupo, intruso: embaralhar(outros)[0]});
-  });
-  const disponiveis = poolDisponivel('intruso', nivel, rounds, r=>r.intruso.en);
-  const itens = embaralhar(disponiveis).map(r=>({id:r.intruso.en, pergunta:'Qual palavra não pertence ao grupo?', correta:r.intruso.en, opcoes: embaralhar([r.intruso.en, ...r.grupo.map(g=>g.en)])}));
-  iniciarQuizGenerico('intruso', itens);
 }
 function iniciarSinonimos(nivel){ nivelAtual=nivel; const pool=sinonimosBanco[nivel]; const d=poolDisponivel('sinonimos',nivel,pool,x=>x.palavra); iniciarQuizGenerico('sinonimos', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é um sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarAntonimos(nivel){ nivelAtual=nivel; const pool=antonimosBanco[nivel]; const d=poolDisponivel('antonimos',nivel,pool,x=>x.palavra); iniciarQuizGenerico('antonimos', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é o antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
@@ -825,30 +701,30 @@ function iniciarPassado(nivel){ nivelAtual=nivel; const pool=passadoBanco[nivel]
 function iniciarOucaEscolha(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('ouca_escolha', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:'Ouça a palavra e escolha a tradução correta:', correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)]), falar:item.en, falarIdioma:'en-US'}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.en, pergunta:'Ouça a palavra e escolha a tradução correta:', correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)]), falar:item.en, falarIdioma:'en-US'}));
   iniciarQuizGenerico('ouca_escolha', itens);
 }
 function iniciarDitado(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('ditado', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.en, pergunta:'Ouça e digite a palavra em inglês:', correta:item.en, falar:item.en, falarIdioma:'en-US'}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.en, pergunta:'Ouça e digite a palavra em inglês:', correta:item.en, falar:item.en, falarIdioma:'en-US'}));
   iniciarDigiteGenerico('ditado', itens);
 }
 function iniciarContraRelogio(nivel){
   nivelAtual = nivel; const pool = banco[nivel];
   const disponiveis = poolDisponivel('contra_relogio', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(8,disponiveis.length)).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
+  const itens = embaralhar(disponiveis).slice(0,8).map(item=>({id:item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
   iniciarQuizComTempo('contra_relogio', itens);
 }
 function iniciarCompleteLetra(nivel){
   nivelAtual = nivel; const pool = banco[nivel].filter(p=>p.en.length>=3);
   const disponiveis = poolDisponivel('complete_letra', nivel, pool, x=>x.en);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>{
     const idx = Math.floor(Math.random()*item.en.length);
     const letraCorreta = item.en[idx];
     const palavraLacuna = item.en.split('').map((l,i)=> i===idx ? '_' : l).join('');
-    const outrasLetras = 'abcdefghijklmnopqrstuvwxyz'.split('').filter(l=>l!==letraCorreta);
-    return {id:item.en, pergunta:`Complete a palavra: <u>${palavraLacuna}</u> (dica: ${item.pt})`, correta:letraCorreta, opcoes: embaralhar([letraCorreta, ...embaralhar(outrasLetras).slice(0,3)])};
+    const outras = 'abcdefghijklmnopqrstuvwxyz'.split('').filter(l=>l!==letraCorreta);
+    return {id:item.en, pergunta:`Complete: <u>${palavraLacuna}</u> (dica: ${item.pt})`, correta:letraCorreta, opcoes: embaralhar([letraCorreta, ...embaralhar(outras).slice(0,3)])};
   });
   iniciarQuizGenerico('complete_letra', itens);
 }
@@ -856,15 +732,10 @@ function iniciarDesafioFinal(nivel){
   nivelAtual = nivel; const pool = banco[nivel]; const partes = [];
   embaralhar(pool).slice(0,3).forEach(item=>partes.push({id:'df_'+item.en, pergunta:`Como se diz "<u>${item.en}</u>" em português?`, correta:item.pt, opcoes: embaralhar([item.pt, ...opcoesDistratoras(pool,'pt',item.pt,3)])}));
   embaralhar(frasesBanco[nivel]).slice(0,2).forEach(f=>partes.push({id:'df_'+f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...opcoesDistratoras(pool,'en',f.resposta,3)])}));
-  embaralhar(sinonimosBanco[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra, pergunta:`Sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
-  embaralhar(antonimosBanco[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra+'_a', pergunta:`Antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
-  const disponiveis = poolDisponivel('desafio_final', nivel, partes, x=>x.id);
-  iniciarQuizGenerico('desafio_final', embaralhar(disponiveis.length?disponiveis:partes));
+  iniciarQuizGenerico('desafio_final', embaralhar(partes));
 }
 
-/* =====================================================
-   JOGOS — PORTUGUÊS (21)
-===================================================== */
+/* PORTUGUÊS */
 function iniciarSinonimosPt(nivel){ nivelAtual=nivel; const pool=sinonimosPt[nivel]; const d=poolDisponivel('sinonimos_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('sinonimos_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é um sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarAntonimosPt(nivel){ nivelAtual=nivel; const pool=antonimosPt[nivel]; const d=poolDisponivel('antonimos_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('antonimos_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é o antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarFraseGamePt(nivel){
@@ -876,7 +747,7 @@ function iniciarFraseGamePt(nivel){
 function iniciarVerdadeiroFalsoPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('verdadeiro_falso_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>{
     const ehVerdadeiro = Math.random() < 0.5;
     const afirmacao = ehVerdadeiro ? item.sinonimo : embaralhar(pool.filter(p=>p.sinonimo!==item.sinonimo))[0].sinonimo;
     return {id:item.palavra, pergunta:`"${item.palavra}" é sinônimo de "${afirmacao}"?`, correta: ehVerdadeiro?'Verdadeiro':'Falso', opcoes:['Verdadeiro','Falso']};
@@ -886,119 +757,94 @@ function iniciarVerdadeiroFalsoPt(nivel){
 function iniciarDigiteSinonimoPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('digite_sinonimo_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:`Digite um sinônimo de "<u>${item.palavra}</u>"`, correta:item.sinonimo}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.palavra, pergunta:`Digite um sinônimo de "<u>${item.palavra}</u>"`, correta:item.sinonimo}));
   iniciarDigiteGenerico('digite_sinonimo_pt', itens);
 }
 function iniciarDigitePalavraPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('digite_palavra_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:`Qual palavra tem o sinônimo "<u>${item.sinonimo}</u>"? (digite)`, correta:item.palavra}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.palavra, pergunta:`Qual palavra tem o sinônimo "<u>${item.sinonimo}</u>"?`, correta:item.palavra}));
   iniciarDigiteGenerico('digite_palavra_pt', itens);
 }
 function iniciarAnagramaPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('anagrama_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>{
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>{
     let embaralhada; do{ embaralhada = embaralhar(item.palavra.split('')).join(''); } while(embaralhada===item.palavra && item.palavra.length>1);
-    return {id:item.palavra, pergunta:`Desembaralhe: <u>${embaralhada.toUpperCase()}</u> (dica: sinônimo de "${item.sinonimo}")`, correta:item.palavra};
+    return {id:item.palavra, pergunta:`Desembaralhe: <u>${embaralhada.toUpperCase()}</u>`, correta:item.palavra};
   });
   iniciarDigiteGenerico('anagrama_pt', itens);
-}
-function iniciarIntrusoPt(nivel){
-  nivelAtual = nivel; const pool = bancoPt[nivel];
-  const categorias = [...new Set(pool.map(p=>p.categoria))];
-  const rounds = [];
-  categorias.forEach(cat=>{
-    const doGrupo = embaralhar(pool.filter(p=>p.categoria===cat)).slice(0,3);
-    const outros = pool.filter(p=>p.categoria!==cat);
-    if(doGrupo.length===3 && outros.length>0) rounds.push({grupo:doGrupo, intruso: embaralhar(outros)[0]});
-  });
-  const disponiveis = poolDisponivel('intruso_pt', nivel, rounds, r=>r.intruso.palavra);
-  const itens = embaralhar(disponiveis).map(r=>({id:r.intruso.palavra, pergunta:'Qual palavra não pertence ao grupo?', correta:r.intruso.palavra, opcoes: embaralhar([r.intruso.palavra, ...r.grupo.map(g=>g.palavra)])}));
-  iniciarQuizGenerico('intruso_pt', itens);
 }
 function iniciarOrtografiaPt(nivel){ nivelAtual=nivel; const pool=ortografiaPt[nivel]; const d=poolDisponivel('ortografia_pt',nivel,pool,x=>x.correta); iniciarQuizGenerico('ortografia_pt', embaralhar(d).map(e=>({id:e.correta, pergunta:'Qual é a forma correta?', correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarAcentuacaoPt(nivel){ nivelAtual=nivel; const pool=acentuacaoPt[nivel]; const d=poolDisponivel('acentuacao_pt',nivel,pool,x=>x.correta); iniciarQuizGenerico('acentuacao_pt', embaralhar(d).map(e=>({id:e.correta, pergunta:'Qual palavra está corretamente acentuada?', correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarPluralPt(nivel){ nivelAtual=nivel; const pool=pluralPt[nivel]; const d=poolDisponivel('plural_pt',nivel,pool,x=>x.singular); iniciarQuizGenerico('plural_pt', embaralhar(d).map(e=>({id:e.singular, pergunta:`Qual é o plural de "<u>${e.singular}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
-function iniciarVerboPassadoPt(nivel){ nivelAtual=nivel; const pool=verbosPt[nivel]; const d=poolDisponivel('verbo_passado_pt',nivel,pool,x=>x.presente); iniciarQuizGenerico('verbo_passado_pt', embaralhar(d).map(e=>({id:e.presente, pergunta:`Qual é a forma correta no passado de "<u>${e.presente}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarVerboPassadoPt(nivel){ nivelAtual=nivel; const pool=verbosPt[nivel]; const d=poolDisponivel('verbo_passado_pt',nivel,pool,x=>x.presente); iniciarQuizGenerico('verbo_passado_pt', embaralhar(d).map(e=>({id:e.presente, pergunta:`Passado de "<u>${e.presente}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarOucaEscolhaPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('ouca_escolha_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:'Ouça a palavra e escolha o sinônimo correto:', correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)]), falar:item.palavra, falarIdioma:'pt-BR'}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.palavra, pergunta:'Ouça e escolha o sinônimo:', correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)]), falar:item.palavra, falarIdioma:'pt-BR'}));
   iniciarQuizGenerico('ouca_escolha_pt', itens);
 }
 function iniciarDitadoPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('ditado_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(6,disponiveis.length)).map(item=>({id:item.palavra, pergunta:'Ouça e escreva a palavra corretamente:', correta:item.palavra, falar:item.palavra, falarIdioma:'pt-BR'}));
+  const itens = embaralhar(disponiveis).slice(0,6).map(item=>({id:item.palavra, pergunta:'Ouça e escreva a palavra:', correta:item.palavra, falar:item.palavra, falarIdioma:'pt-BR'}));
   iniciarDigiteGenerico('ditado_pt', itens);
 }
 function iniciarContraRelogioPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel];
   const disponiveis = poolDisponivel('contra_relogio_pt', nivel, pool, x=>x.palavra);
-  const itens = embaralhar(disponiveis).slice(0,Math.min(8,disponiveis.length)).map(item=>({id:item.palavra, pergunta:`Qual é o sinônimo de "<u>${item.palavra}</u>"?`, correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)])}));
+  const itens = embaralhar(disponiveis).slice(0,8).map(item=>({id:item.palavra, pergunta:`Sinônimo de "<u>${item.palavra}</u>"?`, correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)])}));
   iniciarQuizComTempo('contra_relogio_pt', itens);
 }
-function iniciarClasseGramaticalPt(nivel){ nivelAtual=nivel; const pool=classeGramaticalPt[nivel]; const d=poolDisponivel('classe_gramatical_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('classe_gramatical_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Qual é a classe gramatical de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
+function iniciarClasseGramaticalPt(nivel){ nivelAtual=nivel; const pool=classeGramaticalPt[nivel]; const d=poolDisponivel('classe_gramatical_pt',nivel,pool,x=>x.palavra); iniciarQuizGenerico('classe_gramatical_pt', embaralhar(d).map(e=>({id:e.palavra, pergunta:`Classe gramatical de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}))); }
 function iniciarDesafioFinalPt(nivel){
   nivelAtual = nivel; const pool = bancoPt[nivel]; const partes = [];
-  embaralhar(pool).slice(0,3).forEach(item=>partes.push({id:'df_'+item.palavra, pergunta:`Qual é o sinônimo de "<u>${item.palavra}</u>"?`, correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)])}));
-  embaralhar(frasesPt[nivel]).slice(0,2).forEach(f=>partes.push({id:'df_'+f.frase, pergunta:f.frase.replace('{en}','_____'), correta:f.resposta, opcoes: embaralhar([f.resposta, ...embaralhar(poolPalavrasPt(nivel).filter(w=>w!==f.resposta)).slice(0,3)])}));
-  embaralhar(sinonimosPt[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra, pergunta:`Sinônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
-  embaralhar(antonimosPt[nivel]).slice(0,1).forEach(e=>partes.push({id:'df_'+e.palavra+'_a', pergunta:`Antônimo de "<u>${e.palavra}</u>"?`, correta:e.correta, opcoes:embaralhar(e.opcoes)}));
-  const disponiveis = poolDisponivel('desafio_final_pt', nivel, partes, x=>x.id);
-  iniciarQuizGenerico('desafio_final_pt', embaralhar(disponiveis.length?disponiveis:partes));
+  embaralhar(pool).slice(0,3).forEach(item=>partes.push({id:'df_'+item.palavra, pergunta:`Sinônimo de "<u>${item.palavra}</u>"?`, correta:item.sinonimo, opcoes: embaralhar([item.sinonimo, ...opcoesDistratoras(pool,'sinonimo',item.sinonimo,3)])}));
+  iniciarQuizGenerico('desafio_final_pt', embaralhar(partes));
 }
 
-/* =====================================================
-   LISTAS DE JOGOS
-===================================================== */
+/* LISTAS DE JOGOS */
 const JOGOS_EN = [
-  {id:'multipla_en_pt', icone:'🇬🇧', nome:'Tradução EN → PT', desc:'Escolha a tradução certa em português.', iniciar:iniciarMultiplaEnPt},
-  {id:'multipla_pt_en', icone:'🇧🇷', nome:'Tradução PT → EN', desc:'Escolha a palavra certa em inglês.', iniciar:iniciarMultiplaPtEn},
-  {id:'frase', icone:'✏️', nome:'Complete a Frase', desc:'Escolha a palavra que completa a frase.', iniciar:iniciarFraseGame},
-  {id:'verdadeiro_falso', icone:'⚖️', nome:'Verdadeiro ou Falso', desc:'A tradução mostrada está certa?', iniciar:iniciarVerdadeiroFalso},
-  {id:'memoria', icone:'🧠', nome:'Jogo da Memória', desc:'Encontre os pares em inglês e português.', iniciar:iniciarMemoria},
-  {id:'forca', icone:'🪢', nome:'Forca', desc:'Descubra a palavra em inglês letra por letra.', iniciar:iniciarForca},
-  {id:'digite_pt', icone:'⌨️', nome:'Digite a Tradução', desc:'Digite a tradução em português.', iniciar:iniciarDigitePt},
-  {id:'digite_en', icone:'💬', nome:'Digite em Inglês', desc:'Digite a palavra certa em inglês.', iniciar:iniciarDigiteEn},
-  {id:'anagrama', icone:'🔀', nome:'Ordene as Letras', desc:'Desembaralhe as letras e descubra a palavra.', iniciar:iniciarAnagrama},
-  {id:'ordene_frase', icone:'🧩', nome:'Ordene a Frase', desc:'Organize as palavras na ordem certa.', iniciar:iniciarOrdeneFrase},
-  {id:'intruso', icone:'🔍', nome:'Intruso', desc:'Descubra a palavra que não pertence ao grupo.', iniciar:iniciarIntruso},
-  {id:'sinonimos', icone:'🟰', nome:'Sinônimos', desc:'Escolha a palavra com o mesmo sentido.', iniciar:iniciarSinonimos},
-  {id:'antonimos', icone:'↔️', nome:'Antônimos', desc:'Escolha a palavra com sentido oposto.', iniciar:iniciarAntonimos},
-  {id:'plural', icone:'➕', nome:'Plural Correto', desc:'Escolha o plural certo em inglês.', iniciar:iniciarPlural},
-  {id:'passado', icone:'⏳', nome:'Passado dos Verbos', desc:'Escolha o passado certo do verbo.', iniciar:iniciarPassado},
-  {id:'ligar_pares', icone:'🔗', nome:'Ligar os Pares', desc:'Clique para ligar cada palavra à tradução.', iniciar:iniciarLigarPares},
-  {id:'ouca_escolha', icone:'🔊', nome:'Ouça e Escolha', desc:'Ouça a palavra e escolha a tradução certa.', iniciar:iniciarOucaEscolha},
-  {id:'ditado', icone:'🎧', nome:'Ditado', desc:'Ouça e digite a palavra em inglês.', iniciar:iniciarDitado},
-  {id:'contra_relogio', icone:'⏱️', nome:'Contra o Relógio', desc:'Responda rápido antes que o tempo acabe.', iniciar:iniciarContraRelogio},
-  {id:'complete_letra', icone:'🔡', nome:'Complete a Palavra', desc:'Escolha a letra que falta na palavra.', iniciar:iniciarCompleteLetra},
-  {id:'desafio_final', icone:'🏆', nome:'Desafio Final', desc:'Uma mistura de vários tipos de pergunta.', iniciar:iniciarDesafioFinal}
+  {id:'multipla_en_pt', icone:'🇬🇧', nome:'Tradução EN → PT', desc:'Escolha a tradução certa.', iniciar:iniciarMultiplaEnPt},
+  {id:'multipla_pt_en', icone:'🇧🇷', nome:'Tradução PT → EN', desc:'Escolha a palavra em inglês.', iniciar:iniciarMultiplaPtEn},
+  {id:'frase', icone:'✏️', nome:'Complete a Frase', desc:'Complete a frase.', iniciar:iniciarFraseGame},
+  {id:'verdadeiro_falso', icone:'⚖️', nome:'Verdadeiro ou Falso', desc:'A tradução está certa?', iniciar:iniciarVerdadeiroFalso},
+  {id:'memoria', icone:'🧠', nome:'Jogo da Memória', desc:'Encontre os pares.', iniciar:iniciarMemoria},
+  {id:'forca', icone:'🪢', nome:'Forca', desc:'Descubra a palavra.', iniciar:iniciarForca},
+  {id:'digite_pt', icone:'⌨️', nome:'Digite a Tradução', desc:'Digite em português.', iniciar:iniciarDigitePt},
+  {id:'digite_en', icone:'💬', nome:'Digite em Inglês', desc:'Digite em inglês.', iniciar:iniciarDigiteEn},
+  {id:'anagrama', icone:'🔀', nome:'Ordene as Letras', desc:'Desembaralhe a palavra.', iniciar:iniciarAnagrama},
+  {id:'sinonimos', icone:'🟰', nome:'Sinônimos', desc:'Mesmo sentido.', iniciar:iniciarSinonimos},
+  {id:'antonimos', icone:'↔️', nome:'Antônimos', desc:'Sentido oposto.', iniciar:iniciarAntonimos},
+  {id:'plural', icone:'➕', nome:'Plural Correto', desc:'Plural em inglês.', iniciar:iniciarPlural},
+  {id:'passado', icone:'⏳', nome:'Passado dos Verbos', desc:'Passado do verbo.', iniciar:iniciarPassado},
+  {id:'ouca_escolha', icone:'🔊', nome:'Ouça e Escolha', desc:'Ouça e escolha.', iniciar:iniciarOucaEscolha},
+  {id:'ditado', icone:'🎧', nome:'Ditado', desc:'Ouça e digite.', iniciar:iniciarDitado},
+  {id:'contra_relogio', icone:'⏱️', nome:'Contra o Relógio', desc:'Responda rápido.', iniciar:iniciarContraRelogio},
+  {id:'complete_letra', icone:'🔡', nome:'Complete a Palavra', desc:'Letra que falta.', iniciar:iniciarCompleteLetra},
+  {id:'desafio_final', icone:'🏆', nome:'Desafio Final', desc:'Mistura de perguntas.', iniciar:iniciarDesafioFinal}
 ];
 
 const JOGOS_PT = [
-  {id:'sinonimos_pt', icone:'🟰', nome:'Sinônimos', desc:'Escolha a palavra com o mesmo sentido.', iniciar:iniciarSinonimosPt},
-  {id:'antonimos_pt', icone:'↔️', nome:'Antônimos', desc:'Escolha a palavra com sentido oposto.', iniciar:iniciarAntonimosPt},
-  {id:'frase_pt', icone:'✏️', nome:'Complete a Frase', desc:'Escolha a palavra que completa a frase.', iniciar:iniciarFraseGamePt},
-  {id:'verdadeiro_falso_pt', icone:'⚖️', nome:'Verdadeiro ou Falso', desc:'O sinônimo mostrado está certo?', iniciar:iniciarVerdadeiroFalsoPt},
-  {id:'memoria_pt', icone:'🧠', nome:'Jogo da Memória', desc:'Encontre os pares de palavra e sinônimo.', iniciar:iniciarMemoriaPt},
-  {id:'forca_pt', icone:'🪢', nome:'Forca', desc:'Descubra a palavra letra por letra.', iniciar:iniciarForcaPt},
-  {id:'digite_sinonimo_pt', icone:'⌨️', nome:'Digite o Sinônimo', desc:'Digite um sinônimo da palavra mostrada.', iniciar:iniciarDigiteSinonimoPt},
-  {id:'digite_palavra_pt', icone:'💬', nome:'Digite a Palavra', desc:'Descubra e digite a palavra certa.', iniciar:iniciarDigitePalavraPt},
-  {id:'anagrama_pt', icone:'🔀', nome:'Ordene as Letras', desc:'Desembaralhe as letras e descubra a palavra.', iniciar:iniciarAnagramaPt},
-  {id:'ordene_frase_pt', icone:'🧩', nome:'Ordene a Frase', desc:'Organize as palavras na ordem certa.', iniciar:iniciarOrdeneFrasePt},
-  {id:'intruso_pt', icone:'🔍', nome:'Intruso', desc:'Descubra a palavra que não pertence ao grupo.', iniciar:iniciarIntrusoPt},
-  {id:'ortografia_pt', icone:'🔤', nome:'Ortografia Certa', desc:'Escolha a forma corretamente escrita.', iniciar:iniciarOrtografiaPt},
-  {id:'acentuacao_pt', icone:'✔️', nome:'Acentuação Correta', desc:'Escolha a palavra corretamente acentuada.', iniciar:iniciarAcentuacaoPt},
-  {id:'plural_pt', icone:'➕', nome:'Plural Correto', desc:'Escolha o plural certo em português.', iniciar:iniciarPluralPt},
-  {id:'verbo_passado_pt', icone:'⏳', nome:'Verbo no Passado', desc:'Escolha a forma certa do verbo no passado.', iniciar:iniciarVerboPassadoPt},
-  {id:'ligar_pares_pt', icone:'🔗', nome:'Ligar os Pares', desc:'Clique para ligar cada palavra ao sinônimo.', iniciar:iniciarLigarParesPt},
-  {id:'ouca_escolha_pt', icone:'🔊', nome:'Ouça e Escolha', desc:'Ouça a palavra e escolha o sinônimo certo.', iniciar:iniciarOucaEscolhaPt},
-  {id:'ditado_pt', icone:'🎧', nome:'Ditado', desc:'Ouça e escreva a palavra corretamente.', iniciar:iniciarDitadoPt},
-  {id:'contra_relogio_pt', icone:'⏱️', nome:'Contra o Relógio', desc:'Responda rápido antes que o tempo acabe.', iniciar:iniciarContraRelogioPt},
-  {id:'classe_gramatical_pt', icone:'🔡', nome:'Classe Gramatical', desc:'Identifique a classe gramatical da palavra.', iniciar:iniciarClasseGramaticalPt},
-  {id:'desafio_final_pt', icone:'🏆', nome:'Desafio Final', desc:'Uma mistura de vários tipos de pergunta.', iniciar:iniciarDesafioFinalPt}
+  {id:'sinonimos_pt', icone:'🟰', nome:'Sinônimos', desc:'Mesmo sentido.', iniciar:iniciarSinonimosPt},
+  {id:'antonimos_pt', icone:'↔️', nome:'Antônimos', desc:'Sentido oposto.', iniciar:iniciarAntonimosPt},
+  {id:'frase_pt', icone:'✏️', nome:'Complete a Frase', desc:'Complete a frase.', iniciar:iniciarFraseGamePt},
+  {id:'verdadeiro_falso_pt', icone:'⚖️', nome:'Verdadeiro ou Falso', desc:'O sinônimo está certo?', iniciar:iniciarVerdadeiroFalsoPt},
+  {id:'memoria_pt', icone:'🧠', nome:'Jogo da Memória', desc:'Encontre os pares.', iniciar:iniciarMemoriaPt},
+  {id:'forca_pt', icone:'🪢', nome:'Forca', desc:'Descubra a palavra.', iniciar:iniciarForcaPt},
+  {id:'digite_sinonimo_pt', icone:'⌨️', nome:'Digite o Sinônimo', desc:'Digite o sinônimo.', iniciar:iniciarDigiteSinonimoPt},
+  {id:'digite_palavra_pt', icone:'💬', nome:'Digite a Palavra', desc:'Digite a palavra.', iniciar:iniciarDigitePalavraPt},
+  {id:'anagrama_pt', icone:'🔀', nome:'Ordene as Letras', desc:'Desembaralhe.', iniciar:iniciarAnagramaPt},
+  {id:'ortografia_pt', icone:'🔤', nome:'Ortografia Certa', desc:'Forma correta.', iniciar:iniciarOrtografiaPt},
+  {id:'acentuacao_pt', icone:'✔️', nome:'Acentuação Correta', desc:'Acentuação certa.', iniciar:iniciarAcentuacaoPt},
+  {id:'plural_pt', icone:'➕', nome:'Plural Correto', desc:'Plural em português.', iniciar:iniciarPluralPt},
+  {id:'verbo_passado_pt', icone:'⏳', nome:'Verbo no Passado', desc:'Forma no passado.', iniciar:iniciarVerboPassadoPt},
+  {id:'ouca_escolha_pt', icone:'🔊', nome:'Ouça e Escolha', desc:'Ouça e escolha.', iniciar:iniciarOucaEscolhaPt},
+  {id:'ditado_pt', icone:'🎧', nome:'Ditado', desc:'Ouça e escreva.', iniciar:iniciarDitadoPt},
+  {id:'contra_relogio_pt', icone:'⏱️', nome:'Contra o Relógio', desc:'Responda rápido.', iniciar:iniciarContraRelogioPt},
+  {id:'classe_gramatical_pt', icone:'🔡', nome:'Classe Gramatical', desc:'Identifique a classe.', iniciar:iniciarClasseGramaticalPt},
+  {id:'desafio_final_pt', icone:'🏆', nome:'Desafio Final', desc:'Mistura de perguntas.', iniciar:iniciarDesafioFinalPt}
 ];
 </script>
 </body>

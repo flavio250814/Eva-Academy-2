@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EVA Academy | Administração</title>
+  <style>
+    :root{--azul:#071a36;--escuro:#031023;--dourado:#c9a227;--agua:#55d6c2;--agua2:#8be6d6;--creme:#faf8ef;--cinza:#657086;--erro:#d64545}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Arial,sans-serif;background:var(--creme);color:#172238;min-height:100vh}
+    header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
+    .brand{font-weight:800;letter-spacing:2px}
+    .back{color:var(--agua2);text-decoration:none;font-weight:700;font-size:14px}
+    .wrap{width:min(960px,92%);margin:40px auto 70px}
+    #login{max-width:400px;margin:80px auto;background:white;border-radius:18px;padding:40px 30px;box-shadow:0 15px 40px rgba(7,26,54,.12);text-align:center}
+    #login h1{color:var(--azul);font-size:24px;margin-bottom:8px}
+    #login p{color:var(--cinza);font-size:14px;margin-bottom:28px}
+    #login input{width:100%;padding:14px 16px;border:2px solid rgba(7,26,54,.15);border-radius:10px;font-size:15px;margin-bottom:14px;text-align:center}
+    #login input:focus{outline:none;border-color:var(--dourado)}
+    #login button{width:100%;padding:14px;border:none;border-radius:10px;background:var(--azul);color:white;font-weight:700;font-size:15px;cursor:pointer}
+    #login button:hover{background:var(--escuro)}
+    .erro-msg{color:var(--erro);font-size:13px;margin-top:12px;display:none}
+    #painel{display:none}
+    .painel-header{background:white;border-radius:18px;padding:28px;box-shadow:0 15px 40px rgba(7,26,54,.1);margin-bottom:22px}
+    .painel-header h1{color:var(--azul);font-size:26px;margin-bottom:6px}
+    .painel-header p{color:var(--cinza);font-size:14px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:22px}
+    .card{background:white;border-radius:16px;padding:22px;box-shadow:0 12px 30px rgba(7,26,54,.08)}
+    .card h3{color:var(--azul);font-size:14px;margin-bottom:8px}
+    .card .valor{font-size:26px;font-weight:800;color:var(--azul)}
+    .card .valor span{font-size:13px;color:var(--dourado);font-weight:700}
+    .secao{background:white;border-radius:18px;padding:26px;box-shadow:0 15px 40px rgba(7,26,54,.1);margin-bottom:20px}
+    .secao h2{color:var(--azul);font-size:18px;margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+    .btn{display:inline-block;padding:11px 16px;border-radius:10px;border:none;font-weight:700;font-size:13px;cursor:pointer;transition:.2s}
+    .btn-azul{background:var(--azul);color:white}.btn-azul:hover{background:var(--escuro)}
+    .btn-dourado{background:var(--dourado);color:var(--azul)}.btn-dourado:hover{background:#e0bd45}
+    .btn-vermelho{background:var(--erro);color:white}.btn-vermelho:hover{opacity:.9}
+    .btn-cinza{background:#e8e8e8;color:var(--azul)}.btn-cinza:hover{background:#ddd}
+    #formConta{display:none;background:var(--creme);border-radius:14px;padding:22px;margin-bottom:18px;border:1px solid rgba(7,26,54,.1)}
+    #formConta.ativo{display:block}
+    #formConta label{display:block;font-size:13px;font-weight:700;color:var(--azul);margin-bottom:6px;margin-top:12px}
+    #formConta label:first-child{margin-top:0}
+    #formConta input{width:100%;padding:12px 14px;border:2px solid rgba(7,26,54,.15);border-radius:10px;font-size:14px}
+    #formConta input:focus{outline:none;border-color:var(--dourado)}
+    .form-botoes{margin-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+    .lista-contas{display:flex;flex-direction:column;gap:10px}
+    .conta-item{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--creme);border-radius:12px;flex-wrap:wrap}
+    .conta-item .info{flex:1;min-width:160px}
+    .conta-item .nome{font-weight:700;color:var(--azul);font-size:15px}
+    .conta-item .meta{color:var(--cinza);font-size:12px;margin-top:2px}
+    .conta-item .acoes-conta{display:flex;gap:8px;flex-wrap:wrap}
+    .status{margin-top:14px;padding:12px 16px;border-radius:10px;background:rgba(85,214,194,.15);color:var(--azul);font-size:13px;font-weight:600;display:none}
+    .vazio{color:var(--cinza);font-size:14px;text-align:center;padding:20px}
+    .info-box{margin-top:10px;background:var(--azul);color:white;border-radius:16px;padding:20px;font-size:13px;line-height:1.6}
+    .info-box strong{color:var(--agua2)}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">EVA ACADEMY — ADMIN</div>
+    <a class="back" href="alunos.html" id="linkAluno" style="display:none">← Área do Aluno</a>
+  </header>
+
+  <div id="login">
+    <h1>Área Restrita</h1>
+    <p>Acesso exclusivo do administrador</p>
+    <input type="password" id="senhaAdmin" placeholder="Digite a senha de administrador" autocomplete="off">
+    <button onclick="tentarLogin()">Entrar</button>
+    <div class="erro-msg" id="erroMsg">Senha incorreta. Tente novamente.</div>
+  </div>
+
+  <main class="wrap" id="painel">
+    <div class="painel-header">
+      <h1>Painel do Administrador</h1>
+      <p>Gerencie as contas dos alunos e o ranking.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card"><h3>Total de contas</h3><div class="valor" id="totalContas">0</div></div>
+      <div class="card"><h3>XP total (todas)</h3><div class="valor" id="xpTotal">0 <span>XP</span></div></div>
+    </div>
+
+    <div class="secao">
+      <h2>
+        Contas dos alunos
+        <button class="btn btn-dourado" onclick="abrirFormConta()">+ Criar conta</button>
+      </h2>
+
+      <div id="formConta">
+        <h3 id="tituloForm" style="color:var(--azul);margin-bottom:12px;font-size:16px">Nova conta</h3>
+        <label for="nomeCompleto">Nome completo</label>
+        <input type="text" id="nomeCompleto" placeholder="Ex: Maria Silva Santos" autocomplete="off">
+        <label for="senhaAluno">Senha</label>
+        <input type="text" id="senhaAluno" placeholder="Digite a senha do aluno" autocomplete="off">
+        <input type="hidden" id="editandoId" value="">
+        <div class="form-botoes">
+          <button class="btn btn-azul" onclick="salvarConta()">Salvar conta</button>
+          <button class="btn btn-cinza" onclick="fecharFormConta()">Cancelar</button>
+        </div>
+      </div>
+
+      <div class="lista-contas" id="listaContas"></div>
+      <div class="status" id="statusMsg"></div>
+    </div>
+
+    <div class="secao">
+      <h2>Ações gerais</h2>
+      <button class="btn btn-vermelho" onclick="resetarTudo()">Resetar todos os dados do site</button>
+      <p style="margin-top:12px;color:var(--cinza);font-size:13px">Isso apaga todas as contas, XP e histórico de jogos.</p>
+    </div>
+
+    <div class="info-box">
+      <strong>Senha do administrador:</strong> evaadmin2026<br>
+      (para alterar, edite a constante SENHA_ADMIN no código)<br><br>
+      <strong>Como funciona:</strong><br>
+      • Só o administrador pode criar e excluir contas<br>
+      • Cada conta tem nome completo + senha<br>
+      • A senha de qualquer aluno pode ser alterada a qualquer momento pelo admin<br>
+      • As contas ficam salvas neste navegador (localStorage)
+    </div>
+  </main>
+
+  <script>
+    const SENHA_ADMIN = "evaadmin2026";
+    function carregarContas(){ try{return JSON.parse(localStorage.getItem("eva_contas"))||[]}catch(e){return[]} }
+    function salvarContas(lista){ localStorage.setItem("eva_contas",JSON.stringify(lista)) }
+    function gerarId(){ return "u_"+Date.now()+"_"+Math.floor(Math.random()*1000) }
+    function tentarLogin(){
+      const senha=document.getElementById("senhaAdmin").value;
+      if(senha===SENHA_ADMIN){ sessionStorage.setItem("eva_admin_logado","1"); mostrarPainel(); }
+      else{ document.getElementById("erroMsg").style.display="block"; document.getElementById("senhaAdmin").value=""; document.getElementById("senhaAdmin").focus(); }
+    }
+    function mostrarPainel(){
+      document.getElementById("login").style.display="none";
+      document.getElementById("painel").style.display="block";
+      document.getElementById("linkAluno").style.display="inline";
+      renderizarContas();
+    }
+    function abrirFormConta(idEditar){
+      const form=document.getElementById("formConta");
+      form.classList.add("ativo");
+      document.getElementById("editandoId").value=idEditar||"";
+      document.getElementById("tituloForm").textContent=idEditar?"Editar conta / alterar senha":"Nova conta";
+      if(idEditar){
+        const c=carregarContas().find(x=>x.id===idEditar);
+        if(c){ document.getElementById("nomeCompleto").value=c.nomeCompleto; document.getElementById("senhaAluno").value=c.senha; }
+      } else { document.getElementById("nomeCompleto").value=""; document.getElementById("senhaAluno").value=""; }
+      document.getElementById("nomeCompleto").focus();
+    }
+    function fecharFormConta(){
+      document.getElementById("formConta").classList.remove("ativo");
+      document.getElementById("editandoId").value="";
+      document.getElementById("nomeCompleto").value="";
+      document.getElementById("senhaAluno").value="";
+    }
+    function salvarConta(){
+      const nome=document.getElementById("nomeCompleto").value.trim();
+      const senha=document.getElementById("senhaAluno").value.trim();
+      const idEditar=document.getElementById("editandoId").value;
+      if(!nome){alert("Digite o nome completo do aluno.");return}
+      if(!senha){alert("Digite uma senha para a conta.");return}
+      let contas=carregarContas();
+      if(idEditar){
+        const idx=contas.findIndex(c=>c.id===idEditar);
+        if(idx!==-1){ contas[idx].nomeCompleto=nome; contas[idx].senha=senha; salvarContas(contas); mostrarStatus("Conta atualizada com sucesso!"); }
+      } else {
+        contas.push({id:gerarId(),nomeCompleto:nome,senha:senha,xp:0,liga:0,criadoEm:new Date().toISOString()});
+        salvarContas(contas); mostrarStatus("Conta criada com sucesso!");
+      }
+      fecharFormConta(); renderizarContas();
+    }
+    function excluirConta(id){
+      const contas=carregarContas(); const conta=contas.find(c=>c.id===id); if(!conta)return;
+      if(!confirm('Tem certeza que deseja excluir a conta de "'+conta.nomeCompleto+'"?\nEssa ação não pode ser desfeita.'))return;
+      salvarContas(contas.filter(c=>c.id!==id)); mostrarStatus("Conta excluída."); renderizarContas();
+    }
+    function renderizarContas(){
+      const contas=carregarContas();
+      document.getElementById("totalContas").textContent=contas.length;
+      document.getElementById("xpTotal").innerHTML=contas.reduce((a,c)=>a+(c.xp||0),0)+' <span>XP</span>';
+      const lista=document.getElementById("listaContas");
+      if(contas.length===0){ lista.innerHTML='<div class="vazio">Nenhuma conta criada ainda.<br>Clique em “+ Criar conta” para adicionar o primeiro aluno.</div>'; return; }
+      lista.innerHTML=contas.map(c=>`
+        <div class="conta-item">
+          <div class="info">
+            <div class="nome">${c.nomeCompleto}</div>
+            <div class="meta">Senha: ${c.senha} · XP: ${c.xp||0} · Criado em ${formatarData(c.criadoEm)}</div>
+          </div>
+          <div class="acoes-conta">
+            <button class="btn btn-azul" onclick="abrirFormConta('${c.id}')">Editar / Senha</button>
+            <button class="btn btn-vermelho" onclick="excluirConta('${c.id}')">Excluir</button>
+          </div>
+        </div>`).join("");
+    }
+    function formatarData(iso){ if(!iso)return"—"; try{return new Date(iso).toLocaleDateString("pt-BR")}catch(e){return"—"} }
+    function mostrarStatus(msg){ const el=document.getElementById("statusMsg"); el.textContent=msg; el.style.display="block"; setTimeout(()=>el.style.display="none",3500); }
+    function resetarTudo(){
+      if(!confirm("Isso vai APAGAR todas as contas, XP e histórico de jogos.\nTem certeza?"))return;
+      if(!confirm("Última confirmação: tudo será perdido. Continuar?"))return;
+      localStorage.removeItem("eva_contas"); localStorage.removeItem("eva_xp_semana"); localStorage.removeItem("eva_liga");
+      const keys=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(k&&k.startsWith("eva_usados_"))keys.push(k); }
+      keys.forEach(k=>localStorage.removeItem(k)); renderizarContas(); mostrarStatus("Todos os dados foram apagados.");
+    }
+    document.getElementById("senhaAdmin").addEventListener("keydown",e=>{ if(e.key==="Enter")tentarLogin(); });
+    if(sessionStorage.getItem("eva_admin_logado")==="1") mostrarPainel();
+  </script>
+</body>
+</html>
