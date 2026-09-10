@@ -14,21 +14,15 @@
       --creme: #faf8ef;
       --branco: #fff;
       --cinza: #657086;
+      --erro: #d64545;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: Arial, sans-serif;
       background: var(--creme);
       color: #172238;
       min-height: 100vh;
     }
-
     header {
       background: var(--azul);
       color: white;
@@ -37,29 +31,115 @@
       justify-content: space-between;
       align-items: center;
     }
-
+    .brand { font-weight: 800; letter-spacing: 2px; }
     .admin-link {
-      color: rgba(255,255,255,0.35);
+      color: rgba(255,255,255,0.7);
       text-decoration: none;
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 13px;
+      font-weight: 700;
       letter-spacing: 1px;
+      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 8px;
       transition: 0.2s;
     }
-
     .admin-link:hover {
+      color: #071a36;
+      background: #8be6d6;
+      border-color: #8be6d6;
+    }
+    .sair-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .sair-btn:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    .header-direita { display: flex; align-items: center; gap: 12px; }
+    .nome-logado {
+      font-size: 13px;
       color: var(--agua2);
+      font-weight: 600;
     }
 
-    .brand {
-      font-weight: 800;
-      letter-spacing: 2px;
+    /* LOGIN */
+    #telaLogin {
+      min-height: calc(100vh - 70px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .login-box {
+      background: white;
+      border-radius: 20px;
+      padding: 40px 32px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 50px rgba(7,26,54,.12);
+      text-align: center;
+    }
+    .login-box h1 {
+      color: var(--azul);
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+    .login-box p {
+      color: var(--cinza);
+      font-size: 14px;
+      margin-bottom: 28px;
+      line-height: 1.5;
+    }
+    .login-box label {
+      display: block;
+      text-align: left;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--azul);
+      margin-bottom: 6px;
+      margin-top: 14px;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 13px 14px;
+      border: 2px solid rgba(7,26,54,.12);
+      border-radius: 10px;
+      font-size: 15px;
+    }
+    .login-box input:focus {
+      outline: none;
+      border-color: var(--dourado);
+    }
+    .login-box button {
+      width: 100%;
+      margin-top: 22px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: var(--azul);
+      color: white;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .login-box button:hover { background: var(--escuro); }
+    .erro-login {
+      color: var(--erro);
+      font-size: 13px;
+      margin-top: 14px;
+      display: none;
     }
 
-    .back {
-      color: var(--agua2);
-      text-decoration: none;
-    }
+    /* ÁREA LOGADA */
+    #areaLogada { display: none; }
 
     .hero {
       background: var(--azul);
@@ -67,41 +147,32 @@
       text-align: center;
       padding: 65px 6% 85px;
     }
-
     .eyebrow {
       color: #e0bd45;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 2px;
     }
-
     .hero h1 {
       font-size: clamp(38px, 6vw, 64px);
       margin: 14px 0;
     }
-
-    .hero h1 span {
-      color: var(--agua2);
-    }
-
+    .hero h1 span { color: var(--agua2); }
     .hero p {
       max-width: 680px;
       margin: auto;
       line-height: 1.7;
       color: #d9e0ea;
     }
-
     .container {
       width: min(1100px, 88%);
       margin: -42px auto 70px;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 22px;
     }
-
     .card {
       background: white;
       border-radius: 18px;
@@ -109,26 +180,10 @@
       box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
       transition: .2s;
     }
-
-    .card:hover {
-      transform: translateY(-4px);
-    }
-
-    .icon {
-      font-size: 32px;
-      margin-bottom: 15px;
-    }
-
-    .card h2 {
-      color: var(--azul);
-      margin-bottom: 10px;
-    }
-
-    .card p {
-      color: var(--cinza);
-      line-height: 1.6;
-    }
-
+    .card:hover { transform: translateY(-4px); }
+    .icon { font-size: 32px; margin-bottom: 15px; }
+    .card h2 { color: var(--azul); margin-bottom: 10px; }
+    .card p { color: var(--cinza); line-height: 1.6; }
     .button {
       display: inline-block;
       margin-top: 20px;
@@ -142,11 +197,7 @@
       cursor: pointer;
       font-size: 14px;
     }
-
-    .button:hover {
-      background: var(--escuro);
-    }
-
+    .button:hover { background: var(--escuro); }
     .notice {
       margin-top: 22px;
       background: var(--azul);
@@ -155,27 +206,16 @@
       padding: 28px;
       line-height: 1.6;
     }
-
-    .notice strong {
-      color: var(--agua2);
-    }
-
+    .notice strong { color: var(--agua2); }
     footer {
       text-align: center;
       color: var(--cinza);
       padding: 25px;
     }
 
-    /* ===== RANKING ===== */
-    #ranking {
-      display: none;
-      margin-top: 30px;
-    }
-
-    #ranking.ativo {
-      display: block;
-    }
-
+    /* RANKING */
+    #ranking { display: none; margin-top: 30px; }
+    #ranking.ativo { display: block; }
     .ranking-header {
       background: white;
       border-radius: 18px;
@@ -184,7 +224,6 @@
       margin-bottom: 22px;
       text-align: center;
     }
-
     .liga-atual {
       display: inline-flex;
       align-items: center;
@@ -197,21 +236,9 @@
       font-size: 15px;
       margin-bottom: 12px;
     }
-
-    .liga-atual span {
-      color: var(--agua2);
-    }
-
-    .ranking-header h2 {
-      color: var(--azul);
-      margin-bottom: 6px;
-    }
-
-    .ranking-header p {
-      color: var(--cinza);
-      font-size: 14px;
-    }
-
+    .liga-atual span { color: var(--agua2); }
+    .ranking-header h2 { color: var(--azul); margin-bottom: 6px; }
+    .ranking-header p { color: var(--cinza); font-size: 14px; }
     .xp-box {
       margin-top: 18px;
       display: flex;
@@ -219,32 +246,20 @@
       gap: 18px;
       flex-wrap: wrap;
     }
-
     .xp-item {
       background: var(--creme);
       border-radius: 12px;
       padding: 12px 20px;
       min-width: 120px;
     }
-
-    .xp-item strong {
-      display: block;
-      color: var(--azul);
-      font-size: 22px;
-    }
-
-    .xp-item small {
-      color: var(--cinza);
-      font-size: 12px;
-    }
-
+    .xp-item strong { display: block; color: var(--azul); font-size: 22px; }
+    .xp-item small { color: var(--cinza); font-size: 12px; }
     .leaderboard {
       background: white;
       border-radius: 18px;
       overflow: hidden;
       box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
     }
-
     .leaderboard-item {
       display: flex;
       align-items: center;
@@ -252,122 +267,50 @@
       padding: 16px 20px;
       border-bottom: 1px solid rgba(7, 26, 54, .08);
     }
-
-    .leaderboard-item:last-child {
-      border-bottom: none;
-    }
-
-    .leaderboard-item.voce {
-      background: rgba(85, 214, 194, 0.12);
-    }
-
-    .leaderboard-item.top1 {
-      background: linear-gradient(90deg, rgba(201, 162, 39, 0.15), transparent);
-    }
-
-    .leaderboard-item.top2 {
-      background: linear-gradient(90deg, rgba(192, 192, 192, 0.18), transparent);
-    }
-
-    .leaderboard-item.top3 {
-      background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent);
-    }
-
+    .leaderboard-item:last-child { border-bottom: none; }
+    .leaderboard-item.voce { background: rgba(85, 214, 194, 0.12); }
+    .leaderboard-item.top1 { background: linear-gradient(90deg, rgba(201, 162, 39, 0.15), transparent); }
+    .leaderboard-item.top2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.18), transparent); }
+    .leaderboard-item.top3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); }
     .posicao {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--azul);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 13px;
-      flex-shrink: 0;
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--azul); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 13px; flex-shrink: 0;
     }
-
     .leaderboard-item.top1 .posicao { background: #c9a227; color: #071a36; }
     .leaderboard-item.top2 .posicao { background: #a8a8a8; color: #071a36; }
     .leaderboard-item.top3 .posicao { background: #cd7f32; color: white; }
-
     .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--azul);
-      color: var(--agua2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 14px;
-      flex-shrink: 0;
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--azul); color: var(--agua2);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 14px; flex-shrink: 0;
     }
-
-    .nome {
-      flex: 1;
-      font-weight: 700;
-      color: var(--azul);
-    }
-
-    .nome small {
-      display: block;
-      font-weight: 400;
-      color: var(--cinza);
-      font-size: 12px;
-    }
-
-    .xp {
-      font-weight: 800;
-      color: var(--azul);
-      font-size: 15px;
-    }
-
-    .xp span {
-      color: var(--dourado);
-      font-size: 12px;
-    }
-
+    .nome { flex: 1; font-weight: 700; color: var(--azul); }
+    .nome small { display: block; font-weight: 400; color: var(--cinza); font-size: 12px; }
+    .xp { font-weight: 800; color: var(--azul); font-size: 15px; }
+    .xp span { color: var(--dourado); font-size: 12px; }
     .voltar-ranking {
-      display: inline-block;
-      margin-bottom: 18px;
-      background: none;
-      border: none;
-      color: var(--azul);
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 14px;
+      display: inline-block; margin-bottom: 18px;
+      background: none; border: none; color: var(--azul);
+      font-weight: 700; cursor: pointer; font-size: 14px;
     }
-
     .como-funciona {
-      margin-top: 22px;
-      background: white;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
+      margin-top: 22px; background: white; border-radius: 18px;
+      padding: 24px; box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
     }
-
-    .como-funciona h3 {
-      color: var(--azul);
-      margin-bottom: 12px;
-    }
-
-    .como-funciona ul {
-      color: var(--cinza);
-      padding-left: 20px;
-      line-height: 1.7;
-      font-size: 14px;
-    }
-
-    .como-funciona li {
-      margin-bottom: 6px;
+    .como-funciona h3 { color: var(--azul); margin-bottom: 12px; }
+    .como-funciona ul { color: var(--cinza); padding-left: 20px; line-height: 1.7; font-size: 14px; }
+    .como-funciona li { margin-bottom: 6px; }
+    .vazio-ranking {
+      text-align: center; padding: 40px 20px; color: var(--cinza); font-size: 14px;
     }
 
     @media (max-width: 800px) {
-      .grid {
-        grid-template-columns: 1fr;
-      }
+      .grid { grid-template-columns: 1fr; }
+      .header-direita { gap: 8px; }
+      .nome-logado { display: none; }
     }
   </style>
 </head>
@@ -375,85 +318,104 @@
 
   <header>
     <div class="brand">EVA ACADEMY</div>
-    <a class="admin-link" href="admin.html">Admin</a>
+    <div class="header-direita">
+      <span class="nome-logado" id="nomeLogado" style="display:none"></span>
+      <button class="sair-btn" id="btnSair" style="display:none" onclick="sair()">Sair</button>
+      <a class="admin-link" href="admin.html">Admin</a>
+    </div>
   </header>
 
-  <section class="hero">
-    <span class="eyebrow">ÁREA DO ALUNO</span>
-    <h1>Aprenda inglês de um jeito <span>divertido.</span></h1>
-    <p>Este é o espaço dos alunos da EVA Academy, com jogos, fábulas e ranking para praticar inglês.</p>
-  </section>
+  <!-- TELA DE LOGIN -->
+  <div id="telaLogin">
+    <div class="login-box">
+      <h1>Área do Aluno</h1>
+      <p>Digite o nome completo e a senha que a professora passou para você.</p>
 
-  <main class="container">
+      <label for="loginNome">Nome completo</label>
+      <input type="text" id="loginNome" placeholder="Seu nome completo" autocomplete="off">
 
-    <div class="grid" id="cardsArea">
+      <label for="loginSenha">Senha</label>
+      <input type="password" id="loginSenha" placeholder="Sua senha" autocomplete="off">
 
-      <article class="card">
-        <div class="icon">🎮</div>
-        <h2>Jogos em Inglês</h2>
-        <p>Aprenda palavras, frases e expressões enquanto joga e resolve desafios.</p>
-        <a class="button" href="jogos.html">Entrar nos jogos</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">📖</div>
-        <h2>Fábulas em Inglês</h2>
-        <p>Leia histórias e fábulas em inglês e pratique compreensão, vocabulário e leitura.</p>
-        <a class="button" href="#" onclick="alert('As fábulas da EVA serão adicionadas aqui!');return false">Ler fábulas</a>
-      </article>
-
-      <article class="card">
-        <div class="icon">🏆</div>
-        <h2>Ranking</h2>
-        <p>Compete com outros alunos e suba de liga. Sistema de XP e ligas igual ao Duolingo.</p>
-        <button class="button" onclick="mostrarRanking()">Ver ranking</button>
-      </article>
-
+      <button onclick="fazerLogin()">Entrar</button>
+      <div class="erro-login" id="erroLogin">Nome ou senha incorretos.</div>
     </div>
+  </div>
 
-    <section id="ranking">
-      <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
-
-      <div class="ranking-header">
-        <div class="liga-atual">
-          Liga atual: <span id="nomeLiga">Bronze</span>
-        </div>
-        <h2>Leaderboard da semana</h2>
-        <p>Os 3 primeiros sobem de liga. Os últimos descem. XP é resetado toda segunda-feira.</p>
-
-        <div class="xp-box">
-          <div class="xp-item">
-            <strong id="meuXP">0</strong>
-            <small>Seu XP esta semana</small>
-          </div>
-          <div class="xp-item">
-            <strong id="minhaPosicao">—</strong>
-            <small>Sua posição</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="leaderboard" id="listaRanking"></div>
-
-      <div class="como-funciona">
-        <h3>Como funciona (igual ao Duolingo)</h3>
-        <ul>
-          <li>Cada acerto nos jogos vale <strong>+10 XP</strong>.</li>
-          <li>Completar um jogo inteiro dá bônus de <strong>+25 XP</strong>.</li>
-          <li>Você compete em uma liga com outros alunos.</li>
-          <li><strong>Top 3</strong> da semana sobem para a próxima liga.</li>
-          <li>Os últimos colocados descem de liga.</li>
-          <li>Ligas: Bronze → Prata → Ouro → Safira → Rubi → Esmeralda → Ametista → Pérola → Obsidiana → Diamante</li>
-        </ul>
-      </div>
+  <!-- ÁREA LOGADA -->
+  <div id="areaLogada">
+    <section class="hero">
+      <span class="eyebrow">ÁREA DO ALUNO</span>
+      <h1>Aprenda inglês de um jeito <span>divertido.</span></h1>
+      <p>Olá, <strong id="saudacaoNome">aluno</strong>! Este é o seu espaço na EVA Academy.</p>
     </section>
 
-    <div class="notice" id="aviso">
-      <strong>Próxima etapa:</strong> podemos transformar esta área em um portal completo, com jogos de verdade, fábulas interativas e progresso individual.
-    </div>
-  </main>
+    <main class="container">
+      <div class="grid" id="cardsArea">
+        <article class="card">
+          <div class="icon">🎮</div>
+          <h2>Jogos em Inglês</h2>
+          <p>Aprenda palavras, frases e expressões enquanto joga e resolve desafios.</p>
+          <a class="button" href="jogos.html">Entrar nos jogos</a>
+        </article>
 
-  <footer>© 2026 EVA Academy</footer>
+        <article class="card">
+          <div class="icon">📖</div>
+          <h2>Fábulas em Inglês</h2>
+          <p>Leia histórias e fábulas em inglês e pratique compreensão, vocabulário e leitura.</p>
+          <a class="button" href="#" onclick="alert('As fábulas da EVA serão adicionadas aqui!');return false">Ler fábulas</a>
+        </article>
+
+        <article class="card">
+          <div class="icon">🏆</div>
+          <h2>Ranking</h2>
+          <p>Compete com outros alunos e suba de liga. Sistema de XP e ligas igual ao Duolingo.</p>
+          <button class="button" onclick="mostrarRanking()">Ver ranking</button>
+        </article>
+      </div>
+
+      <section id="ranking">
+        <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
+
+        <div class="ranking-header">
+          <div class="liga-atual">
+            Liga atual: <span id="nomeLiga">Bronze</span>
+          </div>
+          <h2>Leaderboard</h2>
+          <p>Ranking dos alunos da EVA Academy. Só aparece quem tem conta.</p>
+
+          <div class="xp-box">
+            <div class="xp-item">
+              <strong id="meuXP">0</strong>
+              <small>Seu XP</small>
+            </div>
+            <div class="xp-item">
+              <strong id="minhaPosicao">—</strong>
+              <small>Sua posição</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="leaderboard" id="listaRanking"></div>
+
+        <div class="como-funciona">
+          <h3>Como funciona</h3>
+          <ul>
+            <li>Cada acerto nos jogos vale <strong>+10 XP</strong>.</li>
+            <li>Completar um jogo inteiro dá bônus de <strong>+25 XP</strong>.</li>
+            <li>Só alunos com conta aparecem no ranking.</li>
+            <li>Ligas: Bronze → Prata → Ouro → Safira → Rubi → Esmeralda → Ametista → Pérola → Obsidiana → Diamante</li>
+          </ul>
+        </div>
+      </section>
+
+      <div class="notice" id="aviso">
+        <strong>Bem-vindo!</strong> Jogue, acumule XP e suba no ranking.
+      </div>
+    </main>
+
+    <footer>© 2026 EVA Academy</footer>
+  </div>
 
   <script>
     const LIGAS = [
@@ -461,36 +423,86 @@
       "Esmeralda", "Ametista", "Pérola", "Obsidiana", "Diamante"
     ];
 
-    function carregarXP() {
-      return parseInt(localStorage.getItem("eva_xp_semana") || "0", 10);
+    function carregarContas() {
+      try { return JSON.parse(localStorage.getItem("eva_contas")) || []; }
+      catch (e) { return []; }
     }
 
-    function carregarLiga() {
-      return parseInt(localStorage.getItem("eva_liga") || "0", 10);
+    function salvarContas(lista) {
+      localStorage.setItem("eva_contas", JSON.stringify(lista));
+    }
+
+    function getUsuarioLogado() {
+      try { return JSON.parse(sessionStorage.getItem("eva_usuario_logado")); }
+      catch (e) { return null; }
+    }
+
+    function setUsuarioLogado(usuario) {
+      if (usuario) sessionStorage.setItem("eva_usuario_logado", JSON.stringify(usuario));
+      else sessionStorage.removeItem("eva_usuario_logado");
+    }
+
+    function fazerLogin() {
+      const nome = document.getElementById("loginNome").value.trim();
+      const senha = document.getElementById("loginSenha").value.trim();
+      const erro = document.getElementById("erroLogin");
+
+      if (!nome || !senha) {
+        erro.textContent = "Preencha nome e senha.";
+        erro.style.display = "block";
+        return;
+      }
+
+      const contas = carregarContas();
+      const usuario = contas.find(c =>
+        c.nomeCompleto.toLowerCase() === nome.toLowerCase() && c.senha === senha
+      );
+
+      if (!usuario) {
+        erro.textContent = "Nome ou senha incorretos.";
+        erro.style.display = "block";
+        document.getElementById("loginSenha").value = "";
+        return;
+      }
+
+      setUsuarioLogado(usuario);
+      mostrarAreaLogada(usuario);
+    }
+
+    function sair() {
+      setUsuarioLogado(null);
+      document.getElementById("areaLogada").style.display = "none";
+      document.getElementById("telaLogin").style.display = "flex";
+      document.getElementById("btnSair").style.display = "none";
+      document.getElementById("nomeLogado").style.display = "none";
+      document.getElementById("loginNome").value = "";
+      document.getElementById("loginSenha").value = "";
+      document.getElementById("erroLogin").style.display = "none";
+    }
+
+    function mostrarAreaLogada(usuario) {
+      document.getElementById("telaLogin").style.display = "none";
+      document.getElementById("areaLogada").style.display = "block";
+      document.getElementById("btnSair").style.display = "inline-block";
+      document.getElementById("nomeLogado").style.display = "inline";
+      document.getElementById("nomeLogado").textContent = usuario.nomeCompleto.split(" ")[0];
+      document.getElementById("saudacaoNome").textContent = usuario.nomeCompleto.split(" ")[0];
     }
 
     function gerarRanking() {
-      const meuXP = carregarXP();
-      const liga = carregarLiga();
+      const contas = carregarContas();
+      const logado = getUsuarioLogado();
+      const meuXP = logado ? (logado.xp || 0) : 0;
+      const liga = logado ? (logado.liga || 0) : 0;
 
-      let ranking = [];
-      for (let i = 1; i <= 15; i++) {
-        const base = Math.max(0, meuXP + Math.floor(Math.random() * 160) - 80);
-        ranking.push({
-          nome: "Aluno " + i,
-          xp: base + Math.floor(Math.random() * 35),
-          voce: false
-        });
-      }
-
-      ranking.push({
-        nome: "Você",
-        xp: meuXP,
-        voce: true
-      });
+      let ranking = contas.map(c => ({
+        id: c.id,
+        nome: c.nomeCompleto,
+        xp: c.xp || 0,
+        voce: logado && c.id === logado.id
+      }));
 
       ranking.sort((a, b) => b.xp - a.xp);
-      ranking = ranking.map(r => ({ ...r, xp: Math.max(0, r.xp) }));
 
       return { ranking, liga, meuXP };
     }
@@ -498,11 +510,18 @@
     function renderRanking() {
       const { ranking, liga, meuXP } = gerarRanking();
       const lista = document.getElementById("listaRanking");
-      const posicaoUsuario = ranking.findIndex(r => r.voce) + 1;
 
       document.getElementById("nomeLiga").textContent = LIGAS[liga] || "Bronze";
       document.getElementById("meuXP").textContent = meuXP;
-      document.getElementById("minhaPosicao").textContent = "#" + posicaoUsuario;
+
+      if (ranking.length === 0) {
+        document.getElementById("minhaPosicao").textContent = "—";
+        lista.innerHTML = '<div class="vazio-ranking">Nenhum aluno no ranking ainda.<br>Assim que alguém jogar, aparece aqui.</div>';
+        return;
+      }
+
+      const posicaoUsuario = ranking.findIndex(r => r.voce) + 1;
+      document.getElementById("minhaPosicao").textContent = posicaoUsuario > 0 ? "#" + posicaoUsuario : "—";
 
       lista.innerHTML = ranking.map((item, index) => {
         const pos = index + 1;
@@ -512,7 +531,10 @@
         if (pos === 2) classes += " top2";
         if (pos === 3) classes += " top3";
 
-        const inicial = item.voce ? "EU" : "A" + pos;
+        const partes = item.nome.trim().split(/\s+/);
+        const inicial = partes.length >= 2
+          ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
+          : item.nome.slice(0, 2).toUpperCase();
 
         return `
           <div class="${classes}">
@@ -540,7 +562,23 @@
       document.getElementById("cardsArea").style.display = "grid";
       document.getElementById("aviso").style.display = "block";
     }
-  </script>
 
+    document.getElementById("loginSenha").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") fazerLogin();
+    });
+    document.getElementById("loginNome").addEventListener("keydown", function(e) {
+      if (e.key === "Enter") document.getElementById("loginSenha").focus();
+    });
+
+    const usuario = getUsuarioLogado();
+    if (usuario) {
+      const contas = carregarContas();
+      const aindaExiste = contas.find(c => c.id === usuario.id);
+      if (aindaExiste) {
+        setUsuarioLogado(aindaExiste);
+        mostrarAreaLogada(aindaExiste);
+      }
+    }
+  </script>
 </body>
 </html>
