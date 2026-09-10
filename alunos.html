@@ -69,8 +69,6 @@
       color: var(--agua2);
       font-weight: 600;
     }
-
-    /* LOGIN */
     #telaLogin {
       min-height: calc(100vh - 70px);
       display: flex;
@@ -87,185 +85,203 @@
       box-shadow: 0 20px 50px rgba(7,26,54,.12);
       text-align: center;
     }
-    .login-box h1 {
-      color: var(--azul);
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-    .login-box p {
-      color: var(--cinza);
-      font-size: 14px;
-      margin-bottom: 28px;
-      line-height: 1.5;
-    }
+    .login-box h1 { color: var(--azul); font-size: 24px; margin-bottom: 8px; }
+    .login-box p { color: var(--cinza); font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
     .login-box label {
-      display: block;
-      text-align: left;
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--azul);
-      margin-bottom: 6px;
-      margin-top: 14px;
+      display: block; text-align: left; font-size: 13px; font-weight: 700;
+      color: var(--azul); margin-bottom: 6px; margin-top: 14px;
     }
     .login-box input {
-      width: 100%;
-      padding: 13px 14px;
-      border: 2px solid rgba(7,26,54,.12);
-      border-radius: 10px;
-      font-size: 15px;
+      width: 100%; padding: 13px 14px; border: 2px solid rgba(7,26,54,.12);
+      border-radius: 10px; font-size: 15px;
     }
-    .login-box input:focus {
-      outline: none;
-      border-color: var(--dourado);
-    }
+    .login-box input:focus { outline: none; border-color: var(--dourado); }
     .login-box button {
-      width: 100%;
-      margin-top: 22px;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: var(--azul);
-      color: white;
-      font-weight: 700;
-      font-size: 15px;
-      cursor: pointer;
+      width: 100%; margin-top: 22px; padding: 14px; border: none;
+      border-radius: 10px; background: var(--azul); color: white;
+      font-weight: 700; font-size: 15px; cursor: pointer;
     }
     .login-box button:hover { background: var(--escuro); }
-    .erro-login {
-      color: var(--erro);
-      font-size: 13px;
-      margin-top: 14px;
-      display: none;
-    }
-
-    /* ÁREA LOGADA */
+    .erro-login { color: var(--erro); font-size: 13px; margin-top: 14px; display: none; }
     #areaLogada { display: none; }
-
     .hero {
-      background: var(--azul);
-      color: white;
-      text-align: center;
-      padding: 65px 6% 85px;
+      background: var(--azul); color: white; text-align: center;
+      padding: 55px 6% 75px;
     }
     .eyebrow {
-      color: #e0bd45;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 2px;
+      color: #e0bd45; font-size: 13px; font-weight: 700; letter-spacing: 2px;
     }
-    .hero h1 {
-      font-size: clamp(38px, 6vw, 64px);
-      margin: 14px 0;
-    }
+    .hero h1 { font-size: clamp(32px, 5vw, 56px); margin: 14px 0; }
     .hero h1 span { color: var(--agua2); }
-    .hero p {
-      max-width: 680px;
-      margin: auto;
-      line-height: 1.7;
-      color: #d9e0ea;
+    .hero p { max-width: 680px; margin: auto; line-height: 1.7; color: #d9e0ea; }
+    .container { width: min(1100px, 88%); margin: -42px auto 70px; }
+    .progresso {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 15px 40px rgba(7,26,54,.1);
+      margin-bottom: 22px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
     }
-    .container {
-      width: min(1100px, 88%);
-      margin: -42px auto 70px;
+    .prog-item { text-align: center; }
+    .prog-item strong {
+      display: block; font-size: 26px; color: var(--azul); font-weight: 800;
     }
+    .prog-item span { font-size: 12px; color: var(--cinza); }
+    .prog-acoes {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .btn-sec {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid rgba(7,26,54,.12);
+      background: var(--creme);
+      color: var(--azul);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-sec:hover { border-color: var(--dourado); }
+    .conquistas-box {
+      background: white;
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 15px 40px rgba(7,26,54,.1);
+      margin-bottom: 22px;
+    }
+    .conquistas-box h3 {
+      color: var(--azul);
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+    .conquistas-box > p {
+      color: var(--cinza);
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .conquistas-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 12px;
+    }
+    .conquista {
+      background: var(--creme);
+      border-radius: 14px;
+      padding: 16px 12px;
+      text-align: center;
+      border: 2px solid transparent;
+      transition: .2s;
+      opacity: 0.45;
+      filter: grayscale(1);
+    }
+    .conquista.desbloqueada {
+      opacity: 1;
+      filter: none;
+      border-color: rgba(85,214,194,.45);
+      background: linear-gradient(180deg, #f0fffc, #faf8ef);
+    }
+    .conquista .c-icone { font-size: 28px; margin-bottom: 8px; }
+    .conquista .c-nome {
+      font-weight: 800;
+      color: var(--azul);
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .conquista .c-desc {
+      color: var(--cinza);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .toast-conquista {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      z-index: 2000;
+      background: var(--azul);
+      color: white;
+      padding: 14px 22px;
+      border-radius: 14px;
+      box-shadow: 0 12px 40px rgba(0,0,0,.3);
+      font-weight: 700;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      opacity: 0;
+      transition: .35s;
+      max-width: 90%;
+    }
+    .toast-conquista.mostrar {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-conquista span { color: var(--agua2); }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 22px;
     }
     .card {
-      background: white;
-      border-radius: 18px;
-      padding: 30px;
-      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
-      transition: .2s;
+      background: white; border-radius: 18px; padding: 30px;
+      box-shadow: 0 15px 40px rgba(7, 26, 54, .1); transition: .2s;
     }
     .card:hover { transform: translateY(-4px); }
     .icon { font-size: 32px; margin-bottom: 15px; }
     .card h2 { color: var(--azul); margin-bottom: 10px; }
     .card p { color: var(--cinza); line-height: 1.6; }
     .button {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 12px 18px;
-      border-radius: 10px;
-      background: var(--azul);
-      color: white;
-      text-decoration: none;
-      font-weight: 700;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
+      display: inline-block; margin-top: 20px; padding: 12px 18px;
+      border-radius: 10px; background: var(--azul); color: white;
+      text-decoration: none; font-weight: 700; border: none;
+      cursor: pointer; font-size: 14px;
     }
     .button:hover { background: var(--escuro); }
     .notice {
-      margin-top: 22px;
-      background: var(--azul);
-      color: white;
-      border-radius: 18px;
-      padding: 28px;
-      line-height: 1.6;
+      margin-top: 22px; background: var(--azul); color: white;
+      border-radius: 18px; padding: 28px; line-height: 1.6;
     }
     .notice strong { color: var(--agua2); }
-    footer {
-      text-align: center;
-      color: var(--cinza);
-      padding: 25px;
-    }
-
-    /* RANKING */
+    footer { text-align: center; color: var(--cinza); padding: 25px; }
     #ranking { display: none; margin-top: 30px; }
     #ranking.ativo { display: block; }
     .ranking-header {
-      background: white;
-      border-radius: 18px;
-      padding: 28px;
+      background: white; border-radius: 18px; padding: 28px;
       box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
-      margin-bottom: 22px;
-      text-align: center;
+      margin-bottom: 22px; text-align: center;
     }
     .liga-atual {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      background: var(--azul);
-      color: white;
-      padding: 10px 20px;
-      border-radius: 999px;
-      font-weight: 800;
-      font-size: 15px;
-      margin-bottom: 12px;
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--azul); color: white; padding: 10px 20px;
+      border-radius: 999px; font-weight: 800; font-size: 15px; margin-bottom: 12px;
     }
     .liga-atual span { color: var(--agua2); }
     .ranking-header h2 { color: var(--azul); margin-bottom: 6px; }
     .ranking-header p { color: var(--cinza); font-size: 14px; }
     .xp-box {
-      margin-top: 18px;
-      display: flex;
-      justify-content: center;
-      gap: 18px;
-      flex-wrap: wrap;
+      margin-top: 18px; display: flex; justify-content: center;
+      gap: 18px; flex-wrap: wrap;
     }
     .xp-item {
-      background: var(--creme);
-      border-radius: 12px;
-      padding: 12px 20px;
-      min-width: 120px;
+      background: var(--creme); border-radius: 12px;
+      padding: 12px 20px; min-width: 120px;
     }
     .xp-item strong { display: block; color: var(--azul); font-size: 22px; }
     .xp-item small { color: var(--cinza); font-size: 12px; }
     .leaderboard {
-      background: white;
-      border-radius: 18px;
-      overflow: hidden;
+      background: white; border-radius: 18px; overflow: hidden;
       box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
     }
     .leaderboard-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(7, 26, 54, .08);
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; border-bottom: 1px solid rgba(7, 26, 54, .08);
     }
     .leaderboard-item:last-child { border-bottom: none; }
     .leaderboard-item.voce { background: rgba(85, 214, 194, 0.12); }
@@ -292,9 +308,8 @@
     .xp { font-weight: 800; color: var(--azul); font-size: 15px; }
     .xp span { color: var(--dourado); font-size: 12px; }
     .voltar-ranking {
-      display: inline-block; margin-bottom: 18px;
-      background: none; border: none; color: var(--azul);
-      font-weight: 700; cursor: pointer; font-size: 14px;
+      display: inline-block; margin-bottom: 18px; background: none;
+      border: none; color: var(--azul); font-weight: 700; cursor: pointer; font-size: 14px;
     }
     .como-funciona {
       margin-top: 22px; background: white; border-radius: 18px;
@@ -306,9 +321,33 @@
     .vazio-ranking {
       text-align: center; padding: 40px 20px; color: var(--cinza); font-size: 14px;
     }
-
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(7,26,54,.55); z-index: 1000;
+      align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.ativo { display: flex; }
+    .modal {
+      background: white; border-radius: 18px; padding: 28px;
+      width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    }
+    .modal h3 { color: var(--azul); margin-bottom: 16px; font-size: 18px; }
+    .modal label {
+      display: block; font-size: 13px; font-weight: 700;
+      color: var(--azul); margin-bottom: 6px; margin-top: 12px;
+    }
+    .modal input {
+      width: 100%; padding: 12px 14px; border: 2px solid rgba(7,26,54,.12);
+      border-radius: 10px; font-size: 14px;
+    }
+    .modal input:focus { outline: none; border-color: var(--dourado); }
+    .modal-botoes { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    .modal-msg { font-size: 13px; margin-top: 12px; display: none; }
+    .modal-msg.ok { color: #1a7a5a; display: block; }
+    .modal-msg.erro { color: var(--erro); display: block; }
     @media (max-width: 800px) {
       .grid { grid-template-columns: 1fr; }
+      .progresso { grid-template-columns: 1fr 1fr; }
       .header-direita { gap: 8px; }
       .nome-logado { display: none; }
     }
@@ -325,24 +364,19 @@
     </div>
   </header>
 
-  <!-- TELA DE LOGIN -->
   <div id="telaLogin">
     <div class="login-box">
       <h1>Área do Aluno</h1>
       <p>Digite o nome completo e a senha que a professora passou para você.</p>
-
       <label for="loginNome">Nome completo</label>
       <input type="text" id="loginNome" placeholder="Seu nome completo" autocomplete="off">
-
       <label for="loginSenha">Senha</label>
       <input type="password" id="loginSenha" placeholder="Sua senha" autocomplete="off">
-
       <button onclick="fazerLogin()">Entrar</button>
       <div class="erro-login" id="erroLogin">Nome ou senha incorretos.</div>
     </div>
   </div>
 
-  <!-- ÁREA LOGADA -->
   <div id="areaLogada">
     <section class="hero">
       <span class="eyebrow">ÁREA DO ALUNO</span>
@@ -351,6 +385,34 @@
     </section>
 
     <main class="container">
+      <div class="progresso" id="caixaProgresso">
+        <div class="prog-item">
+          <strong id="progXP">0</strong>
+          <span>XP total</span>
+        </div>
+        <div class="prog-item">
+          <strong id="progLiga">Bronze</strong>
+          <span>Liga</span>
+        </div>
+        <div class="prog-item">
+          <strong id="progPosicao">—</strong>
+          <span>Posição</span>
+        </div>
+        <div class="prog-item">
+          <strong id="progJogos">0</strong>
+          <span>Jogos feitos</span>
+        </div>
+        <div class="prog-acoes">
+          <button class="btn-sec" onclick="abrirModalSenha()">Alterar senha</button>
+        </div>
+      </div>
+
+      <div class="conquistas-box" id="caixaConquistas">
+        <h3>Conquistas</h3>
+        <p>Desbloqueie medalhas jogando e acumulando XP.</p>
+        <div class="conquistas-grid" id="gridConquistas"></div>
+      </div>
+
       <div class="grid" id="cardsArea">
         <article class="card">
           <div class="icon">🎮</div>
@@ -358,14 +420,12 @@
           <p>Aprenda palavras, frases e expressões enquanto joga e resolve desafios.</p>
           <a class="button" href="jogos.html">Entrar nos jogos</a>
         </article>
-
         <article class="card">
           <div class="icon">📖</div>
           <h2>Fábulas em Inglês</h2>
           <p>Leia histórias e fábulas em inglês e pratique compreensão, vocabulário e leitura.</p>
           <a class="button" href="#" onclick="alert('As fábulas da EVA serão adicionadas aqui!');return false">Ler fábulas</a>
         </article>
-
         <article class="card">
           <div class="icon">🏆</div>
           <h2>Ranking</h2>
@@ -373,31 +433,18 @@
           <button class="button" onclick="mostrarRanking()">Ver ranking</button>
         </article>
       </div>
-
-      <section id="ranking">
+            <section id="ranking">
         <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
-
         <div class="ranking-header">
-          <div class="liga-atual">
-            Liga atual: <span id="nomeLiga">Bronze</span>
-          </div>
+          <div class="liga-atual">Liga atual: <span id="nomeLiga">Bronze</span></div>
           <h2>Leaderboard</h2>
           <p>Ranking dos alunos da EVA Academy. Só aparece quem tem conta.</p>
-
           <div class="xp-box">
-            <div class="xp-item">
-              <strong id="meuXP">0</strong>
-              <small>Seu XP</small>
-            </div>
-            <div class="xp-item">
-              <strong id="minhaPosicao">—</strong>
-              <small>Sua posição</small>
-            </div>
+            <div class="xp-item"><strong id="meuXP">0</strong><small>Seu XP</small></div>
+            <div class="xp-item"><strong id="minhaPosicao">—</strong><small>Sua posição</small></div>
           </div>
         </div>
-
         <div class="leaderboard" id="listaRanking"></div>
-
         <div class="como-funciona">
           <h3>Como funciona</h3>
           <ul>
@@ -413,11 +460,115 @@
         <strong>Bem-vindo!</strong> Jogue, acumule XP e suba no ranking.
       </div>
     </main>
-
     <footer>© 2026 EVA Academy</footer>
   </div>
 
+  <div class="modal-overlay" id="modalSenha">
+    <div class="modal">
+      <h3>Alterar senha</h3>
+      <label for="senhaAtual">Senha atual</label>
+      <input type="password" id="senhaAtual" placeholder="Digite a senha atual">
+      <label for="senhaNova">Nova senha</label>
+      <input type="password" id="senhaNova" placeholder="Digite a nova senha">
+      <label for="senhaNova2">Confirmar nova senha</label>
+      <input type="password" id="senhaNova2" placeholder="Digite de novo">
+      <div class="modal-msg" id="msgSenha"></div>
+      <div class="modal-botoes">
+        <button class="button" onclick="salvarNovaSenha()">Salvar</button>
+        <button class="btn-sec" onclick="fecharModalSenha()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    const CONQUISTAS_DEF = [
+      { id: "primeiro_acesso", nome: "Bem-vindo!", desc: "Entrou na Área do Aluno", icone: "👋" },
+      { id: "primeiro_jogo", nome: "Primeiro jogo", desc: "Completou 1 jogo", icone: "🎮" },
+      { id: "jogos_5", nome: "Jogador", desc: "Completou 5 jogos", icone: "⭐" },
+      { id: "jogos_10", nome: "Dedicado", desc: "Completou 10 jogos", icone: "🌟" },
+      { id: "jogos_25", nome: "Campeão", desc: "Completou 25 jogos", icone: "🏅" },
+      { id: "xp_50", nome: "Iniciante", desc: "Alcançou 50 XP", icone: "🌱" },
+      { id: "xp_100", nome: "Em ascensão", desc: "Alcançou 100 XP", icone: "📈" },
+      { id: "xp_250", nome: "Estudioso", desc: "Alcançou 250 XP", icone: "📚" },
+      { id: "xp_500", nome: "Expert", desc: "Alcançou 500 XP", icone: "💎" },
+      { id: "xp_1000", nome: "Lenda", desc: "Alcançou 1000 XP", icone: "👑" },
+      { id: "top3", nome: "Pódio", desc: "Ficou no top 3", icone: "🥉" },
+      { id: "primeiro", nome: "Número 1", desc: "Ficou em 1º lugar", icone: "🥇" }
+    ];
+
+    function getConquistasUsuario(usuario) {
+      return Array.isArray(usuario.conquistas) ? usuario.conquistas : [];
+    }
+
+    function mostrarToastConquista(c) {
+      const el = document.createElement("div");
+      el.className = "toast-conquista";
+      el.innerHTML = c.icone + ' <span>Nova conquista:</span> ' + c.nome;
+      document.body.appendChild(el);
+      requestAnimationFrame(() => el.classList.add("mostrar"));
+      setTimeout(() => {
+        el.classList.remove("mostrar");
+        setTimeout(() => el.remove(), 400);
+      }, 3200);
+    }
+
+    function desbloquearConquista(usuario, conquistaId) {
+      const contas = carregarContas();
+      const idx = contas.findIndex(c => c.id === usuario.id);
+      if (idx === -1) return false;
+      if (!Array.isArray(contas[idx].conquistas)) contas[idx].conquistas = [];
+      if (contas[idx].conquistas.includes(conquistaId)) return false;
+      contas[idx].conquistas.push(conquistaId);
+      salvarContas(contas);
+      usuario.conquistas = contas[idx].conquistas;
+      setUsuarioLogado(usuario);
+      const def = CONQUISTAS_DEF.find(x => x.id === conquistaId);
+      if (def) mostrarToastConquista(def);
+      return true;
+    }
+
+    function verificarConquistas(usuario) {
+      if (!usuario) return;
+      const contas = carregarContas();
+      const atual = contas.find(c => c.id === usuario.id);
+      if (!atual) return;
+      const xp = atual.xp || 0;
+      const jogos = atual.jogosFeitos || 0;
+      const ranking = contas.slice().sort((a, b) => (b.xp || 0) - (a.xp || 0));
+      const pos = ranking.findIndex(c => c.id === atual.id) + 1;
+
+      desbloquearConquista(atual, "primeiro_acesso");
+      if (jogos >= 1) desbloquearConquista(atual, "primeiro_jogo");
+      if (jogos >= 5) desbloquearConquista(atual, "jogos_5");
+      if (jogos >= 10) desbloquearConquista(atual, "jogos_10");
+      if (jogos >= 25) desbloquearConquista(atual, "jogos_25");
+      if (xp >= 50) desbloquearConquista(atual, "xp_50");
+      if (xp >= 100) desbloquearConquista(atual, "xp_100");
+      if (xp >= 250) desbloquearConquista(atual, "xp_250");
+      if (xp >= 500) desbloquearConquista(atual, "xp_500");
+      if (xp >= 1000) desbloquearConquista(atual, "xp_1000");
+      if (pos > 0 && pos <= 3) desbloquearConquista(atual, "top3");
+      if (pos === 1) desbloquearConquista(atual, "primeiro");
+
+      const final = carregarContas().find(c => c.id === usuario.id) || atual;
+      setUsuarioLogado(final);
+      renderConquistas(final);
+    }
+
+    function renderConquistas(usuario) {
+      const grid = document.getElementById("gridConquistas");
+      if (!grid) return;
+      const desbloqueadas = getConquistasUsuario(usuario);
+      grid.innerHTML = CONQUISTAS_DEF.map(c => {
+        const ok = desbloqueadas.includes(c.id);
+        return '<div class="conquista' + (ok ? ' desbloqueada' : '') + '">' +
+          '<div class="c-icone">' + c.icone + '</div>' +
+          '<div class="c-nome">' + c.nome + '</div>' +
+          '<div class="c-desc">' + c.desc + '</div>' +
+          '</div>';
+      }).join("");
+    }
+
     const LIGAS = [
       "Bronze", "Prata", "Ouro", "Safira", "Rubi",
       "Esmeralda", "Ametista", "Pérola", "Obsidiana", "Diamante"
@@ -427,16 +578,13 @@
       try { return JSON.parse(localStorage.getItem("eva_contas")) || []; }
       catch (e) { return []; }
     }
-
     function salvarContas(lista) {
       localStorage.setItem("eva_contas", JSON.stringify(lista));
     }
-
     function getUsuarioLogado() {
       try { return JSON.parse(sessionStorage.getItem("eva_usuario_logado")); }
       catch (e) { return null; }
     }
-
     function setUsuarioLogado(usuario) {
       if (usuario) sessionStorage.setItem("eva_usuario_logado", JSON.stringify(usuario));
       else sessionStorage.removeItem("eva_usuario_logado");
@@ -446,25 +594,27 @@
       const nome = document.getElementById("loginNome").value.trim();
       const senha = document.getElementById("loginSenha").value.trim();
       const erro = document.getElementById("erroLogin");
-
       if (!nome || !senha) {
         erro.textContent = "Preencha nome e senha.";
         erro.style.display = "block";
         return;
       }
-
       const contas = carregarContas();
       const usuario = contas.find(c =>
         c.nomeCompleto.toLowerCase() === nome.toLowerCase() && c.senha === senha
       );
-
       if (!usuario) {
         erro.textContent = "Nome ou senha incorretos.";
         erro.style.display = "block";
         document.getElementById("loginSenha").value = "";
         return;
       }
-
+      const idx = contas.findIndex(c => c.id === usuario.id);
+      if (idx !== -1) {
+        contas[idx].ultimoAcesso = new Date().toISOString();
+        salvarContas(contas);
+        usuario.ultimoAcesso = contas[idx].ultimoAcesso;
+      }
       setUsuarioLogado(usuario);
       mostrarAreaLogada(usuario);
     }
@@ -485,8 +635,76 @@
       document.getElementById("areaLogada").style.display = "block";
       document.getElementById("btnSair").style.display = "inline-block";
       document.getElementById("nomeLogado").style.display = "inline";
-      document.getElementById("nomeLogado").textContent = usuario.nomeCompleto.split(" ")[0];
-      document.getElementById("saudacaoNome").textContent = usuario.nomeCompleto.split(" ")[0];
+      const primeiro = usuario.nomeCompleto.split(" ")[0];
+      document.getElementById("nomeLogado").textContent = primeiro;
+      document.getElementById("saudacaoNome").textContent = primeiro;
+      atualizarProgresso(usuario);
+      verificarConquistas(usuario);
+    }
+
+    function atualizarProgresso(usuario) {
+      const contas = carregarContas();
+      const atual = contas.find(c => c.id === usuario.id) || usuario;
+      const ranking = contas.slice().sort((a, b) => (b.xp || 0) - (a.xp || 0));
+      const pos = ranking.findIndex(c => c.id === atual.id) + 1;
+      document.getElementById("progXP").textContent = atual.xp || 0;
+      document.getElementById("progLiga").textContent = LIGAS[atual.liga || 0] || "Bronze";
+      document.getElementById("progPosicao").textContent = pos > 0 ? "#" + pos : "—";
+      document.getElementById("progJogos").textContent = atual.jogosFeitos || 0;
+    }
+
+    function abrirModalSenha() {
+      document.getElementById("modalSenha").classList.add("ativo");
+      document.getElementById("senhaAtual").value = "";
+      document.getElementById("senhaNova").value = "";
+      document.getElementById("senhaNova2").value = "";
+      const msg = document.getElementById("msgSenha");
+      msg.className = "modal-msg";
+      msg.textContent = "";
+    }
+    function fecharModalSenha() {
+      document.getElementById("modalSenha").classList.remove("ativo");
+    }
+    function salvarNovaSenha() {
+      const atual = document.getElementById("senhaAtual").value.trim();
+      const nova = document.getElementById("senhaNova").value.trim();
+      const nova2 = document.getElementById("senhaNova2").value.trim();
+      const msg = document.getElementById("msgSenha");
+      const logado = getUsuarioLogado();
+      if (!atual || !nova || !nova2) {
+        msg.className = "modal-msg erro";
+        msg.textContent = "Preencha todos os campos.";
+        return;
+      }
+      if (nova !== nova2) {
+        msg.className = "modal-msg erro";
+        msg.textContent = "A nova senha e a confirmação não são iguais.";
+        return;
+      }
+      if (nova.length < 3) {
+        msg.className = "modal-msg erro";
+        msg.textContent = "A nova senha precisa ter pelo menos 3 caracteres.";
+        return;
+      }
+      if (atual !== logado.senha) {
+        msg.className = "modal-msg erro";
+        msg.textContent = "Senha atual incorreta.";
+        return;
+      }
+      const contas = carregarContas();
+      const idx = contas.findIndex(c => c.id === logado.id);
+      if (idx === -1) {
+        msg.className = "modal-msg erro";
+        msg.textContent = "Conta não encontrada.";
+        return;
+      }
+      contas[idx].senha = nova;
+      salvarContas(contas);
+      logado.senha = nova;
+      setUsuarioLogado(logado);
+      msg.className = "modal-msg ok";
+      msg.textContent = "Senha alterada com sucesso!";
+      setTimeout(fecharModalSenha, 1200);
     }
 
     function gerarRanking() {
@@ -494,35 +712,30 @@
       const logado = getUsuarioLogado();
       const meuXP = logado ? (logado.xp || 0) : 0;
       const liga = logado ? (logado.liga || 0) : 0;
-
       let ranking = contas.map(c => ({
         id: c.id,
         nome: c.nomeCompleto,
         xp: c.xp || 0,
         voce: logado && c.id === logado.id
       }));
-
       ranking.sort((a, b) => b.xp - a.xp);
-
       return { ranking, liga, meuXP };
     }
 
     function renderRanking() {
       const { ranking, liga, meuXP } = gerarRanking();
       const lista = document.getElementById("listaRanking");
-
+      const logado = getUsuarioLogado();
+      if (logado) atualizarProgresso(logado);
       document.getElementById("nomeLiga").textContent = LIGAS[liga] || "Bronze";
       document.getElementById("meuXP").textContent = meuXP;
-
       if (ranking.length === 0) {
         document.getElementById("minhaPosicao").textContent = "—";
         lista.innerHTML = '<div class="vazio-ranking">Nenhum aluno no ranking ainda.<br>Assim que alguém jogar, aparece aqui.</div>';
         return;
       }
-
       const posicaoUsuario = ranking.findIndex(r => r.voce) + 1;
       document.getElementById("minhaPosicao").textContent = posicaoUsuario > 0 ? "#" + posicaoUsuario : "—";
-
       lista.innerHTML = ranking.map((item, index) => {
         const pos = index + 1;
         let classes = "leaderboard-item";
@@ -530,43 +743,42 @@
         if (pos === 1) classes += " top1";
         if (pos === 2) classes += " top2";
         if (pos === 3) classes += " top3";
-
         const partes = item.nome.trim().split(/\s+/);
         const inicial = partes.length >= 2
           ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
           : item.nome.slice(0, 2).toUpperCase();
-
         return `
           <div class="${classes}">
             <div class="posicao">${pos}</div>
             <div class="avatar">${inicial}</div>
-            <div class="nome">
-              ${item.nome}
-              ${item.voce ? "<small>Você</small>" : ""}
-            </div>
+            <div class="nome">${item.nome}${item.voce ? "<small>Você</small>" : ""}</div>
             <div class="xp">${item.xp} <span>XP</span></div>
-          </div>
-        `;
+          </div>`;
       }).join("");
     }
 
     function mostrarRanking() {
       document.getElementById("cardsArea").style.display = "none";
       document.getElementById("aviso").style.display = "none";
+      document.getElementById("caixaProgresso").style.display = "none";
+      document.getElementById("caixaConquistas").style.display = "none";
       document.getElementById("ranking").classList.add("ativo");
       renderRanking();
     }
-
     function voltarCards() {
       document.getElementById("ranking").classList.remove("ativo");
       document.getElementById("cardsArea").style.display = "grid";
       document.getElementById("aviso").style.display = "block";
+      document.getElementById("caixaProgresso").style.display = "grid";
+      document.getElementById("caixaConquistas").style.display = "block";
+      const logado = getUsuarioLogado();
+      if (logado) atualizarProgresso(logado);
     }
 
-    document.getElementById("loginSenha").addEventListener("keydown", function(e) {
+    document.getElementById("loginSenha").addEventListener("keydown", e => {
       if (e.key === "Enter") fazerLogin();
     });
-    document.getElementById("loginNome").addEventListener("keydown", function(e) {
+    document.getElementById("loginNome").addEventListener("keydown", e => {
       if (e.key === "Enter") document.getElementById("loginSenha").focus();
     });
 
