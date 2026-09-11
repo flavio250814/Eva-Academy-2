@@ -149,6 +149,70 @@
       cursor: pointer;
     }
     .btn-sec:hover { border-color: var(--dourado); }
+    .btn-notif {
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 2px solid rgba(7,26,54,.12);
+      background: var(--creme);
+      color: var(--azul);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .btn-notif:hover { border-color: var(--dourado); }
+    .btn-notif.ativo {
+      background: rgba(85,214,194,.2);
+      border-color: var(--agua);
+    }
+    .meta-diaria {
+      background: white;
+      border-radius: 18px;
+      padding: 22px 24px;
+      box-shadow: 0 15px 40px rgba(7,26,54,.1);
+      margin-bottom: 22px;
+    }
+    .meta-diaria-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .meta-diaria-topo h3 {
+      color: var(--azul);
+      font-size: 16px;
+      margin: 0;
+    }
+    .meta-diaria-topo .meta-nums {
+      font-weight: 800;
+      color: var(--azul);
+      font-size: 15px;
+    }
+    .meta-diaria-topo .meta-nums span { color: var(--dourado); }
+    .barra-meta {
+      height: 14px;
+      background: rgba(7,26,54,.08);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .barra-meta-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--agua), var(--dourado));
+      border-radius: 999px;
+      transition: width .4s ease;
+    }
+    .barra-meta-fill.completa {
+      background: linear-gradient(90deg, #2ecc71, var(--agua));
+    }
+    .meta-status {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--cinza);
+      font-weight: 600;
+    }
+    .meta-status.ok { color: #1a7a5a; }
     .conquistas-box {
       background: white;
       border-radius: 18px;
@@ -404,7 +468,19 @@
         </div>
         <div class="prog-acoes">
           <button class="btn-sec" onclick="abrirModalSenha()">Alterar senha</button>
+          <button class="btn-notif" id="btnNotif" onclick="ativarNotificacoes()">🔔 Ativar notificações</button>
         </div>
+      </div>
+
+      <div class="meta-diaria" id="caixaMetaDiaria">
+        <div class="meta-diaria-topo">
+          <h3>🎯 Meta de hoje</h3>
+          <div class="meta-nums"><span id="metaXpHoje">0</span> / <span id="metaAlvo">30</span> XP</div>
+        </div>
+        <div class="barra-meta">
+          <div class="barra-meta-fill" id="barraMetaFill"></div>
+        </div>
+        <div class="meta-status" id="metaStatus">Complete a meta para manter o ritmo!</div>
       </div>
 
       <div class="conquistas-box" id="caixaConquistas">
@@ -481,6 +557,164 @@
   </div>
 
   <script>
+    /* ===== NOTIFICAÇÕES ===== */
+    function notifSuportadas() {
+      return "Notification" in window;
+    }
+
+    function atualizarBotaoNotif() {
+      const btn = document.getElementById("btnNotif");
+      if (!btn) return;
+      if (!notifSuportadas()) {
+        btn.style.display = "none";
+        return;
+      }
+      if (Notification.permission === "granted") {
+        btn.textContent = "🔔 Notificações ativas";
+        btn.classList.add("ativo");
+      } else if (Notification.permission === "denied") {
+        btn.textContent = "🔔 Bloqueadas no navegador";
+        btn.classList.remove("ativo");
+      } else {
+        btn.textContent = "🔔 Ativar notificações";
+        btn.classList.remove("ativo");
+      }
+    }
+
+    async function registrarServiceWorker() {
+      if (!("serviceWorker" in navigator)) return null;
+      try {
+        return await navigator.serviceWorker.register("./sw.js");
+      } catch (e) {
+        console.warn("SW não registrado:", e);
+        return null;
+      }
+    }
+
+    async function ativarNotificacoes() {
+      if (!notifSuportadas()) {
+        alert("Seu navegador não suporta notificações.");
+        return;
+      }
+      if (Notification.permission === "denied") {
+        alert("As notificações estão bloqueadas. Ative nas configurações do navegador para este site.");
+        return;
+      }
+      const perm = await Notification.requestPermission();
+      atualizarBotaoNotif();
+      if (perm === "granted") {
+        await registrarServiceWorker();
+        enviarNotificacao("EVA Academy", "Notificações ativadas! Você será avisado sobre metas e conquistas.", "eva-ativacao");
+      }
+    }
+
+    function enviarNotificacao(titulo, corpo, tag) {
+      if (!notifSuportadas() || Notification.permission !== "granted") return;
+      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
+        navigator.serviceWorker.controller.postMessage({
+          type: "SHOW_NOTIFICATION",
+          title: titulo,
+          body: corpo,
+          tag: tag || "eva-geral",
+          renotify: true,
+          url: "./alunos.html"
+        });
+        return;
+      }
+      try {
+        const n = new Notification(titulo, { body: corpo, tag: tag || "eva-geral" });
+        n.onclick = function () { window.focus(); n.close(); };
+      } catch (e) {}
+    }
+
+    let lembreteMetaTimer = null;
+    function agendarLembreteMeta(usuario) {
+      if (lembreteMetaTimer) clearTimeout(lembreteMetaTimer);
+      if (!notifSuportadas() || Notification.permission !== "granted") return;
+      const meta = usuario && usuario.metaDiaria;
+      if (!meta || meta.completaHoje) return;
+      lembreteMetaTimer = setTimeout(function () {
+        const u = getUsuarioLogado();
+        if (!u) return;
+        const m = u.metaDiaria;
+        if (!m || m.completaHoje) return;
+        const falta = (m.alvo || 30) - (m.xpHoje || 0);
+        if (falta > 0) {
+          enviarNotificacao(
+            "Meta diária da EVA",
+            "Ainda faltam " + falta + " XP para a meta de hoje. Que tal um jogo rápido?",
+            "eva-lembrete-meta"
+          );
+        }
+      }, 2 * 60 * 60 * 1000);
+    }
+
+    const META_DIARIA_PADRAO = 30;
+
+    function dataHoje() {
+      const d = new Date();
+      return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+    }
+
+    function garantirMetaDiaria(usuario) {
+      const contas = carregarContas();
+      const idx = contas.findIndex(c => c.id === usuario.id);
+      if (idx === -1) return usuario;
+      let meta = contas[idx].metaDiaria;
+      const hoje = dataHoje();
+      if (!meta || typeof meta !== "object") {
+        meta = { alvo: META_DIARIA_PADRAO, xpHoje: 0, data: hoje, completaHoje: false };
+      } else if (meta.data !== hoje) {
+        meta = {
+          alvo: meta.alvo || META_DIARIA_PADRAO,
+          xpHoje: 0,
+          data: hoje,
+          completaHoje: false
+        };
+      }
+      contas[idx].metaDiaria = meta;
+      salvarContas(contas);
+      usuario.metaDiaria = meta;
+      setUsuarioLogado(usuario);
+      return usuario;
+    }
+
+    function renderMetaDiaria(usuario) {
+      usuario = garantirMetaDiaria(usuario);
+      const meta = usuario.metaDiaria || { alvo: META_DIARIA_PADRAO, xpHoje: 0, completaHoje: false };
+      const alvo = meta.alvo || META_DIARIA_PADRAO;
+      const pct = Math.min(100, Math.round(((meta.xpHoje || 0) / alvo) * 100));
+      document.getElementById("metaXpHoje").textContent = meta.xpHoje || 0;
+      document.getElementById("metaAlvo").textContent = alvo;
+      const fill = document.getElementById("barraMetaFill");
+      fill.style.width = pct + "%";
+      const status = document.getElementById("metaStatus");
+      if ((meta.xpHoje || 0) >= alvo) {
+        fill.classList.add("completa");
+        status.className = "meta-status ok";
+        status.textContent = "Meta de hoje concluída! 🎉 Continue praticando se quiser.";
+        if (!meta.notifEnviada) {
+          enviarNotificacao("Meta diária concluída! 🎯", "Você bateu a meta de XP de hoje na EVA Academy.", "eva-meta-completa");
+          meta.notifEnviada = true;
+          try {
+            const contas = carregarContas();
+            const idx = contas.findIndex(c => c.id === usuario.id);
+            if (idx !== -1) {
+              contas[idx].metaDiaria = meta;
+              salvarContas(contas);
+              usuario.metaDiaria = meta;
+              setUsuarioLogado(usuario);
+            }
+          } catch (e) {}
+        }
+      } else {
+        fill.classList.remove("completa");
+        status.className = "meta-status";
+        const falta = alvo - (meta.xpHoje || 0);
+        status.textContent = "Faltam " + falta + " XP para a meta de hoje.";
+      }
+    }
+
     const CONQUISTAS_DEF = [
       { id: "primeiro_acesso", nome: "Bem-vindo!", desc: "Entrou na Área do Aluno", icone: "👋" },
       { id: "primeiro_jogo", nome: "Primeiro jogo", desc: "Completou 1 jogo", icone: "🎮" },
@@ -493,7 +727,8 @@
       { id: "xp_500", nome: "Expert", desc: "Alcançou 500 XP", icone: "💎" },
       { id: "xp_1000", nome: "Lenda", desc: "Alcançou 1000 XP", icone: "👑" },
       { id: "top3", nome: "Pódio", desc: "Ficou no top 3", icone: "🥉" },
-      { id: "primeiro", nome: "Número 1", desc: "Ficou em 1º lugar", icone: "🥇" }
+      { id: "primeiro", nome: "Número 1", desc: "Ficou em 1º lugar", icone: "🥇" },
+      { id: "meta_diaria", nome: "Meta do dia", desc: "Completou a meta diária de XP", icone: "🎯" }
     ];
 
     function getConquistasUsuario(usuario) {
@@ -523,7 +758,10 @@
       usuario.conquistas = contas[idx].conquistas;
       setUsuarioLogado(usuario);
       const def = CONQUISTAS_DEF.find(x => x.id === conquistaId);
-      if (def) mostrarToastConquista(def);
+      if (def) {
+        mostrarToastConquista(def);
+        enviarNotificacao("Nova conquista!", def.icone + " " + def.nome + " — " + def.desc, "eva-conquista-" + conquistaId);
+      }
       return true;
     }
 
@@ -549,6 +787,8 @@
       if (xp >= 1000) desbloquearConquista(atual, "xp_1000");
       if (pos > 0 && pos <= 3) desbloquearConquista(atual, "top3");
       if (pos === 1) desbloquearConquista(atual, "primeiro");
+      const meta = atual.metaDiaria;
+      if (meta && meta.completaHoje) desbloquearConquista(atual, "meta_diaria");
 
       const final = carregarContas().find(c => c.id === usuario.id) || atual;
       setUsuarioLogado(final);
@@ -639,7 +879,11 @@
       document.getElementById("nomeLogado").textContent = primeiro;
       document.getElementById("saudacaoNome").textContent = primeiro;
       atualizarProgresso(usuario);
+      renderMetaDiaria(usuario);
       verificarConquistas(usuario);
+      atualizarBotaoNotif();
+      registrarServiceWorker();
+      agendarLembreteMeta(usuario);
     }
 
     function atualizarProgresso(usuario) {
@@ -762,17 +1006,24 @@
       document.getElementById("aviso").style.display = "none";
       document.getElementById("caixaProgresso").style.display = "none";
       document.getElementById("caixaConquistas").style.display = "none";
+      document.getElementById("caixaMetaDiaria").style.display = "none";
       document.getElementById("ranking").classList.add("ativo");
       renderRanking();
     }
+
     function voltarCards() {
       document.getElementById("ranking").classList.remove("ativo");
       document.getElementById("cardsArea").style.display = "grid";
       document.getElementById("aviso").style.display = "block";
       document.getElementById("caixaProgresso").style.display = "grid";
       document.getElementById("caixaConquistas").style.display = "block";
+      document.getElementById("caixaMetaDiaria").style.display = "block";
       const logado = getUsuarioLogado();
-      if (logado) atualizarProgresso(logado);
+      if (logado) {
+        atualizarProgresso(logado);
+        renderMetaDiaria(logado);
+        verificarConquistas(logado);
+      }
     }
 
     document.getElementById("loginSenha").addEventListener("keydown", e => {
@@ -781,6 +1032,9 @@
     document.getElementById("loginNome").addEventListener("keydown", e => {
       if (e.key === "Enter") document.getElementById("loginSenha").focus();
     });
+
+    atualizarBotaoNotif();
+    registrarServiceWorker();
 
     const usuario = getUsuarioLogado();
     if (usuario) {
