@@ -1,1050 +1,762 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>EVA Academy | Área do Aluno</title>
-  <style>
-    :root {
-      --azul: #071a36;
-      --escuro: #031023;
-      --dourado: #c9a227;
-      --agua: #55d6c2;
-      --agua2: #8be6d6;
-      --creme: #faf8ef;
-      --branco: #fff;
-      --cinza: #657086;
-      --erro: #d64545;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background: var(--creme);
-      color: #172238;
-      min-height: 100vh;
-    }
-    header {
-      background: var(--azul);
-      color: white;
-      padding: 22px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .brand { font-weight: 800; letter-spacing: 2px; }
-    .admin-link {
-      color: rgba(255,255,255,0.7);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 700;
-      letter-spacing: 1px;
-      padding: 6px 14px;
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 8px;
-      transition: 0.2s;
-    }
-    .admin-link:hover {
-      color: #071a36;
-      background: #8be6d6;
-      border-color: #8be6d6;
-    }
-    .sair-btn {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: rgba(255,255,255,0.8);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-    .sair-btn:hover {
-      background: rgba(255,255,255,0.1);
-      color: white;
-    }
-    .header-direita { display: flex; align-items: center; gap: 12px; }
-    .nome-logado {
-      font-size: 13px;
-      color: var(--agua2);
-      font-weight: 600;
-    }
-    #telaLogin {
-      min-height: calc(100vh - 70px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 40px 20px;
-    }
-    .login-box {
-      background: white;
-      border-radius: 20px;
-      padding: 40px 32px;
-      width: 100%;
-      max-width: 400px;
-      box-shadow: 0 20px 50px rgba(7,26,54,.12);
-      text-align: center;
-    }
-    .login-box h1 { color: var(--azul); font-size: 24px; margin-bottom: 8px; }
-    .login-box p { color: var(--cinza); font-size: 14px; margin-bottom: 28px; line-height: 1.5; }
-    .login-box label {
-      display: block; text-align: left; font-size: 13px; font-weight: 700;
-      color: var(--azul); margin-bottom: 6px; margin-top: 14px;
-    }
-    .login-box input {
-      width: 100%; padding: 13px 14px; border: 2px solid rgba(7,26,54,.12);
-      border-radius: 10px; font-size: 15px;
-    }
-    .login-box input:focus { outline: none; border-color: var(--dourado); }
-    .login-box button {
-      width: 100%; margin-top: 22px; padding: 14px; border: none;
-      border-radius: 10px; background: var(--azul); color: white;
-      font-weight: 700; font-size: 15px; cursor: pointer;
-    }
-    .login-box button:hover { background: var(--escuro); }
-    .erro-login { color: var(--erro); font-size: 13px; margin-top: 14px; display: none; }
-    #areaLogada { display: none; }
-    .hero {
-      background: var(--azul); color: white; text-align: center;
-      padding: 55px 6% 75px;
-    }
-    .eyebrow {
-      color: #e0bd45; font-size: 13px; font-weight: 700; letter-spacing: 2px;
-    }
-    .hero h1 { font-size: clamp(32px, 5vw, 56px); margin: 14px 0; }
-    .hero h1 span { color: var(--agua2); }
-    .hero p { max-width: 680px; margin: auto; line-height: 1.7; color: #d9e0ea; }
-    .container { width: min(1100px, 88%); margin: -42px auto 70px; }
-    .progresso {
-      background: white;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 15px 40px rgba(7,26,54,.1);
-      margin-bottom: 22px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-    }
-    .prog-item { text-align: center; }
-    .prog-item strong {
-      display: block; font-size: 26px; color: var(--azul); font-weight: 800;
-    }
-    .prog-item span { font-size: 12px; color: var(--cinza); }
-    .prog-acoes {
-      grid-column: 1 / -1;
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 8px;
-      flex-wrap: wrap;
-    }
-    .btn-sec {
-      padding: 10px 16px;
-      border-radius: 10px;
-      border: 2px solid rgba(7,26,54,.12);
-      background: var(--creme);
-      color: var(--azul);
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .btn-sec:hover { border-color: var(--dourado); }
-    .btn-notif {
-      padding: 10px 16px;
-      border-radius: 10px;
-      border: 2px solid rgba(7,26,54,.12);
-      background: var(--creme);
-      color: var(--azul);
-      font-weight: 700;
-      font-size: 13px;
-      cursor: pointer;
-    }
-    .btn-notif:hover { border-color: var(--dourado); }
-    .btn-notif.ativo {
-      background: rgba(85,214,194,.2);
-      border-color: var(--agua);
-    }
-    .meta-diaria {
-      background: white;
-      border-radius: 18px;
-      padding: 22px 24px;
-      box-shadow: 0 15px 40px rgba(7,26,54,.1);
-      margin-bottom: 22px;
-    }
-    .meta-diaria-topo {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .meta-diaria-topo h3 {
-      color: var(--azul);
-      font-size: 16px;
-      margin: 0;
-    }
-    .meta-diaria-topo .meta-nums {
-      font-weight: 800;
-      color: var(--azul);
-      font-size: 15px;
-    }
-    .meta-diaria-topo .meta-nums span { color: var(--dourado); }
-    .barra-meta {
-      height: 14px;
-      background: rgba(7,26,54,.08);
-      border-radius: 999px;
-      overflow: hidden;
-    }
-    .barra-meta-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--agua), var(--dourado));
-      border-radius: 999px;
-      transition: width .4s ease;
-    }
-    .barra-meta-fill.completa {
-      background: linear-gradient(90deg, #2ecc71, var(--agua));
-    }
-    .meta-status {
-      margin-top: 10px;
-      font-size: 13px;
-      color: var(--cinza);
-      font-weight: 600;
-    }
-    .meta-status.ok { color: #1a7a5a; }
-    .conquistas-box {
-      background: white;
-      border-radius: 18px;
-      padding: 24px;
-      box-shadow: 0 15px 40px rgba(7,26,54,.1);
-      margin-bottom: 22px;
-    }
-    .conquistas-box h3 {
-      color: var(--azul);
-      font-size: 18px;
-      margin-bottom: 6px;
-    }
-    .conquistas-box > p {
-      color: var(--cinza);
-      font-size: 13px;
-      margin-bottom: 16px;
-    }
-    .conquistas-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-      gap: 12px;
-    }
-    .conquista {
-      background: var(--creme);
-      border-radius: 14px;
-      padding: 16px 12px;
-      text-align: center;
-      border: 2px solid transparent;
-      transition: .2s;
-      opacity: 0.45;
-      filter: grayscale(1);
-    }
-    .conquista.desbloqueada {
-      opacity: 1;
-      filter: none;
-      border-color: rgba(85,214,194,.45);
-      background: linear-gradient(180deg, #f0fffc, #faf8ef);
-    }
-    .conquista .c-icone { font-size: 28px; margin-bottom: 8px; }
-    .conquista .c-nome {
-      font-weight: 800;
-      color: var(--azul);
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .conquista .c-desc {
-      color: var(--cinza);
-      font-size: 11px;
-      line-height: 1.35;
-    }
-    .toast-conquista {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      z-index: 2000;
-      background: var(--azul);
-      color: white;
-      padding: 14px 22px;
-      border-radius: 14px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.3);
-      font-weight: 700;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      opacity: 0;
-      transition: .35s;
-      max-width: 90%;
-    }
-    .toast-conquista.mostrar {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-    .toast-conquista span { color: var(--agua2); }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-    }
-    .card {
-      background: white; border-radius: 18px; padding: 30px;
-      box-shadow: 0 15px 40px rgba(7, 26, 54, .1); transition: .2s;
-    }
-    .card:hover { transform: translateY(-4px); }
-    .icon { font-size: 32px; margin-bottom: 15px; }
-    .card h2 { color: var(--azul); margin-bottom: 10px; }
-    .card p { color: var(--cinza); line-height: 1.6; }
-    .button {
-      display: inline-block; margin-top: 20px; padding: 12px 18px;
-      border-radius: 10px; background: var(--azul); color: white;
-      text-decoration: none; font-weight: 700; border: none;
-      cursor: pointer; font-size: 14px;
-    }
-    .button:hover { background: var(--escuro); }
-    .notice {
-      margin-top: 22px; background: var(--azul); color: white;
-      border-radius: 18px; padding: 28px; line-height: 1.6;
-    }
-    .notice strong { color: var(--agua2); }
-    footer { text-align: center; color: var(--cinza); padding: 25px; }
-    #ranking { display: none; margin-top: 30px; }
-    #ranking.ativo { display: block; }
-    .ranking-header {
-      background: white; border-radius: 18px; padding: 28px;
-      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
-      margin-bottom: 22px; text-align: center;
-    }
-    .liga-atual {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: var(--azul); color: white; padding: 10px 20px;
-      border-radius: 999px; font-weight: 800; font-size: 15px; margin-bottom: 12px;
-    }
-    .liga-atual span { color: var(--agua2); }
-    .ranking-header h2 { color: var(--azul); margin-bottom: 6px; }
-    .ranking-header p { color: var(--cinza); font-size: 14px; }
-    .xp-box {
-      margin-top: 18px; display: flex; justify-content: center;
-      gap: 18px; flex-wrap: wrap;
-    }
-    .xp-item {
-      background: var(--creme); border-radius: 12px;
-      padding: 12px 20px; min-width: 120px;
-    }
-    .xp-item strong { display: block; color: var(--azul); font-size: 22px; }
-    .xp-item small { color: var(--cinza); font-size: 12px; }
-    .leaderboard {
-      background: white; border-radius: 18px; overflow: hidden;
-      box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
-    }
-    .leaderboard-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 16px 20px; border-bottom: 1px solid rgba(7, 26, 54, .08);
-    }
-    .leaderboard-item:last-child { border-bottom: none; }
-    .leaderboard-item.voce { background: rgba(85, 214, 194, 0.12); }
-    .leaderboard-item.top1 { background: linear-gradient(90deg, rgba(201, 162, 39, 0.15), transparent); }
-    .leaderboard-item.top2 { background: linear-gradient(90deg, rgba(192, 192, 192, 0.18), transparent); }
-    .leaderboard-item.top3 { background: linear-gradient(90deg, rgba(205, 127, 50, 0.15), transparent); }
-    .posicao {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--azul); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 13px; flex-shrink: 0;
-    }
-    .leaderboard-item.top1 .posicao { background: #c9a227; color: #071a36; }
-    .leaderboard-item.top2 .posicao { background: #a8a8a8; color: #071a36; }
-    .leaderboard-item.top3 .posicao { background: #cd7f32; color: white; }
-    .avatar {
-      width: 40px; height: 40px; border-radius: 50%;
-      background: var(--azul); color: var(--agua2);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 14px; flex-shrink: 0;
-    }
-    .nome { flex: 1; font-weight: 700; color: var(--azul); }
-    .nome small { display: block; font-weight: 400; color: var(--cinza); font-size: 12px; }
-    .xp { font-weight: 800; color: var(--azul); font-size: 15px; }
-    .xp span { color: var(--dourado); font-size: 12px; }
-    .voltar-ranking {
-      display: inline-block; margin-bottom: 18px; background: none;
-      border: none; color: var(--azul); font-weight: 700; cursor: pointer; font-size: 14px;
-    }
-    .como-funciona {
-      margin-top: 22px; background: white; border-radius: 18px;
-      padding: 24px; box-shadow: 0 15px 40px rgba(7, 26, 54, .1);
-    }
-    .como-funciona h3 { color: var(--azul); margin-bottom: 12px; }
-    .como-funciona ul { color: var(--cinza); padding-left: 20px; line-height: 1.7; font-size: 14px; }
-    .como-funciona li { margin-bottom: 6px; }
-    .vazio-ranking {
-      text-align: center; padding: 40px 20px; color: var(--cinza); font-size: 14px;
-    }
-    .modal-overlay {
-      display: none; position: fixed; inset: 0;
-      background: rgba(7,26,54,.55); z-index: 1000;
-      align-items: center; justify-content: center; padding: 20px;
-    }
-    .modal-overlay.ativo { display: flex; }
-    .modal {
-      background: white; border-radius: 18px; padding: 28px;
-      width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,.25);
-    }
-    .modal h3 { color: var(--azul); margin-bottom: 16px; font-size: 18px; }
-    .modal label {
-      display: block; font-size: 13px; font-weight: 700;
-      color: var(--azul); margin-bottom: 6px; margin-top: 12px;
-    }
-    .modal input {
-      width: 100%; padding: 12px 14px; border: 2px solid rgba(7,26,54,.12);
-      border-radius: 10px; font-size: 14px;
-    }
-    .modal input:focus { outline: none; border-color: var(--dourado); }
-    .modal-botoes { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
-    .modal-msg { font-size: 13px; margin-top: 12px; display: none; }
-    .modal-msg.ok { color: #1a7a5a; display: block; }
-    .modal-msg.erro { color: var(--erro); display: block; }
-    @media (max-width: 800px) {
-      .grid { grid-template-columns: 1fr; }
-      .progresso { grid-template-columns: 1fr 1fr; }
-      .header-direita { gap: 8px; }
-      .nome-logado { display: none; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EVA Academy | Área do Aluno</title>
+<style>
+:root{--azul:#071a36;--escuro:#031023;--dourado:#c9a227;--agua:#55d6c2;--agua2:#8be6d6;--creme:#faf8ef;--cinza:#657086;--erro:#d64545}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--creme);color:#172238;min-height:100vh}
+header{background:var(--azul);color:#fff;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:800;letter-spacing:2px}
+.admin-link{color:rgba(255,255,255,.7);text-decoration:none;font-size:13px;font-weight:700;padding:6px 12px;border:1px solid rgba(255,255,255,.3);border-radius:8px}
+.admin-link:hover{background:var(--agua2);color:var(--azul);border-color:var(--agua2)}
+.sair-btn{background:none;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.85);padding:6px 12px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer}
+.header-direita{display:flex;align-items:center;gap:10px}
+.nome-logado{font-size:13px;color:var(--agua2);font-weight:600}
+#telaLogin{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.login-box{background:#fff;border-radius:20px;padding:36px 28px;width:100%;max-width:400px;box-shadow:0 20px 50px rgba(7,26,54,.12);text-align:center}
+.login-box h1{color:var(--azul);font-size:24px;margin-bottom:8px}
+.login-box p{color:var(--cinza);font-size:14px;margin-bottom:24px;line-height:1.5}
+.login-box label{display:block;text-align:left;font-size:13px;font-weight:700;color:var(--azul);margin:12px 0 6px}
+.login-box input{width:100%;padding:12px 14px;border:2px solid rgba(7,26,54,.12);border-radius:10px;font-size:15px}
+.login-box input:focus{outline:none;border-color:var(--dourado)}
+.login-box button{width:100%;margin-top:18px;padding:14px;border:none;border-radius:10px;background:var(--azul);color:#fff;font-weight:700;font-size:15px;cursor:pointer}
+.erro-login{color:var(--erro);font-size:13px;margin-top:12px;display:none}
+#areaLogada{display:none}
+.hero{background:var(--azul);color:#fff;text-align:center;padding:50px 6% 70px}
+.eyebrow{color:#e0bd45;font-size:13px;font-weight:700;letter-spacing:2px}
+.hero h1{font-size:clamp(30px,5vw,52px);margin:12px 0}
+.hero h1 span{color:var(--agua2)}
+.hero p{max-width:680px;margin:auto;line-height:1.7;color:#d9e0ea}
+.container{width:min(1100px,88%);margin:-40px auto 60px}
+.progresso{background:#fff;border-radius:18px;padding:20px;box-shadow:0 15px 40px rgba(7,26,54,.1);margin-bottom:18px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.prog-item{text-align:center}
+.prog-item strong{display:block;font-size:22px;color:var(--azul);font-weight:800}
+.prog-item span{font-size:11px;color:var(--cinza)}
+.prog-acoes{grid-column:1/-1;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+.btn-sec,.btn-notif{padding:9px 14px;border-radius:10px;border:2px solid rgba(7,26,54,.12);background:var(--creme);color:var(--azul);font-weight:700;font-size:12px;cursor:pointer}
+.btn-notif.ativo{background:rgba(85,214,194,.2);border-color:var(--agua)}
+.btn-gelo{padding:9px 14px;border-radius:10px;border:2px solid rgba(85,214,194,.4);background:rgba(85,214,194,.15);color:var(--azul);font-weight:700;font-size:12px;cursor:pointer}
+.btn-gelo:disabled{opacity:.45;cursor:not-allowed}
+.meta-diaria,.conquistas-box,.missoes-box,.avatar-box,.loja-box{background:#fff;border-radius:18px;padding:20px;box-shadow:0 15px 40px rgba(7,26,54,.1);margin-bottom:18px}
+.meta-diaria-topo{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px}
+.meta-diaria-topo h3,.conquistas-box h3,.missoes-box h3,.avatar-box h3,.loja-box h3{color:var(--azul);font-size:16px;margin:0 0 6px}
+.meta-nums{font-weight:800;color:var(--azul);font-size:14px}
+.meta-nums span{color:var(--dourado)}
+.barra-meta{height:12px;background:rgba(7,26,54,.08);border-radius:999px;overflow:hidden}
+.barra-meta-fill{height:100%;width:0;background:linear-gradient(90deg,var(--agua),var(--dourado));border-radius:999px;transition:width .4s}
+.barra-meta-fill.completa{background:linear-gradient(90deg,#2ecc71,var(--agua))}
+.meta-status{margin-top:8px;font-size:12px;color:var(--cinza);font-weight:600}
+.meta-status.ok{color:#1a7a5a}
+.conquistas-box>p,.missoes-box>p,.avatar-box>p,.loja-box>p{color:var(--cinza);font-size:12px;margin-bottom:12px}
+.conquistas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.conquista{background:var(--creme);border-radius:12px;padding:12px 8px;text-align:center;opacity:.4;filter:grayscale(1);border:2px solid transparent}
+.conquista.desbloqueada{opacity:1;filter:none;border-color:rgba(85,214,194,.4)}
+.c-icone{font-size:24px;margin-bottom:4px}
+.c-nome{font-weight:800;color:var(--azul);font-size:12px}
+.c-desc{color:var(--cinza);font-size:10px}
+.toast-conquista{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);z-index:2000;background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;font-size:13px;opacity:0;transition:.35s;max-width:90%}
+.toast-conquista.mostrar{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast-conquista span{color:var(--agua2)}
+.missao-item{background:var(--creme);border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.missao-item .mt{font-weight:800;color:var(--azul);font-size:14px}
+.missao-item .md{color:var(--cinza);font-size:12px;margin:4px 0 8px}
+.missao-barra{height:8px;background:rgba(7,26,54,.08);border-radius:999px;overflow:hidden}
+.missao-fill{height:100%;background:var(--agua);border-radius:999px}
+.avatar-opcoes,.moldura-opcoes{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.av-btn,.mold-btn{width:44px;height:44px;border-radius:12px;border:2px solid rgba(7,26,54,.12);background:var(--creme);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.av-btn.sel,.mold-btn.sel{border-color:var(--dourado);box-shadow:0 0 0 2px rgba(201,162,39,.25)}
+.mold-btn{font-size:11px;font-weight:800;color:var(--azul)}
+.preview-avatar{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:10px;border:3px solid #ccc}
+.preview-avatar.padrao{border-color:#9aa}
+.preview-avatar.prata{border-color:#a8a8a8}
+.preview-avatar.ouro{border-color:#c9a227}
+.preview-avatar.agua{border-color:#55d6c2}
+.preview-avatar.fogo{border-color:#e74c3c}
+.loja-saldo{display:inline-flex;align-items:center;gap:6px;background:var(--creme);padding:8px 14px;border-radius:999px;font-weight:800;color:var(--azul);font-size:14px;margin-bottom:12px}
+.loja-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.loja-item{background:var(--creme);border-radius:12px;padding:12px 10px;text-align:center;border:2px solid transparent}
+.loja-item.comprado{border-color:rgba(85,214,194,.5)}
+.loja-item .li-icone{font-size:26px;margin-bottom:4px}
+.loja-item .li-nome{font-weight:800;color:var(--azul);font-size:12px}
+.loja-item .li-preco{color:var(--dourado);font-size:11px;font-weight:700;margin:4px 0 8px}
+.loja-item button{padding:6px 10px;border:none;border-radius:8px;background:var(--azul);color:#fff;font-size:11px;font-weight:700;cursor:pointer}
+.loja-item button:disabled{background:#ccc;cursor:not-allowed}
+.destaque-semana{background:linear-gradient(135deg,#071a36,#10294c);color:#fff;border-radius:18px;padding:18px 20px;margin-bottom:18px;display:flex;align-items:center;gap:14px;box-shadow:0 15px 40px rgba(7,26,54,.15)}
+.destaque-semana .ds-avatar{width:56px;height:56px;border-radius:14px;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:28px;border:3px solid #c9a227}
+.destaque-semana .ds-info{flex:1}
+.destaque-semana .ds-label{font-size:11px;color:#8be6d6;font-weight:700;letter-spacing:1px}
+.destaque-semana .ds-nome{font-size:18px;font-weight:800;margin:2px 0}
+.destaque-semana .ds-meta{font-size:12px;color:#d9e0ea}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:#fff;border-radius:18px;padding:24px;box-shadow:0 15px 40px rgba(7,26,54,.1);transition:.2s}
+.card:hover{transform:translateY(-3px)}
+.icon{font-size:28px;margin-bottom:10px}
+.card h2{color:var(--azul);margin-bottom:8px;font-size:18px}
+.card p{color:var(--cinza);line-height:1.5;font-size:14px}
+.button{display:inline-block;margin-top:14px;padding:11px 16px;border-radius:10px;background:var(--azul);color:#fff;text-decoration:none;font-weight:700;border:none;cursor:pointer;font-size:13px}
+.notice{margin-top:18px;background:var(--azul);color:#fff;border-radius:16px;padding:20px;line-height:1.5;font-size:14px}
+.notice strong{color:var(--agua2)}
+footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
+#ranking{display:none;margin-top:20px}
+#ranking.ativo{display:block}
+.ranking-header{background:#fff;border-radius:18px;padding:22px;box-shadow:0 15px 40px rgba(7,26,54,.1);margin-bottom:16px;text-align:center}
+.liga-atual{display:inline-flex;background:var(--azul);color:#fff;padding:8px 16px;border-radius:999px;font-weight:800;font-size:14px;margin-bottom:10px}
+.liga-atual span{color:var(--agua2);margin-left:6px}
+.leaderboard{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 15px 40px rgba(7,26,54,.1)}
+.leaderboard-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(7,26,54,.08)}
+.leaderboard-item.voce{background:rgba(85,214,194,.12)}
+.leaderboard-item.top1{background:linear-gradient(90deg,rgba(201,162,39,.15),transparent)}
+.leaderboard-item.top2{background:linear-gradient(90deg,rgba(192,192,192,.15),transparent)}
+.leaderboard-item.top3{background:linear-gradient(90deg,rgba(205,127,50,.12),transparent)}
+.leaderboard-item.semana{background:linear-gradient(90deg,rgba(201,162,39,.22),transparent)}
+.posicao{width:28px;height:28px;border-radius:50%;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
+.avatar{width:40px;height:40px;border-radius:12px;background:var(--azul);color:var(--agua2);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid #9aa}
+.avatar.prata{border-color:#a8a8a8}.avatar.ouro{border-color:#c9a227}.avatar.agua{border-color:#55d6c2}.avatar.fogo{border-color:#e74c3c}
+.nome{flex:1;font-weight:700;color:var(--azul);font-size:14px}
+.nome small{display:block;font-weight:400;color:var(--cinza);font-size:11px}
+.xp{font-weight:800;color:var(--azul);font-size:14px}
+.xp span{color:var(--dourado);font-size:11px}
+.voltar-ranking{background:none;border:none;color:var(--azul);font-weight:700;cursor:pointer;margin-bottom:12px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(7,26,54,.55);z-index:1000;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.ativo{display:flex}
+.modal{background:#fff;border-radius:18px;padding:24px;width:100%;max-width:400px}
+.modal h3{color:var(--azul);margin-bottom:12px}
+.modal label{display:block;font-size:12px;font-weight:700;color:var(--azul);margin:10px 0 4px}
+.modal input{width:100%;padding:11px;border:2px solid rgba(7,26,54,.12);border-radius:10px}
+.modal-botoes{display:flex;gap:8px;margin-top:14px}
+.modal-msg{font-size:12px;margin-top:10px;display:none}
+.modal-msg.ok{color:#1a7a5a;display:block}.modal-msg.erro{color:var(--erro);display:block}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.progresso{grid-template-columns:1fr 1fr}.nome-logado{display:none}}
+</style>
 </head>
 <body>
-
-  <header>
-    <div class="brand">EVA ACADEMY</div>
-    <div class="header-direita">
-      <span class="nome-logado" id="nomeLogado" style="display:none"></span>
-      <button class="sair-btn" id="btnSair" style="display:none" onclick="sair()">Sair</button>
-      <a class="admin-link" href="admin.html">Admin</a>
-    </div>
-  </header>
-
-  <div id="telaLogin">
-    <div class="login-box">
-      <h1>Área do Aluno</h1>
-      <p>Digite o nome completo e a senha que a professora passou para você.</p>
-      <label for="loginNome">Nome completo</label>
-      <input type="text" id="loginNome" placeholder="Seu nome completo" autocomplete="off">
-      <label for="loginSenha">Senha</label>
-      <input type="password" id="loginSenha" placeholder="Sua senha" autocomplete="off">
-      <button onclick="fazerLogin()">Entrar</button>
-      <div class="erro-login" id="erroLogin">Nome ou senha incorretos.</div>
-    </div>
+<header>
+  <div class="brand">EVA ACADEMY</div>
+  <div class="header-direita">
+    <span class="nome-logado" id="nomeLogado" style="display:none"></span>
+    <button class="sair-btn" id="btnSair" style="display:none" onclick="sair()">Sair</button>
+    <a class="admin-link" href="admin.html">Admin</a>
   </div>
+</header>
 
-  <div id="areaLogada">
-    <section class="hero">
-      <span class="eyebrow">ÁREA DO ALUNO</span>
-      <h1>Aprenda inglês de um jeito <span>divertido.</span></h1>
-      <p>Olá, <strong id="saudacaoNome">aluno</strong>! Este é o seu espaço na EVA Academy.</p>
+<div id="telaLogin">
+  <div class="login-box">
+    <h1>Área do Aluno</h1>
+    <p>Digite o nome completo e a senha que a professora passou.</p>
+    <label>Nome completo</label>
+    <input type="text" id="loginNome" autocomplete="off">
+    <label>Senha</label>
+    <input type="password" id="loginSenha" autocomplete="off">
+    <button onclick="fazerLogin()">Entrar</button>
+    <div class="erro-login" id="erroLogin">Nome ou senha incorretos.</div>
+  </div>
+</div>
+
+<div id="areaLogada">
+  <section class="hero">
+    <span class="eyebrow">ÁREA DO ALUNO</span>
+    <h1>Aprenda inglês de um jeito <span>divertido.</span></h1>
+    <p>Olá, <strong id="saudacaoNome">aluno</strong>! Este é o seu espaço na EVA Academy.</p>
+  </section>
+  <main class="container">
+    <div class="progresso" id="caixaProgresso">
+      <div class="prog-item"><strong id="progXP">0</strong><span>XP total</span></div>
+      <div class="prog-item"><strong id="progSemana">0</strong><span>XP semana</span></div>
+      <div class="prog-item"><strong id="progLiga">Bronze</strong><span>Liga</span></div>
+      <div class="prog-item"><strong id="progOfensiva">0</strong><span>Ofensiva</span></div>
+      <div class="prog-item"><strong id="progPosicao">—</strong><span>Posição</span></div>
+      <div class="prog-item"><strong id="progMoedas">0</strong><span>Moedas</span></div>
+      <div class="prog-acoes">
+        <button class="btn-sec" onclick="abrirModalSenha()">Alterar senha</button>
+        <button class="btn-notif" id="btnNotif" onclick="ativarNotificacoes()">🔔 Notificações</button>
+        <button class="btn-gelo" id="btnGelo" onclick="congelarOfensiva()">🧊 Congelar ofensiva</button>
+      </div>
+    </div>
+
+    <div class="destaque-semana" id="caixaAlunoSemana" style="display:none">
+      <div class="ds-avatar" id="dsAvatar">🎓</div>
+      <div class="ds-info">
+        <div class="ds-label">⭐ ALUNO DA SEMANA</div>
+        <div class="ds-nome" id="dsNome">—</div>
+        <div class="ds-meta" id="dsMeta">Mais XP nesta semana</div>
+      </div>
+    </div>
+
+    <div class="meta-diaria" id="caixaMetaDiaria">
+      <div class="meta-diaria-topo">
+        <h3>🎯 Meta de hoje</h3>
+        <div class="meta-nums"><span id="metaXpHoje">0</span> / <span id="metaAlvo">30</span> XP</div>
+      </div>
+      <div class="barra-meta"><div class="barra-meta-fill" id="barraMetaFill"></div></div>
+      <div class="meta-status" id="metaStatus">Complete a meta para manter a ofensiva!</div>
+    </div>
+
+    <div class="missoes-box" id="caixaMissoes">
+      <h3>📋 Missões da professora</h3>
+      <p>Complete os desafios da semana.</p>
+      <div id="listaMissoesAluno"></div>
+    </div>
+
+    <div class="avatar-box" id="caixaAvatar">
+      <h3>🎭 Seu avatar</h3>
+      <p>Escolha um emoji. Molduras desbloqueiam com conquistas ou na loja.</p>
+      <div class="preview-avatar padrao" id="previewAvatar">🎓</div>
+      <div class="avatar-opcoes" id="avatarOpcoes"></div>
+      <div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--azul)">Moldura</div>
+      <div class="moldura-opcoes" id="molduraOpcoes"></div>
+    </div>
+
+    <div class="loja-box" id="caixaLoja">
+      <h3>🛍️ Loja de recompensas</h3>
+      <p>Ganhe moedas jogando e troque por molduras e badges.</p>
+      <div class="loja-saldo">🪙 <span id="saldoMoedas">0</span> moedas</div>
+      <div class="loja-grid" id="lojaGrid"></div>
+    </div>
+
+    <div class="conquistas-box" id="caixaConquistas">
+      <h3>Conquistas</h3>
+      <p>Desbloqueie medalhas jogando e acumulando XP.</p>
+      <div class="conquistas-grid" id="gridConquistas"></div>
+    </div>
+
+    <div class="grid" id="cardsArea">
+      <article class="card">
+        <div class="icon">🎮</div>
+        <h2>Jogos</h2>
+        <p>Pratique inglês e português com desafios e ganhe XP.</p>
+        <a class="button" href="jogos.html">Entrar nos jogos</a>
+      </article>
+      <article class="card">
+        <div class="icon">📖</div>
+        <h2>Fábulas</h2>
+        <p>Leia histórias em inglês e pratique compreensão.</p>
+        <a class="button" href="#" onclick="alert('Em breve!');return false">Ler fábulas</a>
+      </article>
+      <article class="card">
+        <div class="icon">🏆</div>
+        <h2>Ranking</h2>
+        <p>Disputa semanal por liga, no estilo Duolingo.</p>
+        <button class="button" onclick="mostrarRanking()">Ver ranking</button>
+      </article>
+    </div>
+
+    <section id="ranking">
+      <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
+      <div class="ranking-header">
+        <div class="liga-atual">Liga: <span id="nomeLiga">Bronze</span></div>
+        <h2>Leaderboard da semana</h2>
+        <p>XP da semana. Top 3 sobem de liga no reset.</p>
+      </div>
+      <div class="leaderboard" id="listaRanking"></div>
     </section>
 
-    <main class="container">
-      <div class="progresso" id="caixaProgresso">
-        <div class="prog-item">
-          <strong id="progXP">0</strong>
-          <span>XP total</span>
-        </div>
-        <div class="prog-item">
-          <strong id="progLiga">Bronze</strong>
-          <span>Liga</span>
-        </div>
-        <div class="prog-item">
-          <strong id="progPosicao">—</strong>
-          <span>Posição</span>
-        </div>
-        <div class="prog-item">
-          <strong id="progJogos">0</strong>
-          <span>Jogos feitos</span>
-        </div>
-        <div class="prog-acoes">
-          <button class="btn-sec" onclick="abrirModalSenha()">Alterar senha</button>
-          <button class="btn-notif" id="btnNotif" onclick="ativarNotificacoes()">🔔 Ativar notificações</button>
-        </div>
-      </div>
+    <div class="notice" id="aviso"><strong>Dica:</strong> complete a meta diária para manter sua ofensiva.</div>
+  </main>
+  <footer>© 2026 EVA Academy</footer>
+</div>
 
-      <div class="meta-diaria" id="caixaMetaDiaria">
-        <div class="meta-diaria-topo">
-          <h3>🎯 Meta de hoje</h3>
-          <div class="meta-nums"><span id="metaXpHoje">0</span> / <span id="metaAlvo">30</span> XP</div>
-        </div>
-        <div class="barra-meta">
-          <div class="barra-meta-fill" id="barraMetaFill"></div>
-        </div>
-        <div class="meta-status" id="metaStatus">Complete a meta para manter o ritmo!</div>
-      </div>
-
-      <div class="conquistas-box" id="caixaConquistas">
-        <h3>Conquistas</h3>
-        <p>Desbloqueie medalhas jogando e acumulando XP.</p>
-        <div class="conquistas-grid" id="gridConquistas"></div>
-      </div>
-
-      <div class="grid" id="cardsArea">
-        <article class="card">
-          <div class="icon">🎮</div>
-          <h2>Jogos em Inglês</h2>
-          <p>Aprenda palavras, frases e expressões enquanto joga e resolve desafios.</p>
-          <a class="button" href="jogos.html">Entrar nos jogos</a>
-        </article>
-        <article class="card">
-          <div class="icon">📖</div>
-          <h2>Fábulas em Inglês</h2>
-          <p>Leia histórias e fábulas em inglês e pratique compreensão, vocabulário e leitura.</p>
-          <a class="button" href="#" onclick="alert('As fábulas da EVA serão adicionadas aqui!');return false">Ler fábulas</a>
-        </article>
-        <article class="card">
-          <div class="icon">🏆</div>
-          <h2>Ranking</h2>
-          <p>Compete com outros alunos e suba de liga. Sistema de XP e ligas igual ao Duolingo.</p>
-          <button class="button" onclick="mostrarRanking()">Ver ranking</button>
-        </article>
-      </div>
-            <section id="ranking">
-        <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
-        <div class="ranking-header">
-          <div class="liga-atual">Liga atual: <span id="nomeLiga">Bronze</span></div>
-          <h2>Leaderboard</h2>
-          <p>Ranking dos alunos da EVA Academy. Só aparece quem tem conta.</p>
-          <div class="xp-box">
-            <div class="xp-item"><strong id="meuXP">0</strong><small>Seu XP</small></div>
-            <div class="xp-item"><strong id="minhaPosicao">—</strong><small>Sua posição</small></div>
-          </div>
-        </div>
-        <div class="leaderboard" id="listaRanking"></div>
-        <div class="como-funciona">
-          <h3>Como funciona</h3>
-          <ul>
-            <li>Cada acerto nos jogos vale <strong>+10 XP</strong>.</li>
-            <li>Completar um jogo inteiro dá bônus de <strong>+25 XP</strong>.</li>
-            <li>Só alunos com conta aparecem no ranking.</li>
-            <li>Ligas: Bronze → Prata → Ouro → Safira → Rubi → Esmeralda → Ametista → Pérola → Obsidiana → Diamante</li>
-          </ul>
-        </div>
-      </section>
-
-      <div class="notice" id="aviso">
-        <strong>Bem-vindo!</strong> Jogue, acumule XP e suba no ranking.
-      </div>
-    </main>
-    <footer>© 2026 EVA Academy</footer>
-  </div>
-
-  <div class="modal-overlay" id="modalSenha">
-    <div class="modal">
-      <h3>Alterar senha</h3>
-      <label for="senhaAtual">Senha atual</label>
-      <input type="password" id="senhaAtual" placeholder="Digite a senha atual">
-      <label for="senhaNova">Nova senha</label>
-      <input type="password" id="senhaNova" placeholder="Digite a nova senha">
-      <label for="senhaNova2">Confirmar nova senha</label>
-      <input type="password" id="senhaNova2" placeholder="Digite de novo">
-      <div class="modal-msg" id="msgSenha"></div>
-      <div class="modal-botoes">
-        <button class="button" onclick="salvarNovaSenha()">Salvar</button>
-        <button class="btn-sec" onclick="fecharModalSenha()">Cancelar</button>
-      </div>
+<div class="modal-overlay" id="modalSenha">
+  <div class="modal">
+    <h3>Alterar senha</h3>
+    <label>Senha atual</label><input type="password" id="senhaAtual">
+    <label>Nova senha</label><input type="password" id="senhaNova">
+    <label>Confirmar</label><input type="password" id="senhaNova2">
+    <div class="modal-msg" id="msgSenha"></div>
+    <div class="modal-botoes">
+      <button class="button" onclick="salvarNovaSenha()">Salvar</button>
+      <button class="btn-sec" onclick="fecharModalSenha()">Cancelar</button>
     </div>
   </div>
+</div>
+<script>
+const LOJA_ITENS = [
+  { id: "mold_prata", tipo: "moldura", valor: "prata", nome: "Moldura Prata", icone: "⬜", preco: 30 },
+  { id: "mold_ouro", tipo: "moldura", valor: "ouro", nome: "Moldura Ouro", icone: "🟨", preco: 60 },
+  { id: "mold_agua", tipo: "moldura", valor: "agua", nome: "Moldura Água", icone: "🟦", preco: 50 },
+  { id: "mold_fogo", tipo: "moldura", valor: "fogo", nome: "Moldura Fogo", icone: "🟥", preco: 80 },
+  { id: "badge_estrela", tipo: "badge", valor: "⭐", nome: "Badge Estrela", icone: "⭐", preco: 25 },
+  { id: "badge_fogo", tipo: "badge", valor: "🔥", nome: "Badge Fogo", icone: "🔥", preco: 40 },
+  { id: "badge_coroa", tipo: "badge", valor: "👑", nome: "Badge Coroa", icone: "👑", preco: 100 },
+  { id: "badge_livro", tipo: "badge", valor: "📖", nome: "Badge Livro", icone: "📖", preco: 35 }
+];
 
-  <script>
-    /* ===== NOTIFICAÇÕES ===== */
-    function notifSuportadas() {
-      return "Notification" in window;
+function getMoedas(u){ return typeof u.moedas === "number" ? u.moedas : 0; }
+function getComprados(u){ return Array.isArray(u.itensComprados) ? u.itensComprados : []; }
+
+function renderLoja(usuario){
+  const saldo = document.getElementById("saldoMoedas");
+  const grid = document.getElementById("lojaGrid");
+  if(!saldo||!grid) return;
+  const moedas = getMoedas(usuario);
+  const comprados = getComprados(usuario);
+  saldo.textContent = moedas;
+  grid.innerHTML = LOJA_ITENS.map(item => {
+    const tem = comprados.includes(item.id);
+    const pode = moedas >= item.preco;
+    let btn = tem
+      ? '<button disabled>Já tem</button>'
+      : '<button onclick="comprarItem(\''+item.id+'\')" '+(pode?'':'disabled')+'>Comprar</button>';
+    return '<div class="loja-item'+(tem?' comprado':'')+'"><div class="li-icone">'+item.icone+'</div><div class="li-nome">'+item.nome+'</div><div class="li-preco">🪙 '+item.preco+'</div>'+btn+'</div>';
+  }).join("");
+}
+
+function comprarItem(itemId){
+  const u = getUsuarioLogado(); if(!u) return;
+  const item = LOJA_ITENS.find(x => x.id === itemId); if(!item) return;
+  const contas = carregarContas();
+  const idx = contas.findIndex(c => c.id === u.id); if(idx === -1) return;
+  if(!Array.isArray(contas[idx].itensComprados)) contas[idx].itensComprados = [];
+  if(contas[idx].itensComprados.includes(itemId)) { alert("Você já tem este item."); return; }
+  const moedas = contas[idx].moedas || 0;
+  if(moedas < item.preco){ alert("Moedas insuficientes."); return; }
+  contas[idx].moedas = moedas - item.preco;
+  contas[idx].itensComprados.push(itemId);
+  if(item.tipo === "moldura") contas[idx].moldura = item.valor;
+  if(item.tipo === "badge") contas[idx].badge = item.valor;
+  salvarContas(contas);
+  Object.assign(u, contas[idx]);
+  setUsuarioLogado(u);
+  renderLoja(u);
+  renderAvatarUI(u);
+  atualizarProgresso(u);
+  alert("Comprado: " + item.nome + "!");
+}
+
+function renderAlunoSemana(){
+  const box = document.getElementById("caixaAlunoSemana");
+  if(!box) return;
+  const contas = carregarContas();
+  if(!contas.length){ box.style.display = "none"; return; }
+  const ord = contas.slice().sort((a,b) => (b.xpSemana||0) - (a.xpSemana||0));
+  const top = ord[0];
+  if(!top || !(top.xpSemana > 0)){ box.style.display = "none"; return; }
+  box.style.display = "flex";
+  document.getElementById("dsAvatar").textContent = (top.badge || top.avatar || "🎓");
+  document.getElementById("dsNome").textContent = top.nomeCompleto;
+  document.getElementById("dsMeta").textContent = (top.xpSemana||0) + " XP nesta semana · Liga " + (LIGAS[top.liga||0]||"Bronze");
+}
+
+const LIGAS=["Bronze","Prata","Ouro","Safira","Rubi","Esmeralda","Ametista","Pérola","Obsidiana","Diamante"];
+const AVATARES=["🎓","🦊","🐱","🐶","🐼","🦁","🐸","🦄","🚀","🌟","📚","🎯"];
+const MOLDURAS=[
+  {id:"padrao",nome:"Padrão",req:null},
+  {id:"prata",nome:"Prata",req:"xp_50"},
+  {id:"ouro",nome:"Ouro",req:"xp_100"},
+  {id:"agua",nome:"Água",req:"jogos_5"},
+  {id:"fogo",nome:"Fogo",req:"primeiro"}
+];
+const CONQUISTAS_DEF=[
+  {id:"primeiro_acesso",nome:"Bem-vindo!",desc:"Entrou na área",icone:"👋"},
+  {id:"primeiro_jogo",nome:"Primeiro jogo",desc:"Completou 1 jogo",icone:"🎮"},
+  {id:"jogos_5",nome:"Jogador",desc:"5 jogos",icone:"⭐"},
+  {id:"jogos_10",nome:"Dedicado",desc:"10 jogos",icone:"🌟"},
+  {id:"jogos_25",nome:"Campeão",desc:"25 jogos",icone:"🏅"},
+  {id:"xp_50",nome:"Iniciante",desc:"50 XP",icone:"🌱"},
+  {id:"xp_100",nome:"Em ascensão",desc:"100 XP",icone:"📈"},
+  {id:"xp_250",nome:"Estudioso",desc:"250 XP",icone:"📚"},
+  {id:"xp_500",nome:"Expert",desc:"500 XP",icone:"💎"},
+  {id:"xp_1000",nome:"Lenda",desc:"1000 XP",icone:"👑"},
+  {id:"top3",nome:"Pódio",desc:"Top 3",icone:"🥉"},
+  {id:"primeiro",nome:"Número 1",desc:"1º lugar",icone:"🥇"},
+  {id:"meta_diaria",nome:"Meta do dia",desc:"Meta diária",icone:"🎯"},
+  {id:"ofensiva_3",nome:"Em chamas",desc:"3 dias de ofensiva",icone:"🔥"},
+  {id:"ofensiva_7",nome:"Imparável",desc:"7 dias de ofensiva",icone:"⚡"}
+];
+
+function carregarContas(){try{return JSON.parse(localStorage.getItem("eva_contas"))||[]}catch(e){return[]}}
+function salvarContas(l){localStorage.setItem("eva_contas",JSON.stringify(l))}
+function carregarConfig(){try{return Object.assign({metaDiaria:30},JSON.parse(localStorage.getItem("eva_config")||"{}"))}catch(e){return{metaDiaria:30}}}
+function carregarMissoes(){try{return JSON.parse(localStorage.getItem("eva_missoes"))||[]}catch(e){return[]}}
+function getUsuarioLogado(){try{return JSON.parse(sessionStorage.getItem("eva_usuario_logado"))}catch(e){return null}}
+function setUsuarioLogado(u){if(u)sessionStorage.setItem("eva_usuario_logado",JSON.stringify(u));else sessionStorage.removeItem("eva_usuario_logado")}
+
+function dataHoje(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function chaveSemana(d){d=d||new Date();const day=d.getDay();const diff=day===0?-6:1-day;const seg=new Date(d);seg.setDate(d.getDate()+diff);seg.setHours(0,0,0,0);return seg.getFullYear()+"-"+String(seg.getMonth()+1).padStart(2,"0")+"-"+String(seg.getDate()).padStart(2,"0")}
+function ontemStr(){const d=new Date();d.setDate(d.getDate()-1);return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+
+function congelarOfensiva(){
+  const u = getUsuarioLogado(); if(!u) return;
+  const contas = carregarContas();
+  const idx = contas.findIndex(c => c.id === u.id); if(idx === -1) return;
+  const sem = chaveSemana();
+  let ofe = contas[idx].ofensiva || { dias: 0, ultimaData: null };
+  if (ofe.geloSemana === sem) { alert("Você já usou o congelamento nesta semana."); return; }
+  if (!confirm("Usar 1 congelamento desta semana? Sua ofensiva não cai se você perder 1 dia.")) return;
+  ofe.geloSemana = sem;
+  ofe.geloAtivo = true;
+  contas[idx].ofensiva = ofe;
+  salvarContas(contas);
+  u.ofensiva = ofe;
+  setUsuarioLogado(u);
+  atualizarBotaoGelo(u);
+  alert("Ofensiva protegida! Se você perder 1 dia, ela não zera.");
+}
+
+function atualizarBotaoGelo(usuario){
+  const btn = document.getElementById("btnGelo");
+  if(!btn) return;
+  const sem = chaveSemana();
+  const ofe = (usuario && usuario.ofensiva) || {};
+  if (ofe.geloSemana === sem) {
+    btn.disabled = true;
+    btn.textContent = ofe.geloAtivo ? "🧊 Proteção ativa" : "🧊 Já usado na semana";
+  } else {
+    btn.disabled = false;
+    btn.textContent = "🧊 Congelar ofensiva";
+  }
+}
+
+function atualizarOfensiva(usuario){
+  const contas=carregarContas();
+  const idx=contas.findIndex(c=>c.id===usuario.id);
+  if(idx===-1)return usuario;
+  let ofe=contas[idx].ofensiva||{dias:0,ultimaData:null};
+  const hoje=dataHoje();
+  if(ofe.ultimaData===hoje){/* já contou hoje */}
+  else if(ofe.ultimaData===ontemStr()){ofe.dias=(ofe.dias||0)+1;ofe.ultimaData=hoje}
+  else if(ofe.geloAtivo){
+    ofe.geloAtivo=false;
+    ofe.dias=ofe.dias||1;
+    ofe.ultimaData=hoje;
+  } else {
+    ofe.dias=1;ofe.ultimaData=hoje;
+  }
+  contas[idx].ofensiva=ofe;
+  salvarContas(contas);
+  usuario.ofensiva=ofe;
+  setUsuarioLogado(usuario);
+  return usuario;
+}
+
+function garantirCampos(usuario){
+  const contas=carregarContas();
+  const idx=contas.findIndex(c=>c.id===usuario.id);
+  if(idx===-1)return usuario;
+  const c=contas[idx];
+  const sem=chaveSemana();
+  let mudou=false;
+  if(typeof c.xpSemana!=="number"){c.xpSemana=0;mudou=true}
+  if(c.semanaId && c.semanaId!==sem){c.xpSemana=0;c.semanaId=sem;mudou=true}
+  else if(!c.semanaId){c.semanaId=sem;mudou=true}
+  if(!c.avatar){c.avatar="🎓";mudou=true}
+  if(!c.moldura){c.moldura="padrao";mudou=true}
+  if(!c.ofensiva){c.ofensiva={dias:0,ultimaData:null};mudou=true}
+  if(!c.missoesProgresso){c.missoesProgresso={};mudou=true}
+  if(typeof c.moedas!=="number"){c.moedas=0;mudou=true}
+  if(!Array.isArray(c.itensComprados)){c.itensComprados=[];mudou=true}
+  if(mudou){salvarContas(contas);usuario=Object.assign({},usuario,c);setUsuarioLogado(usuario)}
+  return usuario;
+}
+
+function notifSuportadas(){return "Notification" in window}
+function atualizarBotaoNotif(){
+  const btn=document.getElementById("btnNotif");if(!btn)return;
+  if(!notifSuportadas()){btn.style.display="none";return}
+  if(Notification.permission==="granted"){btn.textContent="🔔 Ativas";btn.classList.add("ativo")}
+  else{btn.textContent="🔔 Notificações";btn.classList.remove("ativo")}
+}
+async function registrarServiceWorker(){
+  if(!("serviceWorker" in navigator))return null;
+  try{return await navigator.serviceWorker.register("./sw.js")}catch(e){return null}
+}
+async function ativarNotificacoes(){
+  if(!notifSuportadas()){alert("Não suportado.");return}
+  if(Notification.permission==="denied"){alert("Bloqueadas no navegador.");return}
+  const p=await Notification.requestPermission();
+  atualizarBotaoNotif();
+  if(p==="granted"){await registrarServiceWorker();enviarNotificacao("EVA Academy","Notificações ativas!","eva-ok")}
+}
+function enviarNotificacao(titulo,corpo,tag){
+  if(!notifSuportadas()||Notification.permission!=="granted")return;
+  if(navigator.serviceWorker&&navigator.serviceWorker.controller){
+    navigator.serviceWorker.controller.postMessage({type:"SHOW_NOTIFICATION",title:titulo,body:corpo,tag:tag||"eva",url:"./alunos.html"});
+    return;
+  }
+  try{new Notification(titulo,{body:corpo,tag:tag})}catch(e){}
+}
+
+function fazerLogin(){
+  const nome=document.getElementById("loginNome").value.trim();
+  const senha=document.getElementById("loginSenha").value.trim();
+  const erro=document.getElementById("erroLogin");
+  if(!nome||!senha){erro.textContent="Preencha nome e senha.";erro.style.display="block";return}
+  const contas=carregarContas();
+  const usuario=contas.find(c=>c.nomeCompleto.toLowerCase()===nome.toLowerCase()&&c.senha===senha);
+  if(!usuario){erro.textContent="Nome ou senha incorretos.";erro.style.display="block";return}
+  const idx=contas.findIndex(c=>c.id===usuario.id);
+  if(idx!==-1){contas[idx].ultimoAcesso=new Date().toISOString();salvarContas(contas);usuario.ultimoAcesso=contas[idx].ultimoAcesso}
+  setUsuarioLogado(usuario);
+  mostrarAreaLogada(usuario);
+}
+function sair(){
+  setUsuarioLogado(null);
+  document.getElementById("areaLogada").style.display="none";
+  document.getElementById("telaLogin").style.display="flex";
+  document.getElementById("btnSair").style.display="none";
+  document.getElementById("nomeLogado").style.display="none";
+}
+function mostrarAreaLogada(usuario){
+  usuario=garantirCampos(usuario);
+  usuario=atualizarOfensiva(usuario);
+  document.getElementById("telaLogin").style.display="none";
+  document.getElementById("areaLogada").style.display="block";
+  document.getElementById("btnSair").style.display="inline-block";
+  document.getElementById("nomeLogado").style.display="inline";
+  const p=usuario.nomeCompleto.split(" ")[0];
+  document.getElementById("nomeLogado").textContent=(usuario.avatar||"🎓")+" "+p;
+  document.getElementById("saudacaoNome").textContent=p;
+  atualizarProgresso(usuario);
+  renderMetaDiaria(usuario);
+  renderMissoes(usuario);
+  renderAvatarUI(usuario);
+  verificarConquistas(usuario);
+  renderLoja(usuario);
+  renderAlunoSemana();
+  atualizarBotaoGelo(usuario);
+  atualizarBotaoNotif();
+  registrarServiceWorker();
+}
+function atualizarProgresso(usuario){
+  const contas=carregarContas();
+  const atual=contas.find(c=>c.id===usuario.id)||usuario;
+  const ranking=contas.slice().sort((a,b)=>(b.xpSemana||0)-(a.xpSemana||0));
+  const pos=ranking.findIndex(c=>c.id===atual.id)+1;
+  document.getElementById("progXP").textContent=atual.xp||0;
+  document.getElementById("progSemana").textContent=atual.xpSemana||0;
+  document.getElementById("progLiga").textContent=LIGAS[atual.liga||0]||"Bronze";
+  document.getElementById("progOfensiva").textContent=(atual.ofensiva&&atual.ofensiva.dias)||0;
+  document.getElementById("progPosicao").textContent=pos>0?"#"+pos:"—";
+  const pm=document.getElementById("progMoedas"); if(pm) pm.textContent=atual.moedas||0;
+}
+
+function renderMetaDiaria(usuario){
+  const cfg=carregarConfig();
+  const alvo=cfg.metaDiaria||30;
+  const contas=carregarContas();
+  const idx=contas.findIndex(c=>c.id===usuario.id);
+  if(idx===-1)return;
+  let meta=contas[idx].metaDiaria;
+  const hoje=dataHoje();
+  if(!meta||meta.data!==hoje){meta={alvo:alvo,xpHoje:0,data:hoje,completaHoje:false}}
+  meta.alvo=alvo;
+  contas[idx].metaDiaria=meta;salvarContas(contas);
+  const pct=Math.min(100,Math.round(((meta.xpHoje||0)/alvo)*100));
+  document.getElementById("metaXpHoje").textContent=meta.xpHoje||0;
+  document.getElementById("metaAlvo").textContent=alvo;
+  const fill=document.getElementById("barraMetaFill");
+  fill.style.width=pct+"%";
+  const status=document.getElementById("metaStatus");
+  if((meta.xpHoje||0)>=alvo){
+    fill.classList.add("completa");status.className="meta-status ok";
+    status.textContent="Meta de hoje concluída! 🔥 Ofensiva mantida.";
+    meta.completaHoje=true;
+    if(!meta.notifEnviada){
+      enviarNotificacao("Meta concluída!","Você bateu a meta de hoje.","eva-meta");
+      meta.notifEnviada=true;contas[idx].metaDiaria=meta;salvarContas(contas);
     }
+  }else{
+    fill.classList.remove("completa");status.className="meta-status";
+    status.textContent="Faltam "+(alvo-(meta.xpHoje||0))+" XP · Ofensiva: "+((usuario.ofensiva&&usuario.ofensiva.dias)||0)+" dia(s)";
+  }
+}
 
-    function atualizarBotaoNotif() {
-      const btn = document.getElementById("btnNotif");
-      if (!btn) return;
-      if (!notifSuportadas()) {
-        btn.style.display = "none";
-        return;
-      }
-      if (Notification.permission === "granted") {
-        btn.textContent = "🔔 Notificações ativas";
-        btn.classList.add("ativo");
-      } else if (Notification.permission === "denied") {
-        btn.textContent = "🔔 Bloqueadas no navegador";
-        btn.classList.remove("ativo");
-      } else {
-        btn.textContent = "🔔 Ativar notificações";
-        btn.classList.remove("ativo");
-      }
-    }
+function renderMissoes(usuario){
+  const box=document.getElementById("listaMissoesAluno");
+  const missoes=carregarMissoes().filter(m=>m.ativa);
+  if(!missoes.length){
+    box.innerHTML='<div style="color:var(--cinza);font-size:13px">Nenhuma missão ativa no momento.</div>';
+    return;
+  }
+  const contas=carregarContas();
+  const atual=contas.find(c=>c.id===usuario.id)||usuario;
+  const prog=usuario.missoesProgresso||{};
+  box.innerHTML=missoes.map(m=>{
+    let atualVal=0;
+    if(m.tipo==="jogos") atualVal=atual.jogosFeitos||0;
+    else if(m.tipo==="xp") atualVal=atual.xpSemana||0;
+    if(typeof prog[m.id]==="number") atualVal=prog[m.id];
+    const pct=Math.min(100,Math.round((Math.min(atualVal,m.alvo)/m.alvo)*100));
+    const done=atualVal>=m.alvo;
+    return '<div class="missao-item"><div class="mt">'+(done?"✅":"📌")+" "+m.titulo+'</div><div class="md">'+(m.desc||"")+" · "+Math.min(atualVal,m.alvo)+"/"+m.alvo+'</div><div class="missao-barra"><div class="missao-fill" style="width:'+pct+'%"></div></div></div>';
+  }).join("");
+}
 
-    async function registrarServiceWorker() {
-      if (!("serviceWorker" in navigator)) return null;
-      try {
-        return await navigator.serviceWorker.register("./sw.js");
-      } catch (e) {
-        console.warn("SW não registrado:", e);
-        return null;
-      }
-    }
+function molduraLiberada(usuario,req){
+  if(!req)return true;
+  const comprados=usuario.itensComprados||[];
+  if(req==="xp_50"&&comprados.includes("mold_prata"))return true;
+  if(req==="xp_100"&&comprados.includes("mold_ouro"))return true;
+  if(req==="jogos_5"&&comprados.includes("mold_agua"))return true;
+  if(req==="primeiro"&&comprados.includes("mold_fogo"))return true;
+  return (usuario.conquistas||[]).includes(req);
+}
 
-    async function ativarNotificacoes() {
-      if (!notifSuportadas()) {
-        alert("Seu navegador não suporta notificações.");
-        return;
-      }
-      if (Notification.permission === "denied") {
-        alert("As notificações estão bloqueadas. Ative nas configurações do navegador para este site.");
-        return;
-      }
-      const perm = await Notification.requestPermission();
-      atualizarBotaoNotif();
-      if (perm === "granted") {
-        await registrarServiceWorker();
-        enviarNotificacao("EVA Academy", "Notificações ativadas! Você será avisado sobre metas e conquistas.", "eva-ativacao");
-      }
-    }
+function renderAvatarUI(usuario){
+  const prev=document.getElementById("previewAvatar");
+  prev.textContent=usuario.avatar||"🎓";
+  prev.className="preview-avatar "+(usuario.moldura||"padrao");
+  document.getElementById("avatarOpcoes").innerHTML=AVATARES.map(a=>{
+    const sel=a===(usuario.avatar||"🎓")?" sel":"";
+    return '<button class="av-btn'+sel+'" onclick="escolherAvatar(\''+a+'\')">'+a+"</button>";
+  }).join("");
+  document.getElementById("molduraOpcoes").innerHTML=MOLDURAS.map(m=>{
+    const lib=molduraLiberada(usuario,m.req);
+    const sel=m.id===(usuario.moldura||"padrao")?" sel":"";
+    const dis=lib?"":"opacity:.35;cursor:not-allowed";
+    return '<button class="mold-btn'+sel+'" style="'+dis+'" onclick="'+(lib?"escolherMoldura('"+m.id+"')":"void(0)")+'">'+m.nome+"</button>";
+  }).join("");
+}
 
-    function enviarNotificacao(titulo, corpo, tag) {
-      if (!notifSuportadas() || Notification.permission !== "granted") return;
-      if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-        navigator.serviceWorker.controller.postMessage({
-          type: "SHOW_NOTIFICATION",
-          title: titulo,
-          body: corpo,
-          tag: tag || "eva-geral",
-          renotify: true,
-          url: "./alunos.html"
-        });
-        return;
-      }
-      try {
-        const n = new Notification(titulo, { body: corpo, tag: tag || "eva-geral" });
-        n.onclick = function () { window.focus(); n.close(); };
-      } catch (e) {}
-    }
+function escolherAvatar(a){
+  const u=getUsuarioLogado();if(!u)return;
+  const contas=carregarContas();const i=contas.findIndex(c=>c.id===u.id);if(i===-1)return;
+  contas[i].avatar=a;salvarContas(contas);u.avatar=a;setUsuarioLogado(u);renderAvatarUI(u);
+  document.getElementById("nomeLogado").textContent=a+" "+u.nomeCompleto.split(" ")[0];
+}
 
-    let lembreteMetaTimer = null;
-    function agendarLembreteMeta(usuario) {
-      if (lembreteMetaTimer) clearTimeout(lembreteMetaTimer);
-      if (!notifSuportadas() || Notification.permission !== "granted") return;
-      const meta = usuario && usuario.metaDiaria;
-      if (!meta || meta.completaHoje) return;
-      lembreteMetaTimer = setTimeout(function () {
-        const u = getUsuarioLogado();
-        if (!u) return;
-        const m = u.metaDiaria;
-        if (!m || m.completaHoje) return;
-        const falta = (m.alvo || 30) - (m.xpHoje || 0);
-        if (falta > 0) {
-          enviarNotificacao(
-            "Meta diária da EVA",
-            "Ainda faltam " + falta + " XP para a meta de hoje. Que tal um jogo rápido?",
-            "eva-lembrete-meta"
-          );
-        }
-      }, 2 * 60 * 60 * 1000);
-    }
+function escolherMoldura(id){
+  const u=getUsuarioLogado();if(!u)return;
+  const def=MOLDURAS.find(m=>m.id===id);
+  if(!def||!molduraLiberada(u,def.req))return;
+  const contas=carregarContas();const i=contas.findIndex(c=>c.id===u.id);if(i===-1)return;
+  contas[i].moldura=id;salvarContas(contas);u.moldura=id;setUsuarioLogado(u);renderAvatarUI(u);
+}
 
-    const META_DIARIA_PADRAO = 30;
+function mostrarToastConquista(c){
+  const el=document.createElement("div");el.className="toast-conquista";
+  el.innerHTML=c.icone+' <span>Nova conquista:</span> '+c.nome;
+  document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("mostrar"));
+  setTimeout(()=>{el.classList.remove("mostrar");setTimeout(()=>el.remove(),400)},3000);
+}
 
-    function dataHoje() {
-      const d = new Date();
-      return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
-    }
+function desbloquearConquista(usuario,id){
+  const contas=carregarContas();const idx=contas.findIndex(c=>c.id===usuario.id);if(idx===-1)return false;
+  if(!Array.isArray(contas[idx].conquistas))contas[idx].conquistas=[];
+  if(contas[idx].conquistas.includes(id))return false;
+  contas[idx].conquistas.push(id);salvarContas(contas);
+  usuario.conquistas=contas[idx].conquistas;setUsuarioLogado(usuario);
+  const def=CONQUISTAS_DEF.find(x=>x.id===id);
+  if(def){mostrarToastConquista(def);enviarNotificacao("Nova conquista!",def.icone+" "+def.nome,"c-"+id)}
+  return true;
+}
 
-    function garantirMetaDiaria(usuario) {
-      const contas = carregarContas();
-      const idx = contas.findIndex(c => c.id === usuario.id);
-      if (idx === -1) return usuario;
-      let meta = contas[idx].metaDiaria;
-      const hoje = dataHoje();
-      if (!meta || typeof meta !== "object") {
-        meta = { alvo: META_DIARIA_PADRAO, xpHoje: 0, data: hoje, completaHoje: false };
-      } else if (meta.data !== hoje) {
-        meta = {
-          alvo: meta.alvo || META_DIARIA_PADRAO,
-          xpHoje: 0,
-          data: hoje,
-          completaHoje: false
-        };
-      }
-      contas[idx].metaDiaria = meta;
-      salvarContas(contas);
-      usuario.metaDiaria = meta;
-      setUsuarioLogado(usuario);
-      return usuario;
-    }
+function verificarConquistas(usuario){
+  const contas=carregarContas();const atual=contas.find(c=>c.id===usuario.id);if(!atual)return;
+  const xp=atual.xp||0,jogos=atual.jogosFeitos||0,ofe=(atual.ofensiva&&atual.ofensiva.dias)||0;
+  const ranking=contas.slice().sort((a,b)=>(b.xpSemana||0)-(a.xpSemana||0));
+  const pos=ranking.findIndex(c=>c.id===atual.id)+1;
+  desbloquearConquista(atual,"primeiro_acesso");
+  if(jogos>=1)desbloquearConquista(atual,"primeiro_jogo");
+  if(jogos>=5)desbloquearConquista(atual,"jogos_5");
+  if(jogos>=10)desbloquearConquista(atual,"jogos_10");
+  if(jogos>=25)desbloquearConquista(atual,"jogos_25");
+  if(xp>=50)desbloquearConquista(atual,"xp_50");
+  if(xp>=100)desbloquearConquista(atual,"xp_100");
+  if(xp>=250)desbloquearConquista(atual,"xp_250");
+  if(xp>=500)desbloquearConquista(atual,"xp_500");
+  if(xp>=1000)desbloquearConquista(atual,"xp_1000");
+  if(pos>0&&pos<=3)desbloquearConquista(atual,"top3");
+  if(pos===1)desbloquearConquista(atual,"primeiro");
+  if(atual.metaDiaria&&atual.metaDiaria.completaHoje)desbloquearConquista(atual,"meta_diaria");
+  if(ofe>=3)desbloquearConquista(atual,"ofensiva_3");
+  if(ofe>=7)desbloquearConquista(atual,"ofensiva_7");
+  const final=carregarContas().find(c=>c.id===usuario.id)||atual;
+  setUsuarioLogado(final);renderConquistas(final);renderAvatarUI(final);
+}
 
-    function renderMetaDiaria(usuario) {
-      usuario = garantirMetaDiaria(usuario);
-      const meta = usuario.metaDiaria || { alvo: META_DIARIA_PADRAO, xpHoje: 0, completaHoje: false };
-      const alvo = meta.alvo || META_DIARIA_PADRAO;
-      const pct = Math.min(100, Math.round(((meta.xpHoje || 0) / alvo) * 100));
-      document.getElementById("metaXpHoje").textContent = meta.xpHoje || 0;
-      document.getElementById("metaAlvo").textContent = alvo;
-      const fill = document.getElementById("barraMetaFill");
-      fill.style.width = pct + "%";
-      const status = document.getElementById("metaStatus");
-      if ((meta.xpHoje || 0) >= alvo) {
-        fill.classList.add("completa");
-        status.className = "meta-status ok";
-        status.textContent = "Meta de hoje concluída! 🎉 Continue praticando se quiser.";
-        if (!meta.notifEnviada) {
-          enviarNotificacao("Meta diária concluída! 🎯", "Você bateu a meta de XP de hoje na EVA Academy.", "eva-meta-completa");
-          meta.notifEnviada = true;
-          try {
-            const contas = carregarContas();
-            const idx = contas.findIndex(c => c.id === usuario.id);
-            if (idx !== -1) {
-              contas[idx].metaDiaria = meta;
-              salvarContas(contas);
-              usuario.metaDiaria = meta;
-              setUsuarioLogado(usuario);
-            }
-          } catch (e) {}
-        }
-      } else {
-        fill.classList.remove("completa");
-        status.className = "meta-status";
-        const falta = alvo - (meta.xpHoje || 0);
-        status.textContent = "Faltam " + falta + " XP para a meta de hoje.";
-      }
-    }
+function renderConquistas(usuario){
+  const grid=document.getElementById("gridConquistas");
+  const des=usuario.conquistas||[];
+  grid.innerHTML=CONQUISTAS_DEF.map(c=>{
+    const ok=des.includes(c.id);
+    return '<div class="conquista'+(ok?" desbloqueada":"")+'"><div class="c-icone">'+c.icone+'</div><div class="c-nome">'+c.nome+'</div><div class="c-desc">'+c.desc+"</div></div>";
+  }).join("");
+}
 
-    const CONQUISTAS_DEF = [
-      { id: "primeiro_acesso", nome: "Bem-vindo!", desc: "Entrou na Área do Aluno", icone: "👋" },
-      { id: "primeiro_jogo", nome: "Primeiro jogo", desc: "Completou 1 jogo", icone: "🎮" },
-      { id: "jogos_5", nome: "Jogador", desc: "Completou 5 jogos", icone: "⭐" },
-      { id: "jogos_10", nome: "Dedicado", desc: "Completou 10 jogos", icone: "🌟" },
-      { id: "jogos_25", nome: "Campeão", desc: "Completou 25 jogos", icone: "🏅" },
-      { id: "xp_50", nome: "Iniciante", desc: "Alcançou 50 XP", icone: "🌱" },
-      { id: "xp_100", nome: "Em ascensão", desc: "Alcançou 100 XP", icone: "📈" },
-      { id: "xp_250", nome: "Estudioso", desc: "Alcançou 250 XP", icone: "📚" },
-      { id: "xp_500", nome: "Expert", desc: "Alcançou 500 XP", icone: "💎" },
-      { id: "xp_1000", nome: "Lenda", desc: "Alcançou 1000 XP", icone: "👑" },
-      { id: "top3", nome: "Pódio", desc: "Ficou no top 3", icone: "🥉" },
-      { id: "primeiro", nome: "Número 1", desc: "Ficou em 1º lugar", icone: "🥇" },
-      { id: "meta_diaria", nome: "Meta do dia", desc: "Completou a meta diária de XP", icone: "🎯" }
-    ];
+function gerarRanking(){
+  const contas=carregarContas();
+  const logado=getUsuarioLogado();
+  const atual=logado?contas.find(c=>c.id===logado.id):null;
+  if(atual&&logado){
+    logado.xpSemana=atual.xpSemana||0;
+    logado.xp=atual.xp||0;
+    setUsuarioLogado(logado);
+  }
+  let ranking=contas.map(c=>({
+    id:c.id,
+    nome:c.nomeCompleto,
+    xp:Number(c.xpSemana)||0,
+    xpTotal:Number(c.xp)||0,
+    avatar:c.avatar||"🎓",
+    moldura:c.moldura||"padrao",
+    badge:c.badge||"",
+    voce:logado&&c.id===logado.id
+  }));
+  ranking.sort((a,b)=>b.xp-a.xp||b.xpTotal-a.xpTotal);
+  return { ranking, liga:atual?(atual.liga||0):0, meuXP:atual?(Number(atual.xpSemana)||0):0 };
+}
 
-    function getConquistasUsuario(usuario) {
-      return Array.isArray(usuario.conquistas) ? usuario.conquistas : [];
-    }
+function renderRanking(){
+  const {ranking,liga,meuXP}=gerarRanking();
+  document.getElementById("nomeLiga").textContent=LIGAS[liga]||"Bronze";
+  const lista=document.getElementById("listaRanking");
+  if(!ranking.length){
+    lista.innerHTML='<div style="padding:30px;text-align:center;color:var(--cinza)">Nenhum aluno ainda.</div>';
+    return;
+  }
+  lista.innerHTML=ranking.map((item,index)=>{
+    const pos=index+1;let classes="leaderboard-item";
+    if(item.voce)classes+=" voce";
+    if(pos===1)classes+=" top1 semana";
+    if(pos===2)classes+=" top2";
+    if(pos===3)classes+=" top3";
+    const badge=item.badge?" "+item.badge:"";
+    const tagSemana=pos===1?'<small>⭐ Aluno da semana</small>':(item.voce?"<small>Você</small>":"");
+    return '<div class="'+classes+'"><div class="posicao">'+pos+'</div><div class="avatar '+item.moldura+'">'+item.avatar+'</div><div class="nome">'+item.nome+badge+tagSemana+'</div><div class="xp">'+item.xp+' <span>XP sem.</span></div></div>';
+  }).join("");
+}
 
-    function mostrarToastConquista(c) {
-      const el = document.createElement("div");
-      el.className = "toast-conquista";
-      el.innerHTML = c.icone + ' <span>Nova conquista:</span> ' + c.nome;
-      document.body.appendChild(el);
-      requestAnimationFrame(() => el.classList.add("mostrar"));
-      setTimeout(() => {
-        el.classList.remove("mostrar");
-        setTimeout(() => el.remove(), 400);
-      }, 3200);
-    }
+function mostrarRanking(){
+  ["cardsArea","aviso","caixaProgresso","caixaConquistas","caixaMetaDiaria","caixaMissoes","caixaAvatar","caixaLoja","caixaAlunoSemana"].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.display="none";
+  });
+  document.getElementById("ranking").classList.add("ativo");
+  renderRanking();
+}
 
-    function desbloquearConquista(usuario, conquistaId) {
-      const contas = carregarContas();
-      const idx = contas.findIndex(c => c.id === usuario.id);
-      if (idx === -1) return false;
-      if (!Array.isArray(contas[idx].conquistas)) contas[idx].conquistas = [];
-      if (contas[idx].conquistas.includes(conquistaId)) return false;
-      contas[idx].conquistas.push(conquistaId);
-      salvarContas(contas);
-      usuario.conquistas = contas[idx].conquistas;
-      setUsuarioLogado(usuario);
-      const def = CONQUISTAS_DEF.find(x => x.id === conquistaId);
-      if (def) {
-        mostrarToastConquista(def);
-        enviarNotificacao("Nova conquista!", def.icone + " " + def.nome + " — " + def.desc, "eva-conquista-" + conquistaId);
-      }
-      return true;
-    }
+function voltarCards(){
+  document.getElementById("ranking").classList.remove("ativo");
+  document.getElementById("cardsArea").style.display="grid";
+  ["aviso","caixaProgresso","caixaConquistas","caixaMetaDiaria","caixaMissoes","caixaAvatar","caixaLoja"].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.style.display=(id==="caixaProgresso"?"grid":"block");
+  });
+  const u=getUsuarioLogado();if(u)mostrarAreaLogada(u);
+}
 
-    function verificarConquistas(usuario) {
-      if (!usuario) return;
-      const contas = carregarContas();
-      const atual = contas.find(c => c.id === usuario.id);
-      if (!atual) return;
-      const xp = atual.xp || 0;
-      const jogos = atual.jogosFeitos || 0;
-      const ranking = contas.slice().sort((a, b) => (b.xp || 0) - (a.xp || 0));
-      const pos = ranking.findIndex(c => c.id === atual.id) + 1;
+function abrirModalSenha(){document.getElementById("modalSenha").classList.add("ativo")}
+function fecharModalSenha(){document.getElementById("modalSenha").classList.remove("ativo")}
+function salvarNovaSenha(){
+  const atual=document.getElementById("senhaAtual").value.trim();
+  const nova=document.getElementById("senhaNova").value.trim();
+  const nova2=document.getElementById("senhaNova2").value.trim();
+  const msg=document.getElementById("msgSenha");const logado=getUsuarioLogado();
+  if(!atual||!nova||!nova2){msg.className="modal-msg erro";msg.textContent="Preencha tudo.";return}
+  if(nova!==nova2){msg.className="modal-msg erro";msg.textContent="Senhas diferentes.";return}
+  if(atual!==logado.senha){msg.className="modal-msg erro";msg.textContent="Senha atual incorreta.";return}
+  const contas=carregarContas();const i=contas.findIndex(c=>c.id===logado.id);
+  contas[i].senha=nova;salvarContas(contas);logado.senha=nova;setUsuarioLogado(logado);
+  msg.className="modal-msg ok";msg.textContent="Senha alterada!";setTimeout(fecharModalSenha,1000);
+}
 
-      desbloquearConquista(atual, "primeiro_acesso");
-      if (jogos >= 1) desbloquearConquista(atual, "primeiro_jogo");
-      if (jogos >= 5) desbloquearConquista(atual, "jogos_5");
-      if (jogos >= 10) desbloquearConquista(atual, "jogos_10");
-      if (jogos >= 25) desbloquearConquista(atual, "jogos_25");
-      if (xp >= 50) desbloquearConquista(atual, "xp_50");
-      if (xp >= 100) desbloquearConquista(atual, "xp_100");
-      if (xp >= 250) desbloquearConquista(atual, "xp_250");
-      if (xp >= 500) desbloquearConquista(atual, "xp_500");
-      if (xp >= 1000) desbloquearConquista(atual, "xp_1000");
-      if (pos > 0 && pos <= 3) desbloquearConquista(atual, "top3");
-      if (pos === 1) desbloquearConquista(atual, "primeiro");
-      const meta = atual.metaDiaria;
-      if (meta && meta.completaHoje) desbloquearConquista(atual, "meta_diaria");
-
-      const final = carregarContas().find(c => c.id === usuario.id) || atual;
-      setUsuarioLogado(final);
-      renderConquistas(final);
-    }
-
-    function renderConquistas(usuario) {
-      const grid = document.getElementById("gridConquistas");
-      if (!grid) return;
-      const desbloqueadas = getConquistasUsuario(usuario);
-      grid.innerHTML = CONQUISTAS_DEF.map(c => {
-        const ok = desbloqueadas.includes(c.id);
-        return '<div class="conquista' + (ok ? ' desbloqueada' : '') + '">' +
-          '<div class="c-icone">' + c.icone + '</div>' +
-          '<div class="c-nome">' + c.nome + '</div>' +
-          '<div class="c-desc">' + c.desc + '</div>' +
-          '</div>';
-      }).join("");
-    }
-
-    const LIGAS = [
-      "Bronze", "Prata", "Ouro", "Safira", "Rubi",
-      "Esmeralda", "Ametista", "Pérola", "Obsidiana", "Diamante"
-    ];
-
-    function carregarContas() {
-      try { return JSON.parse(localStorage.getItem("eva_contas")) || []; }
-      catch (e) { return []; }
-    }
-    function salvarContas(lista) {
-      localStorage.setItem("eva_contas", JSON.stringify(lista));
-    }
-    function getUsuarioLogado() {
-      try { return JSON.parse(sessionStorage.getItem("eva_usuario_logado")); }
-      catch (e) { return null; }
-    }
-    function setUsuarioLogado(usuario) {
-      if (usuario) sessionStorage.setItem("eva_usuario_logado", JSON.stringify(usuario));
-      else sessionStorage.removeItem("eva_usuario_logado");
-    }
-
-    function fazerLogin() {
-      const nome = document.getElementById("loginNome").value.trim();
-      const senha = document.getElementById("loginSenha").value.trim();
-      const erro = document.getElementById("erroLogin");
-      if (!nome || !senha) {
-        erro.textContent = "Preencha nome e senha.";
-        erro.style.display = "block";
-        return;
-      }
-      const contas = carregarContas();
-      const usuario = contas.find(c =>
-        c.nomeCompleto.toLowerCase() === nome.toLowerCase() && c.senha === senha
-      );
-      if (!usuario) {
-        erro.textContent = "Nome ou senha incorretos.";
-        erro.style.display = "block";
-        document.getElementById("loginSenha").value = "";
-        return;
-      }
-      const idx = contas.findIndex(c => c.id === usuario.id);
-      if (idx !== -1) {
-        contas[idx].ultimoAcesso = new Date().toISOString();
-        salvarContas(contas);
-        usuario.ultimoAcesso = contas[idx].ultimoAcesso;
-      }
-      setUsuarioLogado(usuario);
-      mostrarAreaLogada(usuario);
-    }
-
-    function sair() {
-      setUsuarioLogado(null);
-      document.getElementById("areaLogada").style.display = "none";
-      document.getElementById("telaLogin").style.display = "flex";
-      document.getElementById("btnSair").style.display = "none";
-      document.getElementById("nomeLogado").style.display = "none";
-      document.getElementById("loginNome").value = "";
-      document.getElementById("loginSenha").value = "";
-      document.getElementById("erroLogin").style.display = "none";
-    }
-
-    function mostrarAreaLogada(usuario) {
-      document.getElementById("telaLogin").style.display = "none";
-      document.getElementById("areaLogada").style.display = "block";
-      document.getElementById("btnSair").style.display = "inline-block";
-      document.getElementById("nomeLogado").style.display = "inline";
-      const primeiro = usuario.nomeCompleto.split(" ")[0];
-      document.getElementById("nomeLogado").textContent = primeiro;
-      document.getElementById("saudacaoNome").textContent = primeiro;
-      atualizarProgresso(usuario);
-      renderMetaDiaria(usuario);
-      verificarConquistas(usuario);
-      atualizarBotaoNotif();
-      registrarServiceWorker();
-      agendarLembreteMeta(usuario);
-    }
-
-    function atualizarProgresso(usuario) {
-      const contas = carregarContas();
-      const atual = contas.find(c => c.id === usuario.id) || usuario;
-      const ranking = contas.slice().sort((a, b) => (b.xp || 0) - (a.xp || 0));
-      const pos = ranking.findIndex(c => c.id === atual.id) + 1;
-      document.getElementById("progXP").textContent = atual.xp || 0;
-      document.getElementById("progLiga").textContent = LIGAS[atual.liga || 0] || "Bronze";
-      document.getElementById("progPosicao").textContent = pos > 0 ? "#" + pos : "—";
-      document.getElementById("progJogos").textContent = atual.jogosFeitos || 0;
-    }
-
-    function abrirModalSenha() {
-      document.getElementById("modalSenha").classList.add("ativo");
-      document.getElementById("senhaAtual").value = "";
-      document.getElementById("senhaNova").value = "";
-      document.getElementById("senhaNova2").value = "";
-      const msg = document.getElementById("msgSenha");
-      msg.className = "modal-msg";
-      msg.textContent = "";
-    }
-    function fecharModalSenha() {
-      document.getElementById("modalSenha").classList.remove("ativo");
-    }
-    function salvarNovaSenha() {
-      const atual = document.getElementById("senhaAtual").value.trim();
-      const nova = document.getElementById("senhaNova").value.trim();
-      const nova2 = document.getElementById("senhaNova2").value.trim();
-      const msg = document.getElementById("msgSenha");
-      const logado = getUsuarioLogado();
-      if (!atual || !nova || !nova2) {
-        msg.className = "modal-msg erro";
-        msg.textContent = "Preencha todos os campos.";
-        return;
-      }
-      if (nova !== nova2) {
-        msg.className = "modal-msg erro";
-        msg.textContent = "A nova senha e a confirmação não são iguais.";
-        return;
-      }
-      if (nova.length < 3) {
-        msg.className = "modal-msg erro";
-        msg.textContent = "A nova senha precisa ter pelo menos 3 caracteres.";
-        return;
-      }
-      if (atual !== logado.senha) {
-        msg.className = "modal-msg erro";
-        msg.textContent = "Senha atual incorreta.";
-        return;
-      }
-      const contas = carregarContas();
-      const idx = contas.findIndex(c => c.id === logado.id);
-      if (idx === -1) {
-        msg.className = "modal-msg erro";
-        msg.textContent = "Conta não encontrada.";
-        return;
-      }
-      contas[idx].senha = nova;
-      salvarContas(contas);
-      logado.senha = nova;
-      setUsuarioLogado(logado);
-      msg.className = "modal-msg ok";
-      msg.textContent = "Senha alterada com sucesso!";
-      setTimeout(fecharModalSenha, 1200);
-    }
-
-    function gerarRanking() {
-      const contas = carregarContas();
-      const logado = getUsuarioLogado();
-      const meuXP = logado ? (logado.xp || 0) : 0;
-      const liga = logado ? (logado.liga || 0) : 0;
-      let ranking = contas.map(c => ({
-        id: c.id,
-        nome: c.nomeCompleto,
-        xp: c.xp || 0,
-        voce: logado && c.id === logado.id
-      }));
-      ranking.sort((a, b) => b.xp - a.xp);
-      return { ranking, liga, meuXP };
-    }
-
-    function renderRanking() {
-      const { ranking, liga, meuXP } = gerarRanking();
-      const lista = document.getElementById("listaRanking");
-      const logado = getUsuarioLogado();
-      if (logado) atualizarProgresso(logado);
-      document.getElementById("nomeLiga").textContent = LIGAS[liga] || "Bronze";
-      document.getElementById("meuXP").textContent = meuXP;
-      if (ranking.length === 0) {
-        document.getElementById("minhaPosicao").textContent = "—";
-        lista.innerHTML = '<div class="vazio-ranking">Nenhum aluno no ranking ainda.<br>Assim que alguém jogar, aparece aqui.</div>';
-        return;
-      }
-      const posicaoUsuario = ranking.findIndex(r => r.voce) + 1;
-      document.getElementById("minhaPosicao").textContent = posicaoUsuario > 0 ? "#" + posicaoUsuario : "—";
-      lista.innerHTML = ranking.map((item, index) => {
-        const pos = index + 1;
-        let classes = "leaderboard-item";
-        if (item.voce) classes += " voce";
-        if (pos === 1) classes += " top1";
-        if (pos === 2) classes += " top2";
-        if (pos === 3) classes += " top3";
-        const partes = item.nome.trim().split(/\s+/);
-        const inicial = partes.length >= 2
-          ? (partes[0][0] + partes[partes.length - 1][0]).toUpperCase()
-          : item.nome.slice(0, 2).toUpperCase();
-        return `
-          <div class="${classes}">
-            <div class="posicao">${pos}</div>
-            <div class="avatar">${inicial}</div>
-            <div class="nome">${item.nome}${item.voce ? "<small>Você</small>" : ""}</div>
-            <div class="xp">${item.xp} <span>XP</span></div>
-          </div>`;
-      }).join("");
-    }
-
-    function mostrarRanking() {
-      document.getElementById("cardsArea").style.display = "none";
-      document.getElementById("aviso").style.display = "none";
-      document.getElementById("caixaProgresso").style.display = "none";
-      document.getElementById("caixaConquistas").style.display = "none";
-      document.getElementById("caixaMetaDiaria").style.display = "none";
-      document.getElementById("ranking").classList.add("ativo");
-      renderRanking();
-    }
-
-    function voltarCards() {
-      document.getElementById("ranking").classList.remove("ativo");
-      document.getElementById("cardsArea").style.display = "grid";
-      document.getElementById("aviso").style.display = "block";
-      document.getElementById("caixaProgresso").style.display = "grid";
-      document.getElementById("caixaConquistas").style.display = "block";
-      document.getElementById("caixaMetaDiaria").style.display = "block";
-      const logado = getUsuarioLogado();
-      if (logado) {
-        atualizarProgresso(logado);
-        renderMetaDiaria(logado);
-        verificarConquistas(logado);
-      }
-    }
-
-    document.getElementById("loginSenha").addEventListener("keydown", e => {
-      if (e.key === "Enter") fazerLogin();
-    });
-    document.getElementById("loginNome").addEventListener("keydown", e => {
-      if (e.key === "Enter") document.getElementById("loginSenha").focus();
-    });
-
-    atualizarBotaoNotif();
-    registrarServiceWorker();
-
-    const usuario = getUsuarioLogado();
-    if (usuario) {
-      const contas = carregarContas();
-      const aindaExiste = contas.find(c => c.id === usuario.id);
-      if (aindaExiste) {
-        setUsuarioLogado(aindaExiste);
-        mostrarAreaLogada(aindaExiste);
-      }
-    }
-  </script>
+document.getElementById("loginSenha").addEventListener("keydown",e=>{if(e.key==="Enter")fazerLogin()});
+document.getElementById("loginNome").addEventListener("keydown",e=>{if(e.key==="Enter")document.getElementById("loginSenha").focus()});
+atualizarBotaoNotif();registrarServiceWorker();
+const usuario=getUsuarioLogado();
+if(usuario){const c=carregarContas().find(x=>x.id===usuario.id);if(c){setUsuarioLogado(c);mostrarAreaLogada(c)}}
+</script>
 </body>
 </html>
