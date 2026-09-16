@@ -50,29 +50,26 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .pergunta{font-size:22px;font-weight:800;color:var(--azul);margin-bottom:18px;text-align:center}
 .opcoes{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:550px){.opcoes{grid-template-columns:1fr}}
-.opcao{padding:16px;border-radius:12px;border:2px solid var(--borda);background:var(--creme);font-size:15px;font-weight:700;color:var(--azul);cursor:pointer;transition:.15s}
+.opcao{padding:16px;border-radius:12px;border:2px solid var(--borda);background:var(--creme);font-size:15px;font-weight:700;color:var(--azul);cursor:pointer}
 .opcao:hover{border-color:var(--dourado)}
-.opcao.certa{background:var(--agua);border-color:var(--agua);color:var(--azul)}
+.opcao.certa{background:var(--agua);border-color:var(--agua)}
 .opcao.errada{background:var(--erro);border-color:var(--erro);color:white}
 .proxima{display:inline-block;margin-top:22px;padding:12px 22px;border-radius:10px;background:var(--azul);color:white;font-weight:700;border:none;cursor:pointer}
-.proxima:hover{background:var(--escuro)}
 .fim h2{color:var(--azul);margin-bottom:10px}
 .fim p{color:var(--cinza);margin-bottom:20px}
 .input-resposta{width:100%;max-width:320px;padding:14px 16px;border-radius:10px;border:2px solid rgba(7,26,54,.15);font-size:16px;margin:10px 0;text-align:center}
-.input-resposta:focus{outline:none;border-color:var(--dourado)}
 .memoria-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:550px){.memoria-grid{grid-template-columns:repeat(3,1fr)}}
-.mem-carta{aspect-ratio:1/1;border-radius:12px;background:var(--azul);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;text-align:center;padding:6px;cursor:pointer;user-select:none}
+.mem-carta{aspect-ratio:1/1;border-radius:12px;background:var(--azul);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;text-align:center;padding:6px;cursor:pointer}
 .mem-carta.virada{background:white;color:var(--azul);border:2px solid var(--dourado)}
-.mem-carta.acertou{background:var(--agua);color:var(--azul);cursor:default}
+.mem-carta.acertou{background:var(--agua);color:var(--azul)}
 .forca-vidas{font-size:22px;margin-bottom:18px;letter-spacing:4px}
 .forca-dica{color:var(--cinza);font-size:14px;margin-bottom:18px}
-.forca-palavra{font-size:28px;font-weight:800;color:var(--azul);letter-spacing:8px;margin-bottom:26px;word-break:break-all}
+.forca-palavra{font-size:28px;font-weight:800;color:var(--azul);letter-spacing:8px;margin-bottom:26px}
 .teclado{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .tecla{width:36px;height:36px;border-radius:8px;border:2px solid rgba(7,26,54,.15);background:var(--creme);font-weight:800;color:var(--azul);cursor:pointer;font-size:13px}
-.tecla.acertou{background:var(--agua);border-color:var(--agua)}
-.tecla.errou{background:var(--erro);border-color:var(--erro);color:white}
-.tecla:disabled{opacity:.4;cursor:default}
+.tecla.acertou{background:var(--agua)}
+.tecla.errou{background:var(--erro);color:white}
+.tecla:disabled{opacity:.4}
 .xp-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;z-index:50;opacity:0;transition:.3s}
 .xp-toast.show{opacity:1}
 </style>
@@ -85,46 +82,33 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 <main class="wrap">
   <section id="idioma">
     <h1>Qual idioma você quer praticar?</h1>
-    <p>Escolha um idioma para ver os jogos.</p>
+    <p>21 jogos em cada idioma.</p>
     <div class="idioma-grid">
       <article class="idioma-card" onclick="selecionarIdioma('en')">
         <div class="icon">🇬🇧</div>
         <h2>Inglês</h2>
-        <p>Vocabulário e gramática em inglês.</p>
+        <p>21 jogos de inglês.</p>
       </article>
       <article class="idioma-card" onclick="selecionarIdioma('pt')">
         <div class="icon">🇧🇷</div>
         <h2>Português</h2>
-        <p>Vocabulário e gramática em português.</p>
+        <p>21 jogos de português.</p>
       </article>
     </div>
   </section>
   <section id="selecao">
     <button class="voltar-link" onclick="voltarIdioma()">← Trocar idioma</button>
     <h1 id="tituloSelecao">Jogos</h1>
-    <p>Escolha um jogo.</p>
+    <p>Escolha um dos 21 jogos.</p>
     <div class="modos" id="gridModos"></div>
   </section>
   <section id="niveis">
     <button class="voltar-link" onclick="voltarSelecao()">← Trocar de jogo</button>
     <h1>Escolha o nível</h1>
-    <p>Cada nível tem palavras diferentes.</p>
     <div class="niveis-grid">
-      <article class="nivel-card" onclick="iniciarComNivel('iniciante')">
-        <div class="icon">🌱</div>
-        <h3>Iniciante</h3>
-        <p>Palavras do dia a dia</p>
-      </article>
-      <article class="nivel-card" onclick="iniciarComNivel('intermediario')">
-        <div class="icon">🌿</div>
-        <h3>Intermediário</h3>
-        <p>Vocabulário mais amplo</p>
-      </article>
-      <article class="nivel-card" onclick="iniciarComNivel('avancado')">
-        <div class="icon">🌳</div>
-        <h3>Avançado</h3>
-        <p>Palavras complexas</p>
-      </article>
+      <article class="nivel-card" onclick="iniciarComNivel('iniciante')"><div class="icon">🌱</div><h3>Iniciante</h3><p>Dia a dia</p></article>
+      <article class="nivel-card" onclick="iniciarComNivel('intermediario')"><div class="icon">🌿</div><h3>Intermediário</h3><p>Mais amplo</p></article>
+      <article class="nivel-card" onclick="iniciarComNivel('avancado')"><div class="icon">🌳</div><h3>Avançado</h3><p>Complexo</p></article>
     </div>
   </section>
   <section id="jogo">
@@ -142,232 +126,183 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 (function(){
   try {
     const u = JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
-    if (!u || !u.id) {
-      alert("Faça login na Área do Aluno para jogar.");
-      window.location.href = "alunos.html";
-    }
-  } catch (e) {
-    window.location.href = "alunos.html";
-  }
+    if (!u || !u.id) { alert("Faça login na Área do Aluno para jogar."); window.location.href = "alunos.html"; }
+  } catch (e) { window.location.href = "alunos.html"; }
 })();
 
 function adicionarXP(quantidade) {
   quantidade = Number(quantidade) || 0;
   if (quantidade <= 0) return;
-  let xp = parseInt(localStorage.getItem("eva_xp_semana") || "0", 10);
-  xp += quantidade;
-  localStorage.setItem("eva_xp_semana", xp);
+  localStorage.setItem("eva_xp_semana", (parseInt(localStorage.getItem("eva_xp_semana")||"0",10)+quantidade));
   try {
     const logado = JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
     if (!logado || !logado.id) return;
     const contas = JSON.parse(localStorage.getItem("eva_contas") || "[]");
     let idx = contas.findIndex(c => c.id === logado.id);
-    if (idx === -1 && logado.nomeCompleto) {
-      idx = contas.findIndex(c => (c.nomeCompleto || "").toLowerCase() === String(logado.nomeCompleto).toLowerCase());
-    }
     if (idx === -1) return;
-    contas[idx].xp = (Number(contas[idx].xp) || 0) + quantidade;
-    contas[idx].moedas = (Number(contas[idx].moedas) || 0) + Math.max(1, Math.floor(quantidade / 5));
-    const _d = new Date();
-    const _day = _d.getDay();
-    const _diff = _day === 0 ? -6 : 1 - _day;
-    const _seg = new Date(_d);
-    _seg.setDate(_d.getDate() + _diff);
-    _seg.setHours(0,0,0,0);
-    const semId = _seg.getFullYear()+"-"+String(_seg.getMonth()+1).padStart(2,"0")+"-"+String(_seg.getDate()).padStart(2,"0");
-    if (contas[idx].semanaId && contas[idx].semanaId !== semId) contas[idx].xpSemana = 0;
-    contas[idx].semanaId = semId;
-    contas[idx].xpSemana = (Number(contas[idx].xpSemana) || 0) + quantidade;
-    let cfgMeta = 30;
-    try { cfgMeta = (JSON.parse(localStorage.getItem("eva_config")||"{}").metaDiaria) || 30; } catch(e){}
-    const hoje = _d.getFullYear()+"-"+String(_d.getMonth()+1).padStart(2,"0")+"-"+String(_d.getDate()).padStart(2,"0");
-    let meta = contas[idx].metaDiaria;
-    if (!meta || typeof meta !== "object" || meta.data !== hoje) {
-      meta = { alvo: cfgMeta, xpHoje: 0, data: hoje, completaHoje: false };
-    }
-    meta.alvo = cfgMeta;
-    meta.xpHoje = (meta.xpHoje || 0) + quantidade;
-    if (meta.xpHoje >= meta.alvo) meta.completaHoje = true;
-    contas[idx].metaDiaria = meta;
-    const ontem = (function(){ const o=new Date(); o.setDate(o.getDate()-1); return o.getFullYear()+"-"+String(o.getMonth()+1).padStart(2,"0")+"-"+String(o.getDate()).padStart(2,"0"); })();
-    let ofe = contas[idx].ofensiva || { dias: 0, ultimaData: null };
-    if (ofe.ultimaData !== hoje) {
-      if (ofe.ultimaData === ontem) ofe.dias = (ofe.dias || 0) + 1;
-      else ofe.dias = 1;
-      ofe.ultimaData = hoje;
-    }
-    contas[idx].ofensiva = ofe;
-    try {
-      const missoes = JSON.parse(localStorage.getItem("eva_missoes")||"[]");
-      if (!contas[idx].missoesProgresso) contas[idx].missoesProgresso = {};
-      missoes.filter(m => m.ativa).forEach(m => {
-        if (m.tipo === "xp") contas[idx].missoesProgresso[m.id] = contas[idx].xp || 0;
-        if (m.tipo === "jogos") contas[idx].missoesProgresso[m.id] = contas[idx].jogosFeitos || 0;
+    contas[idx].xp = (Number(contas[idx].xp)||0) + quantidade;
+    contas[idx].moedas = (Number(contas[idx].moedas)||0) + Math.max(1, Math.floor(quantidade/5));
+    const _d = new Date(); const _day=_d.getDay(); const _diff=_day===0?-6:1-_day;
+    const _seg=new Date(_d); _seg.setDate(_d.getDate()+_diff); _seg.setHours(0,0,0,0);
+    const semId=_seg.getFullYear()+"-"+String(_seg.getMonth()+1).padStart(2,"0")+"-"+String(_seg.getDate()).padStart(2,"0");
+    if (contas[idx].semanaId && contas[idx].semanaId!==semId) contas[idx].xpSemana=0;
+    contas[idx].semanaId=semId;
+    contas[idx].xpSemana=(Number(contas[idx].xpSemana)||0)+quantidade;
+    let cfgMeta=30; try{cfgMeta=(JSON.parse(localStorage.getItem("eva_config")||"{}").metaDiaria)||30;}catch(e){}
+    const hoje=_d.getFullYear()+"-"+String(_d.getMonth()+1).padStart(2,"0")+"-"+String(_d.getDate()).padStart(2,"0");
+    let meta=contas[idx].metaDiaria;
+    if(!meta||typeof meta!=="object"||meta.data!==hoje) meta={alvo:cfgMeta,xpHoje:0,data:hoje,completaHoje:false};
+    meta.alvo=cfgMeta; meta.xpHoje=(meta.xpHoje||0)+quantidade; if(meta.xpHoje>=meta.alvo) meta.completaHoje=true;
+    contas[idx].metaDiaria=meta;
+    const ontem=(function(){const o=new Date();o.setDate(o.getDate()-1);return o.getFullYear()+"-"+String(o.getMonth()+1).padStart(2,"0")+"-"+String(o.getDate()).padStart(2,"0");})();
+    let ofe=contas[idx].ofensiva||{dias:0,ultimaData:null};
+    if(ofe.ultimaData!==hoje){ if(ofe.ultimaData===ontem) ofe.dias=(ofe.dias||0)+1; else ofe.dias=1; ofe.ultimaData=hoje; }
+    contas[idx].ofensiva=ofe;
+    try{
+      const missoes=JSON.parse(localStorage.getItem("eva_missoes")||"[]");
+      if(!contas[idx].missoesProgresso) contas[idx].missoesProgresso={};
+      missoes.filter(m=>m.ativa).forEach(m=>{
+        if(m.tipo==="xp") contas[idx].missoesProgresso[m.id]=contas[idx].xp||0;
+        if(m.tipo==="jogos") contas[idx].missoesProgresso[m.id]=contas[idx].jogosFeitos||0;
       });
-    } catch(e){}
+    }catch(e){}
     localStorage.setItem("eva_contas", JSON.stringify(contas));
-    logado.xp = contas[idx].xp;
-    logado.moedas = contas[idx].moedas;
-    logado.xpSemana = contas[idx].xpSemana;
-    logado.metaDiaria = meta;
-    logado.ofensiva = ofe;
+    logado.xp=contas[idx].xp; logado.moedas=contas[idx].moedas; logado.xpSemana=contas[idx].xpSemana;
+    logado.metaDiaria=meta; logado.ofensiva=ofe;
     sessionStorage.setItem("eva_usuario_logado", JSON.stringify(logado));
-  } catch (e) {}
+  } catch(e){}
   verificarConquistasJogos();
 }
 
-function registrarJogoCompleto() {
-  try {
-    const logado = JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
-    if (!logado || !logado.id) return;
-    const contas = JSON.parse(localStorage.getItem("eva_contas") || "[]");
-    const idx = contas.findIndex(c => c.id === logado.id);
-    if (idx === -1) return;
-    contas[idx].jogosFeitos = (contas[idx].jogosFeitos || 0) + 1;
-    contas[idx].moedas = (contas[idx].moedas || 0) + 5;
-    try {
-      const missoes = JSON.parse(localStorage.getItem("eva_missoes")||"[]");
-      if (!contas[idx].missoesProgresso) contas[idx].missoesProgresso = {};
-      missoes.filter(m => m.ativa).forEach(m => {
-        if (m.tipo === "xp") contas[idx].missoesProgresso[m.id] = contas[idx].xp || 0;
-        if (m.tipo === "jogos") contas[idx].missoesProgresso[m.id] = contas[idx].jogosFeitos || 0;
-      });
-    } catch(e){}
+function registrarJogoCompleto(){
+  try{
+    const logado=JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
+    if(!logado||!logado.id) return;
+    const contas=JSON.parse(localStorage.getItem("eva_contas")||"[]");
+    const idx=contas.findIndex(c=>c.id===logado.id); if(idx===-1) return;
+    contas[idx].jogosFeitos=(contas[idx].jogosFeitos||0)+1;
+    contas[idx].moedas=(contas[idx].moedas||0)+5;
     localStorage.setItem("eva_contas", JSON.stringify(contas));
-    logado.jogosFeitos = contas[idx].jogosFeitos;
-    logado.moedas = contas[idx].moedas;
+    logado.jogosFeitos=contas[idx].jogosFeitos; logado.moedas=contas[idx].moedas;
     sessionStorage.setItem("eva_usuario_logado", JSON.stringify(logado));
-  } catch (e) {}
+  }catch(e){}
   verificarConquistasJogos();
 }
 
-function verificarConquistasJogos() {
-  try {
-    const logado = JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
-    if (!logado || !logado.id) return;
-    const contas = JSON.parse(localStorage.getItem("eva_contas") || "[]");
-    const idx = contas.findIndex(c => c.id === logado.id);
-    if (idx === -1) return;
-    const u = contas[idx];
-    if (!Array.isArray(u.conquistas)) u.conquistas = [];
-    const xp = u.xp || 0, jogos = u.jogosFeitos || 0;
-    const ranking = contas.slice().sort((a,b) => (b.xp||0) - (a.xp||0));
-    const pos = ranking.findIndex(c => c.id === u.id) + 1;
-    const ofe = (u.ofensiva && u.ofensiva.dias) || 0;
-    const bonusMap = {primeiro_acesso:5,primeiro_jogo:5,jogos_5:10,jogos_10:15,jogos_25:30,xp_50:5,xp_100:10,xp_250:15,xp_500:25,xp_1000:50,top3:20,primeiro:40,meta_diaria:10,ofensiva_3:15,ofensiva_7:30};
-    function tryUnlock(id) {
-      if (!u.conquistas.includes(id)) {
-        u.conquistas.push(id);
-        u.moedas = (Number(u.moedas)||0) + (bonusMap[id]||0);
-      }
-    }
-    tryUnlock("primeiro_acesso");
-    if (jogos >= 1) tryUnlock("primeiro_jogo");
-    if (jogos >= 5) tryUnlock("jogos_5");
-    if (jogos >= 10) tryUnlock("jogos_10");
-    if (jogos >= 25) tryUnlock("jogos_25");
-    if (xp >= 50) tryUnlock("xp_50");
-    if (xp >= 100) tryUnlock("xp_100");
-    if (xp >= 250) tryUnlock("xp_250");
-    if (xp >= 500) tryUnlock("xp_500");
-    if (xp >= 1000) tryUnlock("xp_1000");
-    if (pos > 0 && pos <= 3) tryUnlock("top3");
-    if (pos === 1) tryUnlock("primeiro");
-    if (u.metaDiaria && u.metaDiaria.completaHoje) tryUnlock("meta_diaria");
-    if (ofe >= 3) tryUnlock("ofensiva_3");
-    if (ofe >= 7) tryUnlock("ofensiva_7");
-    contas[idx] = u;
-    localStorage.setItem("eva_contas", JSON.stringify(contas));
-    logado.conquistas = u.conquistas;
-    logado.moedas = u.moedas;
-    sessionStorage.setItem("eva_usuario_logado", JSON.stringify(logado));
-  } catch (e) {}
+function verificarConquistasJogos(){
+  try{
+    const logado=JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
+    if(!logado||!logado.id) return;
+    const contas=JSON.parse(localStorage.getItem("eva_contas")||"[]");
+    const idx=contas.findIndex(c=>c.id===logado.id); if(idx===-1) return;
+    const u=contas[idx]; if(!Array.isArray(u.conquistas)) u.conquistas=[];
+    const xp=u.xp||0, jogos=u.jogosFeitos||0;
+    const pos=contas.slice().sort((a,b)=>(b.xp||0)-(a.xp||0)).findIndex(c=>c.id===u.id)+1;
+    const ofe=(u.ofensiva&&u.ofensiva.dias)||0;
+    const bonus={primeiro_acesso:5,primeiro_jogo:5,jogos_5:10,jogos_10:15,jogos_25:30,xp_50:5,xp_100:10,xp_250:15,xp_500:25,xp_1000:50,top3:20,primeiro:40,meta_diaria:10,ofensiva_3:15,ofensiva_7:30};
+    function un(id){ if(!u.conquistas.includes(id)){ u.conquistas.push(id); u.moedas=(Number(u.moedas)||0)+(bonus[id]||0);} }
+    un("primeiro_acesso");
+    if(jogos>=1)un("primeiro_jogo"); if(jogos>=5)un("jogos_5"); if(jogos>=10)un("jogos_10"); if(jogos>=25)un("jogos_25");
+    if(xp>=50)un("xp_50"); if(xp>=100)un("xp_100"); if(xp>=250)un("xp_250"); if(xp>=500)un("xp_500"); if(xp>=1000)un("xp_1000");
+    if(pos>0&&pos<=3)un("top3"); if(pos===1)un("primeiro");
+    if(u.metaDiaria&&u.metaDiaria.completaHoje)un("meta_diaria");
+    if(ofe>=3)un("ofensiva_3"); if(ofe>=7)un("ofensiva_7");
+    contas[idx]=u; localStorage.setItem("eva_contas",JSON.stringify(contas));
+    logado.conquistas=u.conquistas; logado.moedas=u.moedas;
+    sessionStorage.setItem("eva_usuario_logado",JSON.stringify(logado));
+  }catch(e){}
 }
 
-function mostrarGanhoXP(qtd) {
-  let t = document.getElementById("xpToast");
-  if (!t) {
-    t = document.createElement("div");
-    t.id = "xpToast";
-    t.className = "xp-toast";
-    document.body.appendChild(t);
-  }
-  t.textContent = "+" + qtd + " XP";
-  t.classList.add("show");
-  setTimeout(function(){ t.classList.remove("show"); }, 1500);
+function mostrarGanhoXP(qtd){
+  let t=document.getElementById("xpToast");
+  if(!t){ t=document.createElement("div"); t.id="xpToast"; t.className="xp-toast"; document.body.appendChild(t); }
+  t.textContent="+"+qtd+" XP"; t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); },1500);
 }
+function embaralhar(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const x=a[i]; a[i]=a[j]; a[j]=x; } return a; }
+function mostrarTela(id){ ["idioma","selecao","niveis","jogo"].forEach(function(t){ const el=document.getElementById(t); if(el) el.style.display=t===id?"block":"none"; }); }
 
-function embaralhar(arr) {
-  const a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
-  }
-  return a;
-}
-
-function mostrarTela(id) {
-  ["idioma", "selecao", "niveis", "jogo"].forEach(function(t) {
-    const el = document.getElementById(t);
-    if (el) el.style.display = (t === id) ? "block" : "none";
-  });
-}
-
-let idiomaAtual = "en";
-let modoAtual = null;
-let nivelAtual = "iniciante";
-let pontos = 0;
-let estadoJogo = {};
-
-function atualizarPlacar() {
-  document.getElementById("placar").textContent = "Pontos: " + pontos;
-  document.getElementById("tagNivel").textContent = nivelAtual;
-}
-function voltarIdioma() { mostrarTela("idioma"); }
-function voltarSelecao() { mostrarTela("selecao"); }
+let idiomaAtual="en", modoAtual=null, nivelAtual="iniciante", pontos=0, estadoJogo={};
+function atualizarPlacar(){ document.getElementById("placar").textContent="Pontos: "+pontos; document.getElementById("tagNivel").textContent=nivelAtual; }
+function voltarIdioma(){ mostrarTela("idioma"); }
+function voltarSelecao(){ mostrarTela("selecao"); }
 
 const MODOS = [
-  { id: "quiz_en_pt", nome: "Quiz EN→PT", icon: "📝", desc: "Traduza do inglês", lang: "en" },
-  { id: "quiz_pt_en", nome: "Quiz PT→EN", icon: "📝", desc: "Traduza do português", lang: "en" },
-  { id: "digite", nome: "Digite a tradução", icon: "⌨️", desc: "Escreva a resposta", lang: "en" },
-  { id: "forca", nome: "Forca", icon: "🔤", desc: "Adivinhe a palavra", lang: "en" },
-  { id: "memoria", nome: "Memória", icon: "🧠", desc: "Encontre os pares", lang: "en" },
-  { id: "quiz_pt", nome: "Quiz Português", icon: "🇧🇷", desc: "Vocabulário em PT", lang: "pt" },
-  { id: "forca_pt", nome: "Forca PT", icon: "🔤", desc: "Forca em português", lang: "pt" },
-  { id: "memoria_pt", nome: "Memória PT", icon: "🧠", desc: "Pares em português", lang: "pt" }
+  { id:"en_quiz_ept", nome:"Quiz EN→PT", icon:"📝", desc:"Inglês para português", lang:"en", engine:"quiz", tipo:"en_pt" },
+  { id:"en_quiz_pte", nome:"Quiz PT→EN", icon:"📝", desc:"Português para inglês", lang:"en", engine:"quiz", tipo:"pt_en" },
+  { id:"en_digite", nome:"Digite a tradução", icon:"⌨️", desc:"Escreva em português", lang:"en", engine:"digite", tipo:"en_pt" },
+  { id:"en_digite_inv", nome:"Digite em inglês", icon:"⌨️", desc:"Escreva em inglês", lang:"en", engine:"digite", tipo:"pt_en" },
+  { id:"en_forca", nome:"Forca (EN)", icon:"🔤", desc:"Adivinhe a palavra", lang:"en", engine:"forca", tipo:"en" },
+  { id:"en_memoria", nome:"Memória EN-PT", icon:"🧠", desc:"Pares inglês/português", lang:"en", engine:"memoria", tipo:"en" },
+  { id:"en_sinonimos", nome:"Sinônimos (EN)", icon:"🔄", desc:"Escolha o sinônimo", lang:"en", engine:"sinonimo", tipo:"en" },
+  { id:"en_antonimos", nome:"Antônimos (EN)", icon:"↔️", desc:"Escolha o oposto", lang:"en", engine:"antonimo", tipo:"en" },
+  { id:"en_frase", nome:"Complete a frase", icon:"📄", desc:"Palavra que falta", lang:"en", engine:"frase", tipo:"en" },
+  { id:"en_vf", nome:"Verdadeiro ou falso", icon:"✅", desc:"A tradução está certa?", lang:"en", engine:"vf", tipo:"en" },
+  { id:"en_categoria", nome:"Categoria", icon:"📂", desc:"Qual o tema?", lang:"en", engine:"categoria", tipo:"en" },
+  { id:"en_embaralha", nome:"Letras embaralhadas", icon:"🔀", desc:"Monte a palavra", lang:"en", engine:"embaralha", tipo:"en" },
+  { id:"en_rapido", nome:"Quiz rápido", icon:"⚡", desc:"5 perguntas", lang:"en", engine:"quiz", tipo:"en_pt", qtd:5 },
+  { id:"en_desafio", nome:"Desafio 12", icon:"🏆", desc:"12 perguntas", lang:"en", engine:"quiz", tipo:"en_pt", qtd:12 },
+  { id:"en_memoria_inv", nome:"Memória PT-EN", icon:"🧠", desc:"Pares invertidos", lang:"en", engine:"memoria", tipo:"en" },
+  { id:"en_forca_ptpista", nome:"Forca com pista", icon:"🔤", desc:"Forca + dica", lang:"en", engine:"forca", tipo:"en" },
+  { id:"en_digite_mix", nome:"Digite misto", icon:"⌨️", desc:"EN ou PT", lang:"en", engine:"digite", tipo:"mix" },
+  { id:"en_quiz_mix", nome:"Quiz misto", icon:"🎲", desc:"EN↔PT", lang:"en", engine:"quiz", tipo:"mix" },
+  { id:"en_revisao", nome:"Revisão geral", icon:"📚", desc:"Mistura de níveis", lang:"en", engine:"quiz", tipo:"en_pt", mixNivel:true },
+  { id:"en_pares", nome:"Ache o par", icon:"🔗", desc:"Escolha a tradução", lang:"en", engine:"quiz", tipo:"en_pt" },
+  { id:"en_flash", nome:"Flash quiz", icon:"✨", desc:"Quiz curto", lang:"en", engine:"quiz", tipo:"pt_en", qtd:6 },
+  { id:"pt_quiz_dica", nome:"Quiz por dica", icon:"💡", desc:"Adivinhe pela dica", lang:"pt", engine:"quiz_pt" },
+  { id:"pt_forca", nome:"Forca (PT)", icon:"🔤", desc:"Adivinhe a palavra", lang:"pt", engine:"forca", tipo:"pt" },
+  { id:"pt_memoria", nome:"Memória PT", icon:"🧠", desc:"Palavra e dica", lang:"pt", engine:"memoria", tipo:"pt" },
+  { id:"pt_sinonimos", nome:"Sinônimos (PT)", icon:"🔄", desc:"Escolha o sinônimo", lang:"pt", engine:"sinonimo", tipo:"pt" },
+  { id:"pt_antonimos", nome:"Antônimos (PT)", icon:"↔️", desc:"Escolha o oposto", lang:"pt", engine:"antonimo", tipo:"pt" },
+  { id:"pt_frase", nome:"Complete a frase", icon:"📄", desc:"Palavra que falta", lang:"pt", engine:"frase", tipo:"pt" },
+  { id:"pt_vf", nome:"Verdadeiro ou falso", icon:"✅", desc:"A dica combina?", lang:"pt", engine:"vf", tipo:"pt" },
+  { id:"pt_categoria", nome:"Categoria", icon:"📂", desc:"Tema da palavra", lang:"pt", engine:"categoria", tipo:"pt" },
+  { id:"pt_embaralha", nome:"Letras embaralhadas", icon:"🔀", desc:"Monte a palavra", lang:"pt", engine:"embaralha", tipo:"pt" },
+  { id:"pt_rapido", nome:"Quiz rápido", icon:"⚡", desc:"5 perguntas", lang:"pt", engine:"quiz_pt", qtd:5 },
+  { id:"pt_desafio", nome:"Desafio 12", icon:"🏆", desc:"12 perguntas", lang:"pt", engine:"quiz_pt", qtd:12 },
+  { id:"pt_digite", nome:"Digite a palavra", icon:"⌨️", desc:"Escreva pela dica", lang:"pt", engine:"digite_pt" },
+  { id:"pt_memoria2", nome:"Memória extra", icon:"🧩", desc:"Mais pares", lang:"pt", engine:"memoria", tipo:"pt" },
+  { id:"pt_forca2", nome:"Forca difícil", icon:"🔤", desc:"Outra rodada", lang:"pt", engine:"forca", tipo:"pt" },
+  { id:"pt_quiz2", nome:"Quiz avançado", icon:"📝", desc:"Mais dicas", lang:"pt", engine:"quiz_pt" },
+  { id:"pt_mix", nome:"Revisão mista", icon:"📚", desc:"Vários níveis", lang:"pt", engine:"quiz_pt", mixNivel:true },
+  { id:"pt_flash", nome:"Flash quiz", icon:"✨", desc:"Quiz curto", lang:"pt", engine:"quiz_pt", qtd:6 },
+  { id:"pt_pares", nome:"Ache a palavra", icon:"🔗", desc:"Combine com a dica", lang:"pt", engine:"quiz_pt" },
+  { id:"pt_ortografia", nome:"Ortografia", icon:"✍️", desc:"Escreva certo", lang:"pt", engine:"digite_pt" },
+  { id:"pt_desafio_final", nome:"Desafio final", icon:"🎯", desc:"10 perguntas", lang:"pt", engine:"quiz_pt", qtd:10 },
+  { id:"pt_treino", nome:"Treino diário", icon:"📅", desc:"Prática rápida", lang:"pt", engine:"quiz_pt", qtd:8 }
 ];
 
-function selecionarIdioma(lang) {
-  idiomaAtual = lang;
-  document.getElementById("tituloSelecao").textContent = lang === "en" ? "Jogos de Inglês" : "Jogos de Português";
-  const grid = document.getElementById("gridModos");
-  grid.innerHTML = MODOS.filter(function(m){ return m.lang === lang; }).map(function(m){
+function selecionarIdioma(lang){
+  idiomaAtual=lang;
+  document.getElementById("tituloSelecao").textContent=lang==="en"?"21 Jogos de Inglês":"21 Jogos de Português";
+  const grid=document.getElementById("gridModos");
+  grid.innerHTML=MODOS.filter(function(m){return m.lang===lang;}).map(function(m){
     return '<article class="modo-card" data-modo="'+m.id+'"><div class="icon">'+m.icon+'</div><h3>'+m.nome+'</h3><p>'+m.desc+'</p></article>';
   }).join("");
   grid.querySelectorAll(".modo-card").forEach(function(card){
-    card.onclick = function(){ mostrarNiveis(card.getAttribute("data-modo")); };
+    card.onclick=function(){ mostrarNiveis(card.getAttribute("data-modo")); };
   });
   mostrarTela("selecao");
 }
+function mostrarNiveis(modoId){ modoAtual=modoId; mostrarTela("niveis"); }
 
-function mostrarNiveis(modoId) {
-  modoAtual = modoId;
-  mostrarTela("niveis");
-}
-
-function iniciarComNivel(nivel) {
-  nivelAtual = nivel;
-  pontos = 0;
-  atualizarPlacar();
-  mostrarTela("jogo");
-  if (modoAtual === "quiz_en_pt") iniciarQuiz("en_pt");
-  else if (modoAtual === "quiz_pt_en") iniciarQuiz("pt_en");
-  else if (modoAtual === "digite") iniciarDigite();
-  else if (modoAtual === "forca") iniciarForca("en");
-  else if (modoAtual === "memoria") iniciarMemoria("en");
-  else if (modoAtual === "quiz_pt") iniciarQuizPt();
-  else if (modoAtual === "forca_pt") iniciarForca("pt");
-  else if (modoAtual === "memoria_pt") iniciarMemoria("pt");
+function iniciarComNivel(nivel){
+  nivelAtual=nivel; pontos=0; atualizarPlacar(); mostrarTela("jogo");
+  const modo=MODOS.find(function(m){return m.id===modoAtual;})||{};
+  const engine=modo.engine||"quiz", tipo=modo.tipo||"en_pt", qtd=modo.qtd||0, mixNivel=!!modo.mixNivel;
+  estadoJogo.modoCfg=modo;
+  if(engine==="quiz") iniciarQuiz(tipo,qtd,mixNivel);
+  else if(engine==="digite") iniciarDigite(tipo);
+  else if(engine==="forca") iniciarForca(tipo==="pt"?"pt":"en");
+  else if(engine==="memoria") iniciarMemoria(tipo==="pt"?"pt":"en");
+  else if(engine==="quiz_pt") iniciarQuizPt(qtd,mixNivel);
+  else if(engine==="digite_pt") iniciarDigitePt();
+  else if(engine==="sinonimo") iniciarSinonimo(tipo);
+  else if(engine==="antonimo") iniciarAntonimo(tipo);
+  else if(engine==="frase") iniciarFrase(tipo);
+  else if(engine==="vf") iniciarVF(tipo);
+  else if(engine==="categoria") iniciarCategoria(tipo);
+  else if(engine==="embaralha") iniciarEmbaralha(tipo);
   else iniciarQuiz("en_pt");
 }
 const banco = {
@@ -409,8 +344,51 @@ const bancoPt = {
   ]
 };
 
+const sinonimosEN = {
+  iniciante:[{palavra:"happy",correta:"glad",opcoes:["glad","sad","angry"]},{palavra:"big",correta:"large",opcoes:["large","small","tiny"]},{palavra:"fast",correta:"quick",opcoes:["quick","slow","late"]},{palavra:"smart",correta:"clever",opcoes:["clever","lazy","weak"]}],
+  intermediario:[{palavra:"begin",correta:"start",opcoes:["start","end","stop"]},{palavra:"buy",correta:"purchase",opcoes:["purchase","sell","rent"]},{palavra:"hard",correta:"difficult",opcoes:["difficult","easy","simple"]}],
+  avancado:[{palavra:"courage",correta:"bravery",opcoes:["bravery","fear","doubt"]},{palavra:"wisdom",correta:"insight",opcoes:["insight","ignorance","noise"]}]
+};
+const antonimosEN = {
+  iniciante:[{palavra:"hot",correta:"cold",opcoes:["cold","warm","fire"]},{palavra:"happy",correta:"sad",opcoes:["sad","glad","funny"]},{palavra:"big",correta:"small",opcoes:["small","huge","tall"]}],
+  intermediario:[{palavra:"begin",correta:"end",opcoes:["end","start","open"]},{palavra:"buy",correta:"sell",opcoes:["sell","keep","own"]}],
+  avancado:[{palavra:"courage",correta:"cowardice",opcoes:["cowardice","bravery","strength"]},{palavra:"freedom",correta:"prison",opcoes:["prison","choice","right"]}]
+};
+const frasesEN = {
+  iniciante:[{frase:"I have a ___.",resposta:"dog",opcoes:["dog","run","blue"]},{frase:"Close the ___.",resposta:"door",opcoes:["door","eat","happy"]}],
+  intermediario:[{frase:"We need to ___ a decision.",resposta:"make",opcoes:["make","eat","sleep"]}],
+  avancado:[{frase:"It takes ___ to speak the truth.",resposta:"courage",opcoes:["courage","weather","window"]}]
+};
+const categoriasEN = {
+  iniciante:[{palavra:"dog",correta:"animal",opcoes:["animal","food","color"]},{palavra:"book",correta:"school",opcoes:["school","weather","body"]}],
+  intermediario:[{palavra:"meeting",correta:"work",opcoes:["work","fruit","sport"]}],
+  avancado:[{palavra:"discipline",correta:"virtue",opcoes:["virtue","furniture","animal"]}]
+};
+const sinonimosPT = {
+  iniciante:[{palavra:"feliz",correta:"contente",opcoes:["contente","triste","bravo"]},{palavra:"grande",correta:"enorme",opcoes:["enorme","pequeno","fino"]}],
+  intermediario:[{palavra:"começar",correta:"iniciar",opcoes:["iniciar","terminar","parar"]}],
+  avancado:[{palavra:"coragem",correta:"bravura",opcoes:["bravura","medo","dúvida"]}]
+};
+const antonimosPT = {
+  iniciante:[{palavra:"quente",correta:"frio",opcoes:["frio","morno","alto"]},{palavra:"feliz",correta:"triste",opcoes:["triste","alegre","bom"]}],
+  intermediario:[{palavra:"começar",correta:"terminar",opcoes:["terminar","iniciar","abrir"]}],
+  avancado:[{palavra:"coragem",correta:"covardia",opcoes:["covardia","força","honra"]}]
+};
+const frasesPT = {
+  iniciante:[{frase:"Eu abro a ___.",resposta:"janela",opcoes:["janela","sol","correr"]}],
+  intermediario:[{frase:"Ela tomou uma ___.",resposta:"decisão",opcoes:["decisão","mesa","vento"]}],
+  avancado:[{frase:"É preciso ter ___.",resposta:"paciência",opcoes:["paciência","nuvem","cadeira"]}]
+};
+const categoriasPT = {
+  iniciante:[{palavra:"amigo",correta:"pessoa",opcoes:["pessoa","fruta","cor"]}],
+  intermediario:[{palavra:"viagem",correta:"deslocamento",opcoes:["deslocamento","comida","número"]}],
+  avancado:[{palavra:"integridade",correta:"virtude",opcoes:["virtude","móvel","animal"]}]
+};
+
 function poolEN(){ return (banco[nivelAtual] || banco.iniciante).slice(); }
 function poolPT(){ return (bancoPt[nivelAtual] || bancoPt.iniciante).slice(); }
+function poolENMix(){ return (banco.iniciante||[]).concat(banco.intermediario||[]).concat(banco.avancado||[]); }
+function poolPTMix(){ return (bancoPt.iniciante||[]).concat(bancoPt.intermediario||[]).concat(bancoPt.avancado||[]); }
 
 function opcoesDistratoras(correta, todas, campo){
   const outs = embaralhar(todas.filter(function(x){ return x[campo] !== correta; }).map(function(x){ return x[campo]; })).slice(0,3);
@@ -428,31 +406,31 @@ function fimDeJogo(titulo, msg){
   document.getElementById("btnAgain").onclick = function(){ iniciarComNivel(nivelAtual); };
 }
 
-function iniciarQuiz(tipo){
-  estadoJogo = { tipo:tipo, fila:embaralhar(poolEN()).slice(0,8), i:0 };
+function iniciarQuiz(tipo, qtd, mixNivel){
+  const lista = mixNivel ? poolENMix() : poolEN();
+  const n = (qtd && qtd > 0) ? qtd : 8;
+  estadoJogo = { tipo:tipo||"en_pt", fila:embaralhar(lista).slice(0,n), i:0, mixNivel:!!mixNivel };
   renderQuiz();
 }
 function renderQuiz(){
   const st = estadoJogo;
-  if(st.i >= st.fila.length){
-    adicionarXP(25); mostrarGanhoXP(25);
-    fimDeJogo("Fim do quiz!","Você concluiu as perguntas.");
-    return;
-  }
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Fim do quiz!","Você concluiu as perguntas."); return; }
   const item = st.fila[st.i];
-  const pergunta = st.tipo==="en_pt" ? item.en : item.pt;
-  const correta = st.tipo==="en_pt" ? item.pt : item.en;
-  const campo = st.tipo==="en_pt" ? "pt" : "en";
-  const ops = opcoesDistratoras(correta, poolEN(), campo);
+  let tipo = st.tipo;
+  if(tipo === "mix") tipo = Math.random() < 0.5 ? "en_pt" : "pt_en";
+  st._tipoAtual = tipo;
+  const pergunta = tipo==="en_pt" ? item.en : item.pt;
+  const correta = tipo==="en_pt" ? item.pt : item.en;
+  const campo = tipo==="en_pt" ? "pt" : "en";
+  const base = st.mixNivel ? poolENMix() : poolEN();
+  const ops = opcoesDistratoras(correta, base, campo);
+  const label = tipo==="en_pt" ? "O que significa:" : "Como se diz em inglês:";
   const area = document.getElementById("areaJogo");
-  const label = st.tipo==="en_pt" ? "O que significa:" : "Como se diz em inglês:";
-  area.innerHTML = '<div class="pergunta">'+label+' <em>'+pergunta+'</em>?</div><div class="opcoes" id="opsQuiz"></div>'+
-    '<p style="text-align:center;margin-top:14px;color:var(--cinza);font-size:13px">'+(st.i+1)+' / '+st.fila.length+'</p>';
+  area.innerHTML = '<div class="pergunta">'+label+' <em>'+pergunta+'</em>?</div><div class="opcoes" id="opsQuiz"></div><p style="text-align:center;margin-top:14px;color:var(--cinza);font-size:13px">'+(st.i+1)+' / '+st.fila.length+'</p>';
   const box = document.getElementById("opsQuiz");
   ops.forEach(function(o){
     const b = document.createElement("button");
-    b.className = "opcao";
-    b.textContent = o;
+    b.className = "opcao"; b.textContent = o;
     b.onclick = function(){ responderQuiz(o, correta); };
     box.appendChild(b);
   });
@@ -463,30 +441,25 @@ function responderQuiz(escolha, correta){
     if(b.textContent === correta) b.classList.add("certa");
     if(b.textContent === escolha && escolha !== correta) b.classList.add("errada");
   });
-  if(escolha === correta){
-    pontos += 10; atualizarPlacar();
-    adicionarXP(10); mostrarGanhoXP(10);
-  }
+  if(escolha === correta){ pontos += 10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
   setTimeout(function(){ estadoJogo.i++; renderQuiz(); }, 700);
 }
 
-function iniciarDigite(){
-  estadoJogo = { fila:embaralhar(poolEN()).slice(0,6), i:0 };
+function iniciarDigite(tipo){
+  estadoJogo = { fila:embaralhar(poolEN()).slice(0,6), i:0, tipo:tipo||"en_pt" };
   renderDigite();
 }
 function renderDigite(){
   const st = estadoJogo;
-  if(st.i >= st.fila.length){
-    adicionarXP(25); mostrarGanhoXP(25);
-    fimDeJogo("Muito bem!","Você terminou o modo digitar.");
-    return;
-  }
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Muito bem!","Modo digitar concluído."); return; }
   const item = st.fila[st.i];
+  let tipo = st.tipo || "en_pt";
+  if(tipo === "mix") tipo = Math.random() < 0.5 ? "en_pt" : "pt_en";
+  st._tipoAtual = tipo;
+  const mostra = tipo==="en_pt" ? item.en : item.pt;
+  const label = tipo==="en_pt" ? "Traduza para o português:" : "Traduza para o inglês:";
   document.getElementById("areaJogo").innerHTML =
-    '<div class="pergunta">Traduza para o português:<br><em>'+item.en+'</em></div>'+
-    '<div style="text-align:center"><input class="input-resposta" id="respDigite" placeholder="sua resposta" autocomplete="off">'+
-    '<br><button class="proxima" onclick="responderDigite()">Confirmar</button></div>'+
-    '<p style="text-align:center;margin-top:12px;color:var(--cinza);font-size:13px">'+(st.i+1)+' / '+st.fila.length+'</p>';
+    '<div class="pergunta">'+label+'<br><em>'+mostra+'</em></div><div style="text-align:center"><input class="input-resposta" id="respDigite" placeholder="sua resposta" autocomplete="off"><br><button class="proxima" onclick="responderDigite()">Confirmar</button></div>';
   const inp = document.getElementById("respDigite");
   inp.focus();
   inp.onkeydown = function(e){ if(e.key==="Enter") responderDigite(); };
@@ -494,45 +467,33 @@ function renderDigite(){
 function responderDigite(){
   const item = estadoJogo.fila[estadoJogo.i];
   const val = (document.getElementById("respDigite").value||"").trim().toLowerCase();
-  if(val === item.pt.toLowerCase()){
-    pontos += 15; atualizarPlacar();
-    adicionarXP(10); mostrarGanhoXP(10);
-  } else {
-    alert("Resposta: " + item.pt);
-  }
-  estadoJogo.i++;
-  renderDigite();
+  const tipo = estadoJogo._tipoAtual || estadoJogo.tipo || "en_pt";
+  const certa = (tipo==="en_pt" ? item.pt : item.en).toLowerCase();
+  if(val === certa){ pontos += 15; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  else alert("Resposta: " + (tipo==="en_pt" ? item.pt : item.en));
+  estadoJogo.i++; renderDigite();
 }
 
 function iniciarForca(lang){
   let palavra, dica;
   if(lang==="pt"){
     const item = embaralhar(poolPT())[0];
-    palavra = item.palavra.toLowerCase();
-    dica = item.dica;
+    palavra = item.palavra.toLowerCase(); dica = item.dica;
   } else {
     const item = embaralhar(poolEN())[0];
-    palavra = item.en.toLowerCase();
-    dica = "em português: " + item.pt;
+    palavra = item.en.toLowerCase(); dica = "em português: " + item.pt;
   }
   estadoJogo = { palavra:palavra, dica:dica, certas:{}, _err:{}, erradas:0, max:6 };
   renderForca();
 }
 function renderForca(){
   const st = estadoJogo;
-  const vis = st.palavra.split("").map(function(c){
-    return /[a-zà-ü]/.test(c) ? (st.certas[c] ? c : "_") : c;
-  }).join(" ");
-  const letras = "abcdefghijklmnopqrstuvwxyz".split("");
+  const vis = st.palavra.split("").map(function(c){ return /[a-zà-ü]/.test(c) ? (st.certas[c] ? c : "_") : c; }).join(" ");
   const vidas = "❤️".repeat(Math.max(0, st.max - st.erradas)) + "🖤".repeat(st.erradas);
   const area = document.getElementById("areaJogo");
-  area.innerHTML =
-    '<div class="forca-vidas">'+vidas+'</div>'+
-    '<div class="forca-dica">Dica: '+st.dica+'</div>'+
-    '<div class="forca-palavra">'+vis+'</div>'+
-    '<div class="teclado" id="tecladoForca"></div>';
+  area.innerHTML = '<div class="forca-vidas">'+vidas+'</div><div class="forca-dica">Dica: '+st.dica+'</div><div class="forca-palavra">'+vis+'</div><div class="teclado" id="tecladoForca"></div>';
   const teclado = document.getElementById("tecladoForca");
-  letras.forEach(function(l){
+  "abcdefghijklmnopqrstuvwxyz".split("").forEach(function(l){
     const b = document.createElement("button");
     b.className = "tecla";
     if(st.certas[l]) b.className += " acertou";
@@ -548,106 +509,64 @@ function tentarLetra(l){
   if(st.certas[l] || st._err[l]) return;
   if(st.palavra.indexOf(l) >= 0) st.certas[l] = true;
   else { st._err[l] = true; st.erradas++; }
-  const completa = st.palavra.split("").every(function(c){
-    return !/[a-zà-ü]/.test(c) || st.certas[c];
-  });
-  if(completa){
-    pontos += 20; atualizarPlacar();
-    adicionarXP(20); mostrarGanhoXP(20);
-    registrarJogoCompleto();
-    fimDeJogo("Acertou!","A palavra era: " + st.palavra);
-    return;
-  }
-  if(st.erradas >= st.max){
-    registrarJogoCompleto();
-    fimDeJogo("Fim de jogo","A palavra era: " + st.palavra);
-    return;
-  }
+  const completa = st.palavra.split("").every(function(c){ return !/[a-zà-ü]/.test(c) || st.certas[c]; });
+  if(completa){ pontos += 20; atualizarPlacar(); adicionarXP(20); mostrarGanhoXP(20); registrarJogoCompleto(); fimDeJogo("Acertou!","A palavra era: "+st.palavra); return; }
+  if(st.erradas >= st.max){ registrarJogoCompleto(); fimDeJogo("Fim de jogo","A palavra era: "+st.palavra); return; }
   renderForca();
 }
 
 function iniciarMemoria(lang){
   const pares = [];
   if(lang==="pt"){
-    embaralhar(poolPT()).slice(0,6).forEach(function(it,i){
-      pares.push({text:it.palavra, pair:i});
-      pares.push({text:it.dica, pair:i});
-    });
+    embaralhar(poolPT()).slice(0,6).forEach(function(it,i){ pares.push({text:it.palavra,pair:i}); pares.push({text:it.dica,pair:i}); });
   } else {
-    embaralhar(poolEN()).slice(0,6).forEach(function(it,i){
-      pares.push({text:it.en, pair:i});
-      pares.push({text:it.pt, pair:i});
-    });
+    embaralhar(poolEN()).slice(0,6).forEach(function(it,i){ pares.push({text:it.en,pair:i}); pares.push({text:it.pt,pair:i}); });
   }
   estadoJogo = { cartas:embaralhar(pares), abertas:[], travado:false, achados:0, total:6 };
   renderMemoria();
 }
 function renderMemoria(){
   const st = estadoJogo;
-  document.getElementById("areaJogo").innerHTML =
-    '<div class="memoria-grid">'+st.cartas.map(function(c,i){
-      const show = c.virada || c.ok;
-      return '<div class="mem-carta'+(show?" virada":"")+(c.ok?" acertou":"")+'" onclick="virarCarta('+i+')">'+(show?c.text:"?")+'</div>';
-    }).join("")+'</div>';
+  document.getElementById("areaJogo").innerHTML = '<div class="memoria-grid">'+st.cartas.map(function(c,i){
+    const show = c.virada || c.ok;
+    return '<div class="mem-carta'+(show?" virada":"")+(c.ok?" acertou":"")+'" onclick="virarCarta('+i+')">'+(show?c.text:"?")+'</div>';
+  }).join("")+'</div>';
 }
 function virarCarta(i){
-  const st = estadoJogo;
-  const c = st.cartas[i];
+  const st = estadoJogo; const c = st.cartas[i];
   if(st.travado || c.ok || c.virada) return;
-  c.virada = true;
-  st.abertas.push(i);
-  renderMemoria();
+  c.virada = true; st.abertas.push(i); renderMemoria();
   if(st.abertas.length < 2) return;
   st.travado = true;
-  const a = st.cartas[st.abertas[0]];
-  const b = st.cartas[st.abertas[1]];
+  const a = st.cartas[st.abertas[0]], b = st.cartas[st.abertas[1]];
   if(a.pair === b.pair){
-    a.ok = true; b.ok = true;
-    st.achados++;
-    pontos += 10; atualizarPlacar();
-    adicionarXP(10); mostrarGanhoXP(10);
-    st.abertas = [];
-    st.travado = false;
-    if(st.achados >= st.total){
-      adicionarXP(15); mostrarGanhoXP(15);
-      registrarJogoCompleto();
-      setTimeout(function(){ fimDeJogo("Memória completa!","Todos os pares encontrados."); }, 400);
-      return;
-    }
+    a.ok = true; b.ok = true; st.achados++; pontos += 10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10);
+    st.abertas = []; st.travado = false;
+    if(st.achados >= st.total){ adicionarXP(15); mostrarGanhoXP(15); registrarJogoCompleto(); setTimeout(function(){ fimDeJogo("Memória completa!","Todos os pares encontrados."); },400); return; }
     renderMemoria();
   } else {
-    setTimeout(function(){
-      a.virada = false; b.virada = false;
-      st.abertas = [];
-      st.travado = false;
-      renderMemoria();
-    }, 700);
+    setTimeout(function(){ a.virada=false; b.virada=false; st.abertas=[]; st.travado=false; renderMemoria(); },700);
   }
 }
 
-function iniciarQuizPt(){
-  estadoJogo = { fila:embaralhar(poolPT()).slice(0,6), i:0 };
+function iniciarQuizPt(qtd, mixNivel){
+  const lista = mixNivel ? poolPTMix() : poolPT();
+  const n = (qtd && qtd > 0) ? qtd : 6;
+  estadoJogo = { fila:embaralhar(lista).slice(0,n), i:0 };
   renderQuizPt();
 }
 function renderQuizPt(){
   const st = estadoJogo;
-  if(st.i >= st.fila.length){
-    adicionarXP(25); mostrarGanhoXP(25);
-    fimDeJogo("Fim!","Quiz de português concluído.");
-    return;
-  }
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Fim!","Quiz de português concluído."); return; }
   const item = st.fila[st.i];
   const todas = poolPT();
-  const ops = embaralhar([item.palavra].concat(
-    embaralhar(todas.filter(function(x){ return x.palavra!==item.palavra; }).map(function(x){ return x.palavra; })).slice(0,3)
-  ));
+  const ops = embaralhar([item.palavra].concat(embaralhar(todas.filter(function(x){ return x.palavra!==item.palavra; }).map(function(x){ return x.palavra; })).slice(0,3)));
   const area = document.getElementById("areaJogo");
   area.innerHTML = '<div class="pergunta">Qual palavra combina com:<br><em>'+item.dica+'</em>?</div><div class="opcoes" id="opsQuizPt"></div>';
   const box = document.getElementById("opsQuizPt");
   ops.forEach(function(o){
     const b = document.createElement("button");
-    b.className = "opcao";
-    b.textContent = o;
+    b.className = "opcao"; b.textContent = o;
     b.onclick = function(){ responderQuizPt(o, item.palavra); };
     box.appendChild(b);
   });
@@ -660,6 +579,102 @@ function responderQuizPt(escolha, correta){
   });
   if(escolha===correta){ pontos+=10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
   setTimeout(function(){ estadoJogo.i++; renderQuizPt(); }, 700);
+}
+
+function iniciarDigitePt(){
+  estadoJogo = { fila:embaralhar(poolPT()).slice(0,6), i:0 };
+  renderDigitePt();
+}
+function renderDigitePt(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Muito bem!","Modo digitar concluído."); return; }
+  const item = st.fila[st.i];
+  document.getElementById("areaJogo").innerHTML =
+    '<div class="pergunta">Escreva a palavra:<br><em>'+item.dica+'</em></div><div style="text-align:center"><input class="input-resposta" id="respDigite" placeholder="sua resposta" autocomplete="off"><br><button class="proxima" onclick="responderDigitePt()">Confirmar</button></div>';
+  const inp = document.getElementById("respDigite");
+  inp.focus();
+  inp.onkeydown = function(e){ if(e.key==="Enter") responderDigitePt(); };
+}
+function responderDigitePt(){
+  const item = estadoJogo.fila[estadoJogo.i];
+  const val = (document.getElementById("respDigite").value||"").trim().toLowerCase();
+  if(val === item.palavra.toLowerCase()){ pontos += 15; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  else alert("Resposta: " + item.palavra);
+  estadoJogo.i++; renderDigitePt();
+}
+
+function pegarLista(obj){ return (obj[nivelAtual] && obj[nivelAtual].length) ? obj[nivelAtual] : (obj.iniciante || []); }
+function iniciarEscolha(lista, tituloFn){
+  estadoJogo = { fila:embaralhar(lista).slice(0,8), i:0, tituloFn:tituloFn };
+  renderEscolha();
+}
+function renderEscolha(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Fim!","Atividade concluída."); return; }
+  const item = st.fila[st.i];
+  const ops = embaralhar((item.opcoes||[]).slice());
+  const area = document.getElementById("areaJogo");
+  area.innerHTML = '<div class="pergunta">'+st.tituloFn(item)+'</div><div class="opcoes" id="opsEsc"></div><p style="text-align:center;margin-top:14px;color:var(--cinza);font-size:13px">'+(st.i+1)+' / '+st.fila.length+'</p>';
+  const box = document.getElementById("opsEsc");
+  ops.forEach(function(o){
+    const b = document.createElement("button");
+    b.className = "opcao"; b.textContent = o;
+    b.onclick = function(){ responderEscolha(o, item.correta || item.resposta); };
+    box.appendChild(b);
+  });
+}
+function responderEscolha(escolha, correta){
+  document.querySelectorAll(".opcao").forEach(function(b){
+    b.disabled = true;
+    if(b.textContent === correta) b.classList.add("certa");
+    if(b.textContent === escolha && escolha !== correta) b.classList.add("errada");
+  });
+  if(escolha === correta){ pontos += 10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  setTimeout(function(){ estadoJogo.i++; renderEscolha(); }, 700);
+}
+function iniciarSinonimo(lang){ iniciarEscolha(pegarLista(lang==="pt"?sinonimosPT:sinonimosEN), function(it){ return "Sinônimo de <em>"+it.palavra+"</em>?"; }); }
+function iniciarAntonimo(lang){ iniciarEscolha(pegarLista(lang==="pt"?antonimosPT:antonimosEN), function(it){ return "Antônimo de <em>"+it.palavra+"</em>?"; }); }
+function iniciarFrase(lang){ iniciarEscolha(pegarLista(lang==="pt"?frasesPT:frasesEN), function(it){ return it.frase; }); }
+function iniciarCategoria(lang){ iniciarEscolha(pegarLista(lang==="pt"?categoriasPT:categoriasEN), function(it){ return "Categoria de <em>"+it.palavra+"</em>?"; }); }
+function iniciarVF(lang){
+  const lista = [];
+  if(lang==="pt"){
+    poolPT().forEach(function(it){
+      const ok = Math.random() < 0.5;
+      const outra = embaralhar(poolPT().filter(function(x){ return x.palavra !== it.palavra; }))[0];
+      lista.push({ texto: ok ? ('"'+it.palavra+'" = '+it.dica) : ('"'+it.palavra+'" = '+(outra?outra.dica:"???")), correta: ok?"Verdadeiro":"Falso", opcoes:["Verdadeiro","Falso"] });
+    });
+  } else {
+    poolEN().forEach(function(it){
+      const ok = Math.random() < 0.5;
+      const outra = embaralhar(poolEN().filter(function(x){ return x.en !== it.en; }))[0];
+      lista.push({ texto: ok ? (it.en+" = "+it.pt) : (it.en+" = "+(outra?outra.pt:"???")), correta: ok?"Verdadeiro":"Falso", opcoes:["Verdadeiro","Falso"] });
+    });
+  }
+  iniciarEscolha(lista, function(it){ return it.texto; });
+}
+function iniciarEmbaralha(lang){
+  let fila;
+  if(lang==="pt") fila = embaralhar(poolPT()).slice(0,6).map(function(it){ return {palavra:it.palavra,dica:it.dica}; });
+  else fila = embaralhar(poolEN()).slice(0,6).map(function(it){ return {palavra:it.en,dica:it.pt}; });
+  estadoJogo = { fila:fila, i:0 };
+  renderEmbaralha();
+}
+function renderEmbaralha(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Muito bem!","Letras ordenadas!"); return; }
+  const item = st.fila[st.i];
+  const letras = embaralhar(item.palavra.split(""));
+  document.getElementById("areaJogo").innerHTML =
+    '<div class="pergunta">Organize as letras<br><em>'+letras.join(" · ")+'</em><br><span style="font-size:14px;color:var(--cinza)">Dica: '+item.dica+'</span></div><div style="text-align:center"><input class="input-resposta" id="respEmb" placeholder="palavra" autocomplete="off"><br><button class="proxima" onclick="responderEmbaralha()">Confirmar</button></div>';
+  document.getElementById("respEmb").focus();
+}
+function responderEmbaralha(){
+  const item = estadoJogo.fila[estadoJogo.i];
+  const val = (document.getElementById("respEmb").value||"").trim().toLowerCase();
+  if(val === item.palavra.toLowerCase()){ pontos += 15; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  else alert("Resposta: " + item.palavra);
+  estadoJogo.i++; renderEmbaralha();
 }
 </script>
 </body>
