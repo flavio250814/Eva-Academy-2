@@ -169,7 +169,7 @@
       <h2>Liga e semana</h2>
       <p class="meta" style="margin-bottom:12px">
         Semana atual: <strong id="semanaAtual">—</strong><br>
-        O ranking usa o XP da semana. No reset: top 3 sobem de liga, últimos 3 descem, XP da semana zera.
+        No reset: top 3 sobem de liga, últimos 3 descem, XP da semana zera.
       </p>
       <button class="btn btn-dourado" onclick="resetarSemana()">Resetar semana agora</button>
     </div>
@@ -189,12 +189,22 @@
             <label>Tipo</label>
             <select id="missaoTipo">
               <option value="jogos">Completar jogos</option>
-              <option value="xp">Ganhar XP</option>
+              <option value="xp">Alcançar XP total</option>
             </select>
           </div>
           <div>
             <label>Alvo (número)</label>
             <input type="number" id="missaoAlvo" min="1" value="3">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label>Bônus XP ao concluir</label>
+            <input type="number" id="missaoBonusXp" min="0" value="25">
+          </div>
+          <div>
+            <label>Bônus moedas ao concluir</label>
+            <input type="number" id="missaoBonusMoedas" min="0" value="10">
           </div>
         </div>
         <div class="form-botoes">
@@ -235,13 +245,13 @@
     </div>
 
     <div class="secao">
-      <h2>Ranking da semana</h2>
+      <h2>Ranking</h2>
       <div id="rankingAdmin"></div>
     </div>
 
     <div class="secao">
       <h2>Relatório da professora</h2>
-      <p class="meta" style="margin-bottom:12px">Gera um resumo de todos os alunos para copiar ou baixar (CSV).</p>
+      <p class="meta" style="margin-bottom:12px">Resumo dos alunos para copiar ou baixar (CSV).</p>
       <div class="form-botoes">
         <button class="btn btn-azul" onclick="gerarRelatorioTexto()">Ver relatório</button>
         <button class="btn btn-verde" onclick="baixarRelatorioCSV()">Baixar CSV</button>
@@ -257,7 +267,7 @@
 
     <div class="info-box">
       <strong>Senha admin:</strong> evaadmin2026<br>
-      Meta diária, missões e reset de liga valem para todos os alunos neste navegador (localStorage).
+      Meta diária, missões e reset de liga usam localStorage neste navegador.
     </div>
   </main>
     <script>
@@ -283,7 +293,6 @@
       seg.setHours(0,0,0,0);
       return seg.getFullYear()+"-"+String(seg.getMonth()+1).padStart(2,"0")+"-"+String(seg.getDate()).padStart(2,"0");
     }
-
     function gerarId(){ return "x_"+Date.now()+"_"+Math.floor(Math.random()*1000); }
 
     function tentarLogin(){
@@ -359,6 +368,8 @@
       document.getElementById("missaoDesc").value = "";
       document.getElementById("missaoTipo").value = "jogos";
       document.getElementById("missaoAlvo").value = "3";
+      document.getElementById("missaoBonusXp").value = "25";
+      document.getElementById("missaoBonusMoedas").value = "10";
     }
     function fecharFormMissao(){ document.getElementById("formMissao").classList.remove("ativo"); }
     function salvarMissao(){
@@ -366,10 +377,14 @@
       const desc = document.getElementById("missaoDesc").value.trim();
       const tipo = document.getElementById("missaoTipo").value;
       const alvo = parseInt(document.getElementById("missaoAlvo").value,10)||1;
+      const bonusXp = parseInt(document.getElementById("missaoBonusXp").value, 10);
+      const bonusMoedas = parseInt(document.getElementById("missaoBonusMoedas").value, 10);
       if(!titulo){ alert("Digite o título."); return; }
       const missoes = carregarMissoes();
       missoes.push({
         id: gerarId(), titulo, desc, tipo, alvo,
+        bonusXp: isNaN(bonusXp) ? 25 : bonusXp,
+        bonusMoedas: isNaN(bonusMoedas) ? 10 : bonusMoedas,
         ativa: true, criadaEm: new Date().toISOString()
       });
       salvarMissoes(missoes);
@@ -432,7 +447,7 @@
         const nova = {
           id: gerarId(), nomeCompleto: nome, senha,
           xp: 0, xpSemana: 0, moedas: 0, itensComprados: [], liga: 0, jogosFeitos: 0,
-          conquistas: [], ofensiva: { dias: 0, ultimaData: null },
+          conquistas: [], missoesConcluidas: [], ofensiva: { dias: 0, ultimaData: null },
           avatar: "🎓", moldura: "padrao",
           metaDiaria: null, missoesProgresso: {},
           semanaId: chaveSemana(),
@@ -485,7 +500,7 @@
           <div class="missao-item">
             <div class="info">
               <div class="nome">${m.ativa?"🟢":"⚪"} ${m.titulo}</div>
-              <div class="meta">${m.desc||""}<br>Tipo: ${m.tipo} · Alvo: ${m.alvo}</div>
+              <div class="meta">${m.desc||""}<br>Tipo: ${m.tipo} · Alvo: ${m.alvo} · Bônus: +${m.bonusXp||25} XP / +${m.bonusMoedas||10} 🪙</div>
             </div>
             <button class="btn btn-cinza" onclick="toggleMissao('${m.id}')">${m.ativa?"Pausar":"Ativar"}</button>
             <button class="btn btn-vermelho" onclick="excluirMissao('${m.id}')">Excluir</button>
@@ -510,18 +525,18 @@
           </div>`).join("");
       }
 
-      const ord = contas.slice().sort((a,b)=>(b.xpSemana||0)-(a.xpSemana||0));
+      const ord = contas.slice().sort((a,b)=>(b.xp||0)-(a.xp||0));
       const ra = document.getElementById("rankingAdmin");
       if(!ord.length) ra.innerHTML = '<div class="vazio">Sem alunos.</div>';
       else ra.innerHTML = ord.map((c,i)=>{
         const pos=i+1; let cls="rank-item";
         if(pos===1)cls+=" top1"; if(pos===2)cls+=" top2"; if(pos===3)cls+=" top3";
-        return `<div class="${cls}"><div class="rank-pos">${pos}</div><div class="rank-nome">${c.avatar||""} ${c.nomeCompleto}</div><div class="rank-xp">${c.xpSemana||0} XP · ${LIGAS[c.liga||0]}</div></div>`;
+        return `<div class="${cls}"><div class="rank-pos">${pos}</div><div class="rank-nome">${c.avatar||""} ${c.nomeCompleto}</div><div class="rank-xp">${c.xp||0} XP · ${LIGAS[c.liga||0]}</div></div>`;
       }).join("");
     }
 
     function gerarRelatorioTexto(){
-      const contas = carregarContas().slice().sort((a,b)=> (b.xpSemana||0)-(a.xpSemana||0));
+      const contas = carregarContas().slice().sort((a,b)=> (b.xp||0)-(a.xp||0));
       const cfg = carregarConfig();
       const missoes = carregarMissoes().filter(m=>m.ativa);
       let t = "RELATÓRIO EVA ACADEMY\n";
@@ -544,7 +559,7 @@
       return t;
     }
     function baixarRelatorioCSV(){
-      const contas = carregarContas().slice().sort((a,b)=> (b.xpSemana||0)-(a.xpSemana||0));
+      const contas = carregarContas().slice().sort((a,b)=> (b.xp||0)-(a.xp||0));
       let csv = "Posicao,Nome,XP Total,XP Semana,Moedas,Liga,Ofensiva,Jogos,Conquistas,Ultimo Acesso\n";
       contas.forEach((c,i)=>{
         const row = [

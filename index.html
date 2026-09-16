@@ -3,29 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta
-        name="description"
-        content="EVA Academy. Ensino de Inglês e Português dentro de uma proposta de Educação Clássica."
-    >
-
+    <meta name="description" content="EVA Academy. Ensino de Inglês e Português dentro de uma proposta de Educação Clássica.">
     <title>EVA Academy | Educação Clássica</title>
-
     <style>
-        /* =====================================================
-           RESET
-        ===================================================== */
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
         body {
             font-family: Arial, Helvetica, sans-serif;
             background: #faf8ef;
@@ -33,2655 +15,495 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        button {
-            font-family: inherit;
-        }
-
-
-        /* =====================================================
-           CORES
-        ===================================================== */
-
+        a { text-decoration: none; color: inherit; }
+        button { font-family: inherit; }
         :root {
             --azul: #071a36;
             --azul-escuro: #031023;
             --azul-claro: #10294c;
-
             --dourado: #c9a227;
             --dourado-claro: #e0bd45;
-
             --verde-agua: #55d6c2;
             --verde-agua-claro: #8be6d6;
-
             --creme: #faf8ef;
             --branco: #ffffff;
-
             --texto: #172238;
             --cinza: #657086;
-
             --borda: rgba(7, 26, 54, 0.12);
         }
-
-
-        /* =====================================================
-           CONTAINER
-        ===================================================== */
-
-        .container {
-            width: min(1180px, calc(100% - 40px));
-            margin: auto;
-        }
-
-
-        /* =====================================================
-           HEADER
-        ===================================================== */
-
+        .container { width: min(1180px, calc(100% - 40px)); margin: auto; }
         header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
-
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
             background: rgba(250, 248, 239, 0.94);
             backdrop-filter: blur(15px);
-
             border-bottom: 1px solid transparent;
-
             transition: 0.3s;
         }
-
         header.scrolled {
             border-color: var(--borda);
-
-            box-shadow:
-                0 10px 35px rgba(7, 26, 54, 0.08);
+            box-shadow: 0 10px 35px rgba(7, 26, 54, 0.08);
         }
-
-        .header-inner {
-            min-height: 82px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        .nav {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 18px 0;
         }
-
-
-        /* =====================================================
-           MARCA
-        ===================================================== */
-
         .logo {
-            display: flex;
-            flex-direction: column;
-            line-height: 0.8;
+            font-weight: 800; letter-spacing: 2px; color: var(--azul); font-size: 18px;
         }
-
-        .logo-eva {
-            font-family: Georgia, serif;
-            font-size: 34px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: var(--azul);
+        .logo span { color: var(--dourado); }
+        .menu { display: flex; align-items: center; gap: 28px; list-style: none; }
+        .menu a {
+            font-size: 14px; font-weight: 600; color: var(--cinza); transition: 0.2s;
         }
-
-        .logo-academy {
-            margin-top: 7px;
-
-            font-size: 9px;
-            font-weight: bold;
-            letter-spacing: 4px;
-
-            color: var(--dourado);
+        .menu a:hover { color: var(--azul); }
+        .menu .btn-nav {
+            background: var(--azul); color: white !important;
+            padding: 10px 18px; border-radius: 999px; font-size: 13px;
         }
-
-
-        /* =====================================================
-           MENU
-        ===================================================== */
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 27px;
+        .menu .btn-nav:hover { background: var(--azul-escuro); }
+        .menu-toggle {
+            display: none; background: none; border: none; font-size: 24px;
+            cursor: pointer; color: var(--azul);
         }
-
-        nav a {
-            position: relative;
-
-            font-size: 13px;
-            font-weight: bold;
-
-            color: var(--azul);
-
-            transition: 0.25s;
-        }
-
-        nav a:hover {
-            color: var(--dourado);
-        }
-
-        nav a:not(.instagram-link)::after {
-            content: "";
-
-            position: absolute;
-            left: 0;
-            bottom: -7px;
-
-            width: 0;
-            height: 2px;
-
-            background: var(--dourado);
-
-            transition: 0.25s;
-        }
-
-        nav a:not(.instagram-link):hover::after {
-            width: 100%;
-        }
-
-        .instagram-link {
-            padding: 10px 17px;
-
-            border: 1px solid var(--azul);
-            border-radius: 30px;
-        }
-
-        .instagram-link:hover {
-            background: var(--azul);
-            color: white;
-        }
-
-
-        /* =====================================================
-           MENU MOBILE
-        ===================================================== */
-
-        .menu-button {
-            display: none;
-
-            width: 45px;
-            height: 45px;
-
-            border: none;
-            background: transparent;
-
-            cursor: pointer;
-        }
-
-        .menu-button span {
-            display: block;
-
-            width: 25px;
-            height: 2px;
-
-            margin: 5px auto;
-
-            background: var(--azul);
-
-            transition: 0.3s;
-        }
-
-
-        /* =====================================================
-           HERO
-        ===================================================== */
-
         .hero {
-            min-height: 760px;
-
-            padding: 170px 0 100px;
-
-            position: relative;
-            overflow: hidden;
-
+            min-height: 100vh; display: flex; align-items: center;
+            padding: 140px 0 80px;
             background:
-                radial-gradient(
-                    circle at 85% 15%,
-                    rgba(85, 214, 194, 0.22),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at 15% 90%,
-                    rgba(201, 162, 39, 0.10),
-                    transparent 25%
-                ),
+                radial-gradient(circle at 15% 20%, rgba(85,214,194,0.18), transparent 40%),
+                radial-gradient(circle at 85% 10%, rgba(201,162,39,0.15), transparent 35%),
                 var(--creme);
         }
-
-        .hero-content {
-            min-height: 500px;
-
-            display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-
-            align-items: center;
-
-            gap: 80px;
-
-            position: relative;
-            z-index: 2;
+        .hero-grid {
+            display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center;
         }
-
         .eyebrow {
-            display: inline-block;
-
-            margin-bottom: 18px;
-
-            color: var(--dourado);
-
-            font-size: 11px;
-            font-weight: bold;
-
-            letter-spacing: 3px;
+            display: inline-block; font-size: 12px; font-weight: 700;
+            letter-spacing: 2px; color: var(--dourado); margin-bottom: 18px;
         }
-
         .hero h1 {
-            max-width: 700px;
-
             font-family: Georgia, "Times New Roman", serif;
-
-            font-size: clamp(55px, 7vw, 88px);
-
-            line-height: 0.95;
-
-            color: var(--azul);
-
-            margin-bottom: 28px;
+            font-size: clamp(42px, 6vw, 72px); line-height: 0.98;
+            color: var(--azul); margin-bottom: 22px;
         }
-
-        .hero h1 span {
-            color: var(--dourado);
+        .hero h1 span { color: var(--verde-agua); }
+        .hero p {
+            max-width: 520px; color: var(--cinza); font-size: 17px; margin-bottom: 30px;
         }
-
-        .hero-description {
-            max-width: 650px;
-
-            color: var(--cinza);
-
-            font-size: 17px;
-
-            margin-bottom: 35px;
+        .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+        .btn-primary {
+            display: inline-block; background: var(--azul); color: white;
+            padding: 14px 24px; border-radius: 999px; font-weight: 700; font-size: 14px;
+            border: none; cursor: pointer; transition: 0.2s;
         }
-
-
-        /* =====================================================
-           BOTÕES
-        ===================================================== */
-
-        .buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
+        .btn-primary:hover { background: var(--azul-escuro); }
+        .btn-secondary {
+            display: inline-block; background: transparent; color: var(--azul);
+            padding: 14px 24px; border-radius: 999px; font-weight: 700; font-size: 14px;
+            border: 2px solid var(--borda); transition: 0.2s;
         }
-
-        .button {
-            min-height: 52px;
-
-            padding: 0 25px;
-
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 30px;
-
-            font-size: 13px;
-            font-weight: bold;
-
-            transition:
-                transform 0.25s,
-                box-shadow 0.25s,
-                background 0.25s;
-        }
-
-        .button:hover {
-            transform: translateY(-4px);
-        }
-
-        .button-dourado {
-            background: var(--dourado);
-            color: var(--azul);
-
-            box-shadow:
-                0 12px 30px rgba(201, 162, 39, 0.28);
-        }
-
-        .button-dourado:hover {
-            background: var(--dourado-claro);
-
-            box-shadow:
-                0 17px 38px rgba(201, 162, 39, 0.38);
-        }
-
-        .button-outline {
-            border: 1px solid var(--azul);
-            color: var(--azul);
-        }
-
-        .button-outline:hover {
-            background: var(--azul);
-            color: white;
-        }
-
-
-        /* =====================================================
-           CARD HERO
-        ===================================================== */
-
+        .btn-secondary:hover { border-color: var(--azul); }
         .hero-card {
-            width: min(390px, 100%);
-
-            justify-self: center;
-
-            background: var(--azul);
-
-            color: white;
-
-            border-radius: 30px;
-
-            overflow: hidden;
-
-            box-shadow:
-                0 30px 70px rgba(7, 26, 54, 0.25);
-
-            transform: rotate(2deg);
-
-            transition: 0.4s;
+            background: white; border-radius: 28px; padding: 32px;
+            box-shadow: 0 30px 70px rgba(7,26,54,0.12);
         }
-
-        .hero-card:hover {
-            transform: rotate(0deg) translateY(-7px);
+        .hero-card h3 { color: var(--azul); margin-bottom: 12px; font-size: 20px; }
+        .hero-card p { color: var(--cinza); font-size: 14px; margin-bottom: 18px; }
+        .hero-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
         }
-
-        .hero-card-top {
-            padding: 18px 25px;
-
-            color: var(--verde-agua);
-
-            background: rgba(85, 214, 194, 0.10);
-
-            font-size: 10px;
-            font-weight: bold;
-
-            letter-spacing: 2px;
+        .hero-stats div {
+            background: var(--creme); border-radius: 16px; padding: 14px;
+            text-align: center;
         }
-
-        .hero-card-content {
-            padding: 55px 45px;
-        }
-
-        .classic-symbol {
-            width: 58px;
-            height: 58px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-bottom: 25px;
-
-            border-radius: 50%;
-
-            background: var(--dourado);
-
-            color: var(--azul);
-
-            font-family: Georgia, serif;
-            font-size: 26px;
-            font-weight: bold;
-        }
-
-        .hero-card h2 {
-            font-family: Georgia, serif;
-
-            font-size: 52px;
-
-            line-height: 0.95;
-
-            margin-bottom: 20px;
-        }
-
-        .hero-card p {
-            color: rgba(255,255,255,0.70);
-
-            font-size: 14px;
-        }
-
-        .hero-card-bottom {
-            display: flex;
-            justify-content: space-between;
-
-            padding: 20px 25px;
-
-            background: var(--dourado);
-
-            color: var(--azul);
-
-            font-size: 10px;
-            font-weight: bold;
-
-            letter-spacing: 2px;
-        }
-
-
-        /* =====================================================
-           DECORAÇÕES
-        ===================================================== */
-
-        .circle {
-            position: absolute;
-
-            border-radius: 50%;
-
-            pointer-events: none;
-        }
-
-        .circle-1 {
-            width: 420px;
-            height: 420px;
-
-            right: -220px;
-            top: 100px;
-
-            border: 1px solid rgba(85, 214, 194, 0.25);
-        }
-
-        .circle-2 {
-            width: 260px;
-            height: 260px;
-
-            left: -140px;
-            bottom: -130px;
-
-            border: 1px solid rgba(201, 162, 39, 0.3);
-        }
-
-
-        /* =====================================================
-           INFO
-        ===================================================== */
-
-        .quick-info {
-            background: var(--azul);
-            color: white;
-        }
-
-        .quick-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-        }
-
-        .quick-item {
-            min-height: 125px;
-
-            padding: 25px 30px;
-
-            display: flex;
-            align-items: center;
-
-            gap: 20px;
-
-            border-right:
-                1px solid rgba(255,255,255,0.10);
-        }
-
-        .quick-item:last-child {
-            border-right: none;
-        }
-
-        .quick-icon {
-            min-width: 50px;
-            height: 50px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border: 1px solid var(--verde-agua);
-
-            border-radius: 50%;
-
-            color: var(--verde-agua);
-
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .quick-item strong {
-            display: block;
-
-            font-size: 14px;
-
-            margin-bottom: 3px;
-        }
-
-        .quick-item small {
-            display: block;
-
-            color: rgba(255,255,255,0.58);
-
-            font-size: 12px;
-        }
-
-
-        /* =====================================================
-           SEÇÕES
-        ===================================================== */
-
-        section {
-            scroll-margin-top: 90px;
-        }
-
-        .section {
-            padding: 120px 0;
-        }
-
-        .white {
-            background: white;
-        }
-
-        .cream {
-            background: var(--creme);
-        }
-
-
-        /* =====================================================
-           SOBRE
-        ===================================================== */
-
-        .about-grid {
-            display: grid;
-
-            grid-template-columns: 0.8fr 1.2fr;
-
-            gap: 100px;
-        }
-
+        .hero-stats strong { display: block; color: var(--azul); font-size: 20px; }
+        .hero-stats span { color: var(--cinza); font-size: 12px; }
+        section { padding: 100px 0; }
         .section-title {
             font-family: Georgia, "Times New Roman", serif;
-
-            font-size: clamp(45px, 5vw, 68px);
-
-            line-height: 0.98;
-
-            color: var(--azul);
+            font-size: clamp(36px, 5vw, 58px); line-height: 1;
+            color: var(--azul); margin-bottom: 18px;
         }
-
-        .section-title span {
-            color: var(--dourado);
+        .section-title span { color: var(--dourado); }
+                .section { padding: 100px 0; }
+        .white { background: white; }
+        .cream { background: var(--creme); }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 60px;
+            align-items: start;
         }
-
-        .about-text {
-            max-width: 650px;
-        }
-
-        .about-text p {
-            color: var(--cinza);
-
-            font-size: 16px;
-
-            margin-bottom: 22px;
-        }
-
+        .about-text p { color: var(--cinza); font-size: 16px; margin-bottom: 18px; }
         .about-highlight {
-            margin-top: 30px;
-
-            padding: 22px 25px;
-
+            margin-top: 24px; padding: 20px 22px;
             border-left: 4px solid var(--verde-agua);
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(85,214,194,0.10),
-                    transparent
-                );
+            background: linear-gradient(90deg, rgba(85,214,194,0.12), transparent);
         }
-
-        .about-highlight strong {
-            display: block;
-
-            color: var(--azul);
-
-            margin-bottom: 4px;
-        }
-
-        .about-highlight span {
-            color: var(--cinza);
-
-            font-size: 13px;
-        }
-
-
-        /* =====================================================
-           EDUCAÇÃO CLÁSSICA
-        ===================================================== */
-
+        .about-highlight strong { display: block; color: var(--azul); margin-bottom: 4px; }
+        .about-highlight span { color: var(--cinza); font-size: 13px; }
         .classic {
-            background: var(--azul);
-
-            color: white;
-
-            text-align: center;
-
-            padding: 130px 20px;
+            background: var(--azul); color: white; text-align: center; padding: 110px 20px;
         }
-
-        .classic-content {
-            max-width: 850px;
-            margin: auto;
-        }
-
-        .classic .eyebrow {
-            color: var(--verde-agua);
-        }
-
+        .classic .eyebrow { color: var(--verde-agua); }
         .classic h2 {
             font-family: Georgia, serif;
-
-            font-size: clamp(50px, 6vw, 75px);
-
-            line-height: 0.95;
-
-            margin-bottom: 28px;
+            font-size: clamp(40px, 6vw, 68px);
+            line-height: 0.98; margin: 14px 0 22px;
         }
-
-        .classic h2 span {
-            color: var(--dourado);
-        }
-
+        .classic h2 span { color: var(--dourado); }
         .classic p {
-            max-width: 730px;
-
-            margin: auto;
-
-            color: rgba(255,255,255,0.68);
-
-            font-size: 16px;
+            max-width: 720px; margin: 0 auto;
+            color: rgba(255,255,255,0.72); font-size: 16px;
         }
-
         .classic-points {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-
-            gap: 12px;
-
-            margin-top: 35px;
+            display: flex; justify-content: center; flex-wrap: wrap;
+            gap: 10px; margin-top: 28px;
         }
-
         .classic-points span {
-            padding: 10px 17px;
-
+            padding: 10px 16px;
             border: 1px solid rgba(85,214,194,0.45);
-
-            border-radius: 30px;
-
-            color: var(--verde-agua);
-
-            font-size: 10px;
-            font-weight: bold;
-
-            letter-spacing: 1px;
+            border-radius: 999px; font-size: 13px; color: var(--verde-agua-claro);
         }
-
-
-        /* =====================================================
-           IDIOMAS
-        ===================================================== */
-
-        .center {
-            text-align: center;
-
-            max-width: 760px;
-
-            margin: 0 auto 60px;
+        .cards-3 {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px;
         }
-
-        .center p {
-            max-width: 650px;
-
-            margin: 20px auto 0;
-
-            color: var(--cinza);
-
-            font-size: 15px;
+        .info-card {
+            background: white; border-radius: 22px; padding: 28px;
+            box-shadow: 0 18px 45px rgba(7,26,54,0.08);
         }
-
-        .language-grid {
-            display: grid;
-
-            grid-template-columns: repeat(2, 1fr);
-
-            gap: 25px;
+        .info-card .ico { font-size: 28px; margin-bottom: 12px; }
+        .info-card h3 { color: var(--azul); margin-bottom: 10px; font-size: 18px; }
+        .info-card p { color: var(--cinza); font-size: 14px; }
+        .cta-box {
+            background: linear-gradient(135deg, var(--azul), var(--azul-claro));
+            color: white; border-radius: 28px; padding: 48px 36px; text-align: center;
         }
-
-        .language-card {
-            min-height: 360px;
-
-            padding: 40px;
-
-            border-radius: 25px;
-
-            background: var(--azul);
-
-            color: white;
-
-            transition: 0.3s;
+        .cta-box h2 {
+            font-family: Georgia, serif; font-size: clamp(28px, 4vw, 42px);
+            margin-bottom: 14px;
         }
-
-        .language-card:hover {
-            transform: translateY(-7px);
-
-            box-shadow:
-                0 25px 55px rgba(7,26,54,0.20);
+        .cta-box p { color: rgba(255,255,255,0.75); margin-bottom: 22px; }
+        .cta-box a.btn-primary {
+            background: var(--dourado); color: var(--azul);
         }
-
-        .language-top {
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            margin-bottom: 70px;
-        }
-
-        .language-label {
-            font-size: 10px;
-            font-weight: bold;
-
-            letter-spacing: 2px;
-        }
-
-        .language-code {
-            padding: 8px 12px;
-
-            border: 1px solid currentColor;
-
-            border-radius: 20px;
-
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .language-card h3 {
-            font-family: Georgia, serif;
-
-            font-size: 55px;
-
-            line-height: 1;
-
-            margin-bottom: 15px;
-        }
-
-        .language-card p {
-            max-width: 500px;
-
-            color: rgba(255,255,255,0.68);
-
-            font-size: 14px;
-
-            margin-bottom: 25px;
-        }
-
-        .language-link {
-            color: var(--verde-agua);
-
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-
-        /* =====================================================
-           MODALIDADES
-        ===================================================== */
-
-        .modalities {
-            background: var(--creme);
-        }
-
-        .modality-grid {
-            display: grid;
-
-            grid-template-columns: 0.9fr 1.1fr;
-
-            gap: 100px;
-
-            align-items: center;
-        }
-
-        .modality-text p {
-            max-width: 570px;
-
-            color: var(--cinza);
-
-            font-size: 15px;
-
-            margin-top: 25px;
-        }
-
-        .modality-options {
-            display: flex;
-            flex-direction: column;
-
-            gap: 18px;
-        }
-
-        .modality-card {
-            padding: 27px;
-
-            display: flex;
-            align-items: center;
-
-            gap: 25px;
-
-            background: white;
-
-            border: 1px solid var(--borda);
-
-            border-radius: 22px;
-
-            transition: 0.3s;
-        }
-
-        .modality-card:hover {
-            transform: translateX(7px);
-
-            box-shadow:
-                0 20px 50px rgba(7,26,54,0.10);
-        }
-
-        .modality-icon {
-            min-width: 62px;
-            height: 62px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: var(--verde-agua);
-
-            color: var(--azul);
-
-            font-family: Georgia, serif;
-
-            font-size: 25px;
-            font-weight: bold;
-        }
-
-        .modality-card h3 {
-            font-family: Georgia, serif;
-
-            font-size: 29px;
-
-            color: var(--azul);
-        }
-
-        .modality-card p {
-            color: var(--cinza);
-
-            font-size: 13px;
-        }
-
-
-        /* =====================================================
-           INSTAGRAM
-        ===================================================== */
-
-        .instagram-box {
-            padding: 60px;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 40px;
-
-            border-radius: 30px;
-
-            border: 1px solid var(--borda);
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(85,214,194,0.10),
-                    rgba(201,162,39,0.10)
-                );
-        }
-
-        .instagram-box h2 {
-            font-family: Georgia, serif;
-
-            color: var(--azul);
-
-            font-size: clamp(40px, 5vw, 60px);
-
-            line-height: 1;
-        }
-
-        .instagram-box h2 span {
-            color: var(--dourado);
-        }
-
-        .instagram-box p {
-            color: var(--cinza);
-
-            font-size: 14px;
-
-            margin-top: 15px;
-        }
-
-
-        /* =====================================================
-           FAQ
-        ===================================================== */
-
-        .faq-grid {
-            display: grid;
-
-            grid-template-columns: 0.75fr 1.25fr;
-
-            gap: 100px;
-        }
-
-        .faq-list {
-            display: flex;
-            flex-direction: column;
-
-            gap: 10px;
-        }
-
-        .faq-item {
-            overflow: hidden;
-
-            background: white;
-
-            border: 1px solid var(--borda);
-
-            border-radius: 15px;
-        }
-
-        .faq-question {
-            width: 100%;
-
-            padding: 22px 24px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            gap: 20px;
-
-            border: none;
-
-            background: transparent;
-
-            color: var(--azul);
-
-            text-align: left;
-
-            font-size: 14px;
-            font-weight: bold;
-
-            cursor: pointer;
-        }
-
-        .faq-plus {
-            min-width: 30px;
-            height: 30px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: var(--verde-agua);
-
-            color: var(--azul);
-
-            font-size: 20px;
-
-            transition: 0.3s;
-        }
-
-        .faq-answer {
-            max-height: 0;
-
-            overflow: hidden;
-
-            transition: 0.35s;
-        }
-
-        .faq-answer p {
-            padding: 0 24px 22px;
-
-            color: var(--cinza);
-
-            font-size: 13px;
-        }
-
-        .faq-item.active .faq-answer {
-            max-height: 250px;
-        }
-
-        .faq-item.active .faq-plus {
-            transform: rotate(45deg);
-        }
-
-
-        /* =====================================================
-           CTA
-        ===================================================== */
-
-        .cta {
-            padding: 130px 20px;
-
-            background: var(--azul-escuro);
-
-            color: white;
-
-            text-align: center;
-        }
-
-        .cta-content {
-            max-width: 850px;
-            margin: auto;
-        }
-
-        .cta h2 {
-            font-family: Georgia, serif;
-
-            font-size: clamp(50px, 6vw, 75px);
-
-            line-height: 0.95;
-
-            margin-bottom: 25px;
-        }
-
-        .cta h2 span {
-            color: var(--dourado);
-        }
-
-        .cta p {
-            max-width: 680px;
-
-            margin: 0 auto 35px;
-
-            color: rgba(255,255,255,0.65);
-
-            font-size: 15px;
-        }
-
-
-        /* =====================================================
-           FOOTER
-        ===================================================== */
-
+        .cta-box a.btn-primary:hover { background: var(--dourado-claro); }
         footer {
-            padding: 65px 0 25px;
-
-            background: #020b1a;
-
-            color: white;
+            background: var(--azul-escuro); color: rgba(255,255,255,0.7);
+            padding: 40px 0; text-align: center; font-size: 13px;
+        }
+        footer strong { color: white; }
+        footer a { color: var(--verde-agua-claro); font-weight: 700; }
+        .aluno-link {
+            display: inline-block; margin-top: 10px;
+            color: var(--verde-agua) !important; font-weight: 700; font-size: 14px;
         }
 
-        .footer-top {
-            display: flex;
-
-            justify-content: space-between;
-
-            gap: 50px;
-
-            padding-bottom: 30px;
+        /* Chat widget */
+        #eva-ai-btn {
+            position: fixed; right: 20px; bottom: 20px; z-index: 1200;
+            width: 58px; height: 58px; border-radius: 50%; border: none;
+            background: var(--azul); color: white; font-size: 24px;
+            cursor: pointer; box-shadow: 0 12px 30px rgba(7,26,54,0.35);
+        }
+        #eva-ai-panel {
+            display: none; position: fixed; right: 20px; bottom: 90px; z-index: 1200;
+            width: min(360px, calc(100vw - 24px)); height: 460px;
+            background: white; border-radius: 20px; overflow: hidden;
+            box-shadow: 0 20px 60px rgba(7,26,54,0.25);
+            flex-direction: column;
+        }
+        #eva-ai-panel.open { display: flex; }
+        #eva-ai-head {
+            background: var(--azul); color: white; padding: 14px 16px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-weight: 700; font-size: 14px;
+        }
+        #eva-ai-head button {
+            background: none; border: none; color: white; font-size: 18px; cursor: pointer;
+        }
+        #eva-ai-messages {
+            flex: 1; padding: 14px; overflow-y: auto; background: #f7f5ec;
+        }
+        .eva-msg {
+            max-width: 85%; margin-bottom: 10px; padding: 10px 12px;
+            border-radius: 14px; font-size: 13px; line-height: 1.45;
+        }
+        .eva-msg.bot { background: white; color: var(--azul); }
+        .eva-msg.user {
+            background: var(--azul); color: white; margin-left: auto;
+        }
+        #eva-ai-form {
+            display: flex; gap: 8px; padding: 12px; border-top: 1px solid var(--borda);
+        }
+        #eva-ai-form input {
+            flex: 1; border: 1px solid var(--borda); border-radius: 999px;
+            padding: 10px 14px; font-size: 13px;
+        }
+        #eva-ai-form button {
+            border: none; background: var(--azul); color: white;
+            border-radius: 999px; padding: 0 14px; font-weight: 700; cursor: pointer;
         }
 
-        .footer-text {
-            color: rgba(255,255,255,0.45);
-
-            font-size: 12px;
-
-            margin-top: 14px;
-        }
-
-        .footer-links {
-            display: flex;
-            flex-wrap: wrap;
-
-            gap: 15px 25px;
-
-            max-width: 500px;
-        }
-
-        .footer-links a {
-            color: rgba(255,255,255,0.60);
-
-            font-size: 12px;
-
-            transition: 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: var(--verde-agua);
-        }
-
-        .footer-contact {
-            padding: 20px 0;
-
-            display: flex;
-            align-items: center;
-
-            gap: 10px;
-
-            border-top:
-                1px solid rgba(255,255,255,0.08);
-        }
-
-        .footer-contact span {
-            color: rgba(255,255,255,0.45);
-
-            font-size: 12px;
-        }
-
-        .phone {
-            color: var(--verde-agua);
-
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .footer-bottom {
-            padding-top: 22px;
-
-            display: flex;
-            justify-content: space-between;
-
-            gap: 20px;
-
-            border-top:
-                1px solid rgba(255,255,255,0.10);
-
-            color: rgba(255,255,255,0.35);
-
-            font-size: 11px;
-        }
-
-
-        /* =====================================================
-           BOTÃO FLUTUANTE
-        ===================================================== */
-
-        .floating-whatsapp {
-            position: fixed;
-
-            right: 25px;
-            bottom: 25px;
-
-            z-index: 900;
-
-            width: 58px;
-            height: 58px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            border-radius: 50%;
-
-            background: var(--dourado);
-
-            color: var(--azul);
-
-            font-size: 11px;
-            font-weight: bold;
-
-            box-shadow:
-                0 12px 35px rgba(0,0,0,0.22);
-
-            transition: 0.25s;
-        }
-
-        .floating-whatsapp:hover {
-            transform: translateY(-5px) scale(1.05);
-
-            background: var(--dourado-claro);
-        }
-
-
-        /* =====================================================
-           ANIMAÇÕES
-        ===================================================== */
-
-        .reveal {
-            opacity: 0;
-
-            transform: translateY(25px);
-
-            transition:
-                opacity 0.7s ease,
-                transform 0.7s ease;
-        }
-
-        .reveal.visible {
-            opacity: 1;
-
-            transform: translateY(0);
-        }
-
-
-        /* =====================================================
-           RESPONSIVO
-        ===================================================== */
-
-        @media (max-width: 850px) {
-
-            .menu-button {
-                display: block;
+        @media (max-width: 900px) {
+            .menu-toggle { display: block; }
+            .menu {
+                display: none; position: absolute; top: 70px; left: 20px; right: 20px;
+                background: white; flex-direction: column; padding: 18px;
+                border-radius: 16px; box-shadow: 0 20px 50px rgba(7,26,54,0.15); gap: 14px;
             }
-
-            nav {
-                position: absolute;
-
-                top: 82px;
-
-                left: 20px;
-                right: 20px;
-
-                padding: 25px;
-
-                display: flex;
-                flex-direction: column;
-                align-items: stretch;
-
-                gap: 15px;
-
-                background: white;
-
-                border-radius: 18px;
-
-                box-shadow:
-                    0 20px 50px rgba(7,26,54,0.15);
-
-                opacity: 0;
-                visibility: hidden;
-
-                transform: translateY(-10px);
-
-                transition: 0.25s;
-            }
-
-            nav.active {
-                opacity: 1;
-
-                visibility: visible;
-
-                transform: translateY(0);
-            }
-
-            .instagram-link {
-                text-align: center;
-            }
-
-            .hero-content {
-                grid-template-columns: 1fr;
-
-                text-align: center;
-
-                gap: 55px;
-            }
-
-            .hero-description {
-                margin-left: auto;
-                margin-right: auto;
-            }
-
-            .buttons {
-                justify-content: center;
-            }
-
-            .hero-card {
-                transform: none;
-            }
-
-            .hero-card:hover {
-                transform: translateY(-7px);
-            }
-
-            .quick-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-item {
-                border-right: none;
-
-                border-bottom:
-                    1px solid rgba(255,255,255,0.10);
-            }
-
-            .quick-item:last-child {
-                border-bottom: none;
-            }
-
-            .about-grid,
-            .modality-grid,
-            .faq-grid {
-                grid-template-columns: 1fr;
-
-                gap: 55px;
-            }
-
-            .language-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .instagram-box {
-                flex-direction: column;
-
-                align-items: flex-start;
-            }
-
-            .footer-top {
-                flex-direction: column;
-            }
-        }
-
-
-        @media (max-width: 550px) {
-
-            .container {
-                width: min(
-                    100% - 28px,
-                    1180px
-                );
-            }
-
-            .header-inner {
-                min-height: 72px;
-            }
-
-            nav {
-                top: 72px;
-
-                left: 14px;
-                right: 14px;
-            }
-
-            .hero {
-                min-height: auto;
-
-                padding: 125px 0 70px;
-            }
-
-            .hero h1 {
-                font-size: 55px;
-            }
-
-            .buttons {
-                flex-direction: column;
-
-                width: 100%;
-            }
-
-            .button {
-                width: 100%;
-            }
-
-            .section {
-                padding: 80px 0;
-            }
-
-            .hero-card-content {
-                padding: 40px 30px;
-            }
-
-            .hero-card h2 {
-                font-size: 45px;
-            }
-
-            .language-card {
-                padding: 30px;
-
-                min-height: 330px;
-            }
-
-            .instagram-box {
-                padding: 35px 25px;
-            }
-
-            .classic,
-            .cta {
-                padding: 90px 20px;
-            }
-
-            .footer-bottom {
-                flex-direction: column;
-            }
-
-            .footer-contact {
-                flex-direction: column;
-
-                align-items: flex-start;
-            }
-
-            .floating-whatsapp {
-                width: 54px;
-                height: 54px;
-
-                right: 18px;
-                bottom: 18px;
-            }
+            .menu.active { display: flex; }
+            .hero-grid, .about-grid, .cards-3 { grid-template-columns: 1fr; }
+            .hero { padding-top: 120px; text-align: center; }
+            .hero p { margin-left: auto; margin-right: auto; }
+            .hero-actions { justify-content: center; }
         }
     </style>
 </head>
-
 <body>
+<header id="header">
+    <div class="container nav">
+        <div class="logo">EVA <span>ACADEMY</span></div>
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">☰</button>
+        <ul class="menu" id="menu">
+            <li><a href="#sobre">Sobre</a></li>
+            <li><a href="#classica">Educação Clássica</a></li>
+            <li><a href="#cursos">Cursos</a></li>
+            <li><a href="#contato">Contato</a></li>
+            <li><a class="btn-nav" href="alunos.html">Área do Aluno</a></li>
+        </ul>
+    </div>
+</header>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
-    <header id="header">
-
-        <div class="container header-inner">
-
-            <a href="#inicio" class="logo">
-
-                <span class="logo-eva">
-                    EVA
-                </span>
-
-                <span class="logo-academy">
-                    ACADEMY
-                </span>
-
-            </a>
-
-
-            <button
-                class="menu-button"
-                id="menuButton"
-                aria-label="Abrir menu"
-                aria-expanded="false"
-            >
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
-
-
-            <nav id="nav">
-
-                <a href="#inicio">
-                    Início
-                </a>
-
-                <a href="#sobre">
-                    Sobre
-                </a>
-
-                <a href="#idiomas">
-                    Idiomas
-                </a>
-
-                <a href="#classico">
-                    Educação Clássica
-                </a>
-
-                <a href="#modalidades">
-                    Modalidades
-                </a>
-
-                <a href="#faq">
-                    Dúvidas
-                </a>
-
-                <a href="alunos.html" target="_blank" rel="noopener noreferrer">Área do Aluno</a>
-                        <a
-                    href="https://www.instagram.com/eva.academy1/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="instagram-link"
-                >
-                    Instagram
-                </a>
-
-            </nav>
-
+<section class="hero">
+    <div class="container hero-grid">
+        <div>
+            <span class="eyebrow">EDUCAÇÃO CLÁSSICA</span>
+            <h1>Inglês e Português com <span>propósito.</span></h1>
+            <p>
+                A EVA Academy une domínio da linguagem, formação de caráter e uma
+                trilha de estudos sólida — com uma área do aluno gamificada para praticar.
+            </p>
+            <div class="hero-actions">
+                <a class="btn-primary" href="alunos.html">Entrar na Área do Aluno</a>
+                <a class="btn-secondary" href="#contato">Falar conosco</a>
+            </div>
         </div>
-
-    </header>
-
-
-    <main>
-
-        <!-- =====================================================
-             INÍCIO
-        ====================================================== -->
-
-        <section class="hero" id="inicio">
-
-            <div class="circle circle-1"></div>
-            <div class="circle circle-2"></div>
-
-
-            <div class="container hero-content">
-
-                <div class="reveal">
-
-                    <span class="eyebrow">
-                        EVA ACADEMY
-                    </span>
-
-                    <h1>
-                        Aprender
-                        <span>transforma.</span>
-                    </h1>
-
-                    <p class="hero-description">
-                        Ensino de Inglês e Português dentro de uma proposta
-                        de Educação Clássica, valorizando o conhecimento,
-                        a linguagem e a formação do aluno.
-                    </p>
-
-
-                    <div class="buttons">
-
-                        <a
-                            href="#idiomas"
-                            class="button button-outline"
-                        >
-                            Conheça os idiomas
-                        </a>
-
-                        <a
-                            href="https://wa.me/5515996326825"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="button button-dourado"
-                        >
-                            Fale com a EVA pelo WhatsApp
-                        </a>
-
-                    </div>
-
-                </div>
-
-
-                <div class="hero-card reveal">
-
-                    <div class="hero-card-top">
-                        MODELO DE ESTUDO
-                    </div>
-
-                    <div class="hero-card-content">
-
-                        <div class="classic-symbol">
-                            E
-                        </div>
-
-                        <h2>
-                            Educação
-                            Clássica
-                        </h2>
-
-                        <p>
-                            Uma proposta de ensino que valoriza o conhecimento,
-                            a linguagem, o raciocínio e a formação intelectual.
-                        </p>
-
-                    </div>
-
-                    <div class="hero-card-bottom">
-
-                        <span>
-                            PRESENCIAL
-                        </span>
-
-                        <span>
-                            ON-LINE
-                        </span>
-
-                    </div>
-
-                </div>
-
+        <div class="hero-card">
+            <h3>Por que a EVA?</h3>
+            <p>Aulas com método, acompanhamento e prática constante.</p>
+            <div class="hero-stats">
+                <div><strong>Inglês</strong><span>Comunicação real</span></div>
+                <div><strong>Português</strong><span>Leitura e escrita</span></div>
+                <div><strong>Clássica</strong><span>Formação integral</span></div>
+                <div><strong>Aluno</strong><span>XP, ranking e jogos</span></div>
             </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             INFORMAÇÕES
-        ====================================================== -->
-
-        <section class="quick-info">
-
-            <div class="container quick-grid">
-
-                <div class="quick-item reveal">
-
-                    <div class="quick-icon">
-                        EN
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Inglês
-                        </strong>
-
-                        <small>
-                            Estudo da língua inglesa
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="quick-item reveal">
-
-                    <div class="quick-icon">
-                        PT
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Português
-                        </strong>
-
-                        <small>
-                            Estudo da língua portuguesa
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="quick-item reveal">
-
-                    <div class="quick-icon">
-                        EC
-                    </div>
-
-                    <div>
-
-                        <strong>
-                            Educação Clássica
-                        </strong>
-
-                        <small>
-                            Uma proposta de formação
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             SOBRE
-        ====================================================== -->
-
-        <section class="section white" id="sobre">
-
-            <div class="container about-grid">
-
-                <div class="reveal">
-
-                    <span class="eyebrow">
-                        SOBRE A EVA
-                    </span>
-
-                    <h2 class="section-title">
-                        Conhecimento
-                        com <span>propósito.</span>
-                    </h2>
-
-                </div>
-
-
-                <div class="about-text reveal">
-
-                    <p>
-                        A EVA Academy apresenta uma proposta de ensino
-                        voltada ao desenvolvimento do aluno por meio do
-                        conhecimento e do estudo das línguas.
-                    </p>
-
-                    <p>
-                        O ensino de Inglês e Português é apresentado dentro
-                        de uma perspectiva de <strong>Educação Clássica</strong>,
-                        valorizando a linguagem, a leitura, a escrita,
-                        a compreensão e o desenvolvimento intelectual.
-                    </p>
-
-                    <p>
-                        A proposta busca proporcionar uma experiência
-                        de estudo organizada e consistente.
-                    </p>
-
-
-                    <div class="about-highlight">
-
-                        <strong>
-                            Educação Clássica
-                        </strong>
-
-                        <span>
-                            Conhecimento, linguagem, raciocínio e formação.
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             EDUCAÇÃO CLÁSSICA
-        ====================================================== -->
-
-        <section class="classic" id="classico">
-
-            <div class="classic-content reveal">
-
-                <span class="eyebrow">
-                    MODELO DE ESTUDO
-                </span>
-
-                <h2>
-                    Educação
-                    <span>Clássica.</span>
-                </h2>
-
-                <p>
-                    O modelo de estudo da EVA Academy é baseado em uma
-                    proposta de Educação Clássica, na qual o conhecimento
-                    e o desenvolvimento da linguagem ocupam um papel central
-                    na formação do aluno.
-                </p>
-
-
-                <div class="classic-points">
-
-                    <span>
-                        CONHECIMENTO
-                    </span>
-
-                    <span>
-                        LINGUAGEM
-                    </span>
-
-                    <span>
-                        LEITURA
-                    </span>
-
-                    <span>
-                        ESCRITA
-                    </span>
-
-                    <span>
-                        RACIOCÍNIO
-                    </span>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             IDIOMAS
-        ====================================================== -->
-
-        <section class="section white" id="idiomas">
-
-            <div class="container">
-
-                <div class="center reveal">
-
-                    <span class="eyebrow">
-                        IDIOMAS
-                    </span>
-
-                    <h2 class="section-title">
-                        Estude
-                        <span>línguas.</span>
-                    </h2>
-
-                    <p>
-                        A EVA Academy trabalha com Inglês e Português
-                        dentro de sua proposta de Educação Clássica.
-                    </p>
-
-                </div>
-
-
-                <div class="language-grid">
-
-
-                    <!-- INGLÊS -->
-
-                    <article class="language-card reveal">
-
-                        <div class="language-top">
-
-                            <span class="language-label">
-                                IDIOMA
-                            </span>
-
-                            <span class="language-code">
-                                EN
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            Inglês
-                        </h3>
-
-                        <p>
-                            Estudo da língua inglesa com atenção à
-                            compreensão, comunicação, leitura e escrita.
-                        </p>
-
-                        <a
-                            href="https://wa.me/5515996326825?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20as%20aulas%20de%20Inglês%20da%20EVA%20Academy."
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="language-link"
-                        >
-                            Saber mais →
-                        </a>
-
-                    </article>
-
-
-                    <!-- PORTUGUÊS -->
-
-                    <article class="language-card reveal">
-
-                        <div class="language-top">
-
-                            <span class="language-label">
-                                IDIOMA
-                            </span>
-
-                            <span class="language-code">
-                                PT
-                            </span>
-
-                        </div>
-
-                        <h3>
-                            Português
-                        </h3>
-
-                        <p>
-                            Estudo da língua portuguesa com atenção à
-                            linguagem, leitura, escrita e expressão.
-                        </p>
-
-                        <a
-                            href="https://wa.me/5515996326825?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20as%20aulas%20de%20Português%20da%20EVA%20Academy."
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="language-link"
-                        >
-                            Saber mais →
-                        </a>
-
-                    </article>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             MODALIDADES
-        ====================================================== -->
-
-        <section class="section modalities" id="modalidades">
-
-            <div class="container modality-grid">
-
-                <div class="reveal">
-
-                    <span class="eyebrow">
-                        MODALIDADES
-                    </span>
-
-                    <h2 class="section-title">
-                        Estude do jeito
-                        que <span>funciona.</span>
-                    </h2>
-
-                    <p class="modality-text">
-                        A EVA Academy oferece a possibilidade de estudar
-                        presencialmente ou on-line.
-                    </p>
-
-                </div>
-
-
-                <div class="modality-options">
-
-
-                    <article class="modality-card reveal">
-
-                        <div class="modality-icon">
-                            P
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                Presencial
-                            </h3>
-
-                            <p>
-                                Estude presencialmente com acompanhamento
-                                durante o processo de aprendizagem.
-                            </p>
-
-                        </div>
-
-                    </article>
-
-
-                    <article class="modality-card reveal">
-
-                        <div class="modality-icon">
-                            O
-                        </div>
-
-                        <div>
-
-                            <h3>
-                                On-line
-                            </h3>
-
-                            <p>
-                                Acompanhe seus estudos de forma on-line,
-                                à distância.
-                            </p>
-
-                        </div>
-
-                    </article>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             INSTAGRAM
-        ====================================================== -->
-
-        <section class="section white">
-
-            <div class="container">
-
-                <div class="instagram-box reveal">
-
-                    <div>
-
-                        <span class="eyebrow">
-                            ACOMPANHE A EVA
-                        </span>
-
-                        <h2>
-                            Veja mais no
-                            <span>Instagram.</span>
-                        </h2>
-
-                        <p>
-                            Acompanhe as novidades e conteúdos
-                            da EVA Academy.
-                        </p>
-
-                    </div>
-
-
-                    <a
-                        href="https://www.instagram.com/eva.academy1/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="button button-dourado"
-                    >
-                        @eva.academy1
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             FAQ
-        ====================================================== -->
-
-        <section class="section cream" id="faq">
-
-            <div class="container faq-grid">
-
-                <div class="reveal">
-
-                    <span class="eyebrow">
-                        DÚVIDAS
-                    </span>
-
-                    <h2 class="section-title">
-                        Perguntas
-                        <span>frequentes.</span>
-                    </h2>
-
-                </div>
-
-
-                <div class="faq-list">
-
-
-                    <div class="faq-item reveal">
-
-                        <button class="faq-question">
-
-                            <span>
-                                Quais idiomas são estudados?
-                            </span>
-
-                            <span class="faq-plus">
-                                +
-                            </span>
-
-                        </button>
-
-                        <div class="faq-answer">
-
-                            <p>
-                                A EVA Academy trabalha com Inglês
-                                e Português.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="faq-item reveal">
-
-                        <button class="faq-question">
-
-                            <span>
-                                O modelo de estudo é clássico?
-                            </span>
-
-                            <span class="faq-plus">
-                                +
-                            </span>
-
-                        </button>
-
-                        <div class="faq-answer">
-
-                            <p>
-                                Sim. A proposta de estudo da EVA Academy
-                                é baseada em Educação Clássica, valorizando
-                                o conhecimento, a linguagem e a formação.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="faq-item reveal">
-
-                        <button class="faq-question">
-
-                            <span>
-                                Existem aulas on-line?
-                            </span>
-
-                            <span class="faq-plus">
-                                +
-                            </span>
-
-                        </button>
-
-                        <div class="faq-answer">
-
-                            <p>
-                                Sim. A EVA Academy possui modalidades
-                                presencial e on-line.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="faq-item reveal">
-
-                        <button class="faq-question">
-
-                            <span>
-                                Como falar com a EVA?
-                            </span>
-
-                            <span class="faq-plus">
-                                +
-                            </span>
-
-                        </button>
-
-                        <div class="faq-answer">
-
-                            <p>
-                                Você pode entrar em contato pelo WhatsApp
-                                através do número +55 15 99632-6825.
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- =====================================================
-             CONTATO
-        ====================================================== -->
-
-        <section class="cta">
-
-            <div class="cta-content reveal">
-
-                <span class="eyebrow">
-                    ENTRE EM CONTATO
-                </span>
-
-                <h2>
-                    Fale com a
-                    <span>EVA.</span>
-                </h2>
-
-                <p>
-                    Quer saber mais sobre as aulas de Inglês e Português,
-                    modalidades e proposta de estudo?
-                </p>
-
-
-                <a
-                    href="https://wa.me/5515996326825"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="button button-dourado"
-                >
-                    Fale com a EVA pelo WhatsApp
-                </a>
-
-            </div>
-
-        </section>
-
-    </main>
-
-
-    <!-- =====================================================
-         FOOTER
-    ====================================================== -->
-
-    <footer>
-
-        <div class="container">
-
-            <div class="footer-top">
-
-                <div>
-
-                    <a href="#inicio" class="logo">
-
-                        <span
-                            class="logo-eva"
-                            style="color:white;"
-                        >
-                            EVA
-                        </span>
-
-                        <span class="logo-academy">
-                            ACADEMY
-                        </span>
-
-                    </a>
-
-                    <p class="footer-text">
-                        Educação, conhecimento e formação.
-                    </p>
-
-                </div>
-
-
-                <div class="footer-links">
-
-                    <a href="#inicio">
-                        Início
-                    </a>
-
-                    <a href="#sobre">
-                        Sobre
-                    </a>
-
-                    <a href="#idiomas">
-                        Idiomas
-                    </a>
-
-                    <a href="#classico">
-                        Educação Clássica
-                    </a>
-
-                    <a href="#modalidades">
-                        Modalidades
-                    </a>
-
-                    <a href="#faq">
-                        Dúvidas
-                    </a>
-
-                    <a
-                        href="https://www.instagram.com/eva.academy1/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        Instagram
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            <div class="footer-contact">
-
-                <span>
-                    WhatsApp:
-                </span>
-
-                <a
-                    href="https://wa.me/5515996326825"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="phone"
-                >
-                    +55 15 99632-6825
-                </a>
-
-            </div>
-
-
-            <div class="footer-bottom">
-
-                <span>
-                    © <span id="year"></span> EVA Academy
-                </span>
-
-                <span>
-                    Educação Clássica
-                </span>
-
-            </div>
-
+            <a class="aluno-link" href="alunos.html">→ Acessar área do aluno</a>
         </div>
-
-    </footer>
-
-
-    <!-- =====================================================
-         WHATSAPP FLUTUANTE
-    ====================================================== -->
-
-    <a
-        href="https://wa.me/5515996326825"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="floating-whatsapp"
-        aria-label="Fale com a EVA pelo WhatsApp"
-    >
-        WA
-    </a>
-
-
-    <!-- =====================================================
-         JAVASCRIPT
-         TUDO FICA NESTE MESMO ARQUIVO
-    ====================================================== -->
-
-    <script>
-
-        /* =====================================================
-           HEADER AO ROLAR
-        ===================================================== */
-
-        const header = document.getElementById("header");
-
-        window.addEventListener("scroll", function () {
-
-            if (window.scrollY > 30) {
-
-                header.classList.add("scrolled");
-
-            } else {
-
-                header.classList.remove("scrolled");
-
-            }
-
-        });
-
-
-        /* =====================================================
-           MENU MOBILE
-        ===================================================== */
-
-        const menuButton =
-            document.getElementById("menuButton");
-
-        const nav =
-            document.getElementById("nav");
-
-
-        menuButton.addEventListener("click", function () {
-
-            const aberto =
-                nav.classList.toggle("active");
-
-            menuButton.setAttribute(
-                "aria-expanded",
-                aberto
-            );
-
-        });
-
-
-        /* Fechar menu ao clicar em um link */
-
-        const navLinks =
-            nav.querySelectorAll("a");
-
-
-        navLinks.forEach(function (link) {
-
-            link.addEventListener("click", function () {
-
-                nav.classList.remove("active");
-
-                menuButton.setAttribute(
-                    "aria-expanded",
-                    "false"
-                );
-
-            });
-
-        });
-
-
-        /* =====================================================
-           FAQ
-        ===================================================== */
-
-        const faqItems =
-            document.querySelectorAll(".faq-item");
-
-
-        faqItems.forEach(function (item) {
-
-            const question =
-                item.querySelector(".faq-question");
-
-
-            question.addEventListener("click", function () {
-
-                const estavaAberto =
-                    item.classList.contains("active");
-
-
-                faqItems.forEach(function (outroItem) {
-
-                    outroItem.classList.remove("active");
-
-                });
-
-
-                if (!estavaAberto) {
-
-                    item.classList.add("active");
-
-                }
-
-            });
-
-        });
-
-
-        /* =====================================================
-           ANIMAÇÕES
-        ===================================================== */
-
-        const revealElements =
-            document.querySelectorAll(".reveal");
-
-
-        const observer =
-            new IntersectionObserver(
-                function (entries) {
-
-                    entries.forEach(function (entry) {
-
-                        if (entry.isIntersecting) {
-
-                            entry.target.classList.add("visible");
-
-                            observer.unobserve(
-                                entry.target
-                            );
-
-                        }
-
-                    });
-
-                },
-                {
-                    threshold: 0.12
-                }
-            );
-
-
-        revealElements.forEach(function (element) {
-
-            observer.observe(element);
-
-        });
-
-
-        /* =====================================================
-           ANO AUTOMÁTICO
-        ===================================================== */
-
-        document.getElementById("year").textContent =
-            new Date().getFullYear();
-
-
-        /* =====================================================
-           FECHAR MENU COM ESC
-        ===================================================== */
-
-        document.addEventListener(
-            "keydown",
-            function (event) {
-
-                if (event.key === "Escape") {
-
-                    nav.classList.remove("active");
-
-                    menuButton.setAttribute(
-                        "aria-expanded",
-                        "false"
-                    );
-
-                }
-
-            }
-        );
-
-
-        /* =====================================================
-           EFEITO NO CARD
-        ===================================================== */
-
-        const heroCard =
-            document.querySelector(".hero-card");
-
-
-        if (heroCard) {
-
-            heroCard.addEventListener(
-                "mousemove",
-                function (event) {
-
-                    if (window.innerWidth <= 850) {
-                        return;
-                    }
-
-
-                    const rect =
-                        heroCard.getBoundingClientRect();
-
-
-                    const x =
-                        event.clientX - rect.left;
-
-
-                    const y =
-                        event.clientY - rect.top;
-
-
-                    const rotateY =
-                        ((x / rect.width) - 0.5) * 7;
-
-
-                    const rotateX =
-                        ((y / rect.height) - 0.5) * -7;
-
-
-                    heroCard.style.transform =
-                        "perspective(800px) " +
-                        "rotateX(" + rotateX + "deg) " +
-                        "rotateY(" + rotateY + "deg) " +
-                        "translateY(-5px)";
-
-                }
-            );
-
-
-            heroCard.addEventListener(
-                "mouseleave",
-                function () {
-
-                    if (window.innerWidth <= 850) {
-                        return;
-                    }
-
-                    heroCard.style.transform =
-                        "rotate(2deg)";
-
-                }
-            );
-
-        }
-
-    </script>
-
-
-<!-- =====================================================
-     ASSISTENTE EVA
-===================================================== -->
-<style>
-#eva-ai-button{position:fixed;right:22px;bottom:92px;width:62px;height:62px;border:0;border-radius:50%;background:#c9a227;color:#071a36;font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 12px 30px rgba(0,0,0,.20);z-index:9999;transition:.25s ease}
-#eva-ai-button:hover{transform:scale(1.08);background:#e0bd45}
-#eva-ai{position:fixed;right:22px;bottom:168px;width:360px;max-width:calc(100vw - 35px);height:500px;max-height:calc(100vh - 190px);background:#faf8ef;border:1px solid rgba(7,26,54,.12);border-radius:20px;box-shadow:0 20px 60px rgba(7,26,54,.22);overflow:hidden;display:none;flex-direction:column;z-index:9998}
-#eva-ai.open{display:flex;animation:evaAiOpen .25s ease}
-@keyframes evaAiOpen{from{opacity:0;transform:translateY(15px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-.eva-ai-header{min-height:72px;padding:15px 18px;background:#071a36;color:#fff;display:flex;align-items:center;justify-content:space-between}
-.eva-ai-title{display:flex;align-items:center;gap:12px}.eva-ai-icon{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#c9a227;color:#071a36;font-size:12px;font-weight:900}.eva-ai-title strong{display:block;font-size:15px}.eva-ai-title span{display:block;margin-top:2px;color:#8be6d6;font-size:11px}
-#eva-ai-close{border:0;background:transparent;color:#fff;font-size:25px;cursor:pointer;width:35px;height:35px}
-#eva-ai-messages{flex:1;padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}.eva-message{max-width:84%;padding:12px 14px;border-radius:14px;font-size:13px;line-height:1.5}.eva-message.bot{align-self:flex-start;background:#fff;color:#172238;border:1px solid rgba(7,26,54,.08);border-bottom-left-radius:4px}.eva-message.user{align-self:flex-end;background:#071a36;color:#fff;border-bottom-right-radius:4px}
-.eva-quick{padding:0 15px 12px;display:flex;gap:7px;overflow-x:auto}.eva-quick button{flex-shrink:0;padding:8px 11px;border:1px solid rgba(7,26,54,.14);border-radius:999px;background:#fff;color:#071a36;font-size:11px;font-weight:700;cursor:pointer;transition:.2s ease}.eva-quick button:hover{border-color:#c9a227;background:rgba(201,162,39,.08)}
-.eva-ai-input{padding:12px;background:#fff;border-top:1px solid rgba(7,26,54,.10);display:flex;gap:8px}#eva-ai-text{flex:1;min-width:0;padding:11px 13px;border:1px solid rgba(7,26,54,.15);border-radius:11px;outline:none;font-family:Arial,Helvetica,sans-serif;font-size:13px;background:#faf8ef;color:#172238}#eva-ai-text:focus{border-color:#55d6c2}#eva-ai-send{width:44px;border:0;border-radius:11px;background:#c9a227;color:#071a36;font-weight:900;cursor:pointer;transition:.2s ease}#eva-ai-send:hover{background:#e0bd45}
-.eva-typing{display:inline-flex;gap:4px;align-items:center}.eva-typing span{width:5px;height:5px;border-radius:50%;background:#657086;animation:evaTyping 1s infinite}.eva-typing span:nth-child(2){animation-delay:.15s}.eva-typing span:nth-child(3){animation-delay:.30s}@keyframes evaTyping{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-4px)}}
-@media(max-width:500px){#eva-ai{right:12px;bottom:155px;width:calc(100vw - 24px);height:470px}#eva-ai-button{right:15px;bottom:82px}}
-</style>
-<button id="eva-ai-button" aria-label="Abrir assistente da EVA">IA</button>
-<div id="eva-ai">
-  <div class="eva-ai-header"><div class="eva-ai-title"><div class="eva-ai-icon">EVA</div><div><strong>Assistente EVA</strong><span>Tire suas dúvidas</span></div></div><button id="eva-ai-close" aria-label="Fechar">×</button></div>
-  <div id="eva-ai-messages"><div class="eva-message bot">Olá! Eu sou a assistente virtual da EVA Academy. Posso ajudar você com dúvidas sobre a EVA, seus idiomas, a Educação Clássica e as modalidades de ensino.</div></div>
-  <div class="eva-quick"><button data-question="Quais idiomas a EVA oferece?">Idiomas</button><button data-question="O que é Educação Clássica?">Educação Clássica</button><button data-question="A EVA oferece aulas on-line?">Aulas on-line</button><button data-question="Como entrar em contato com a EVA?">Contato</button></div>
-  <form class="eva-ai-input" id="eva-ai-form"><input type="text" id="eva-ai-text" placeholder="Digite sua dúvida..." autocomplete="off"><button type="submit" id="eva-ai-send" aria-label="Enviar pergunta">→</button></form>
+    </div>
+</section>
+<section class="section white" id="sobre">
+    <div class="container about-grid">
+        <div>
+            <span class="eyebrow">SOBRE A EVA</span>
+            <h2 class="section-title">Mais do que um <span>curso.</span></h2>
+        </div>
+        <div class="about-text">
+            <p>
+                A EVA Academy nasceu para ensinar inglês e português com profundidade,
+                clareza e consistência — dentro de uma visão de Educação Clássica.
+            </p>
+            <p>
+                Aqui o aluno não só memoriza conteúdo: pratica, compete de forma saudável
+                na área do aluno e desenvolve disciplina de estudo.
+            </p>
+            <div class="about-highlight">
+                <strong>Área do Aluno gamificada</strong>
+                <span>Ranking, XP, conquistas, missões e jogos para manter o ritmo.</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="classic" id="classica">
+    <div class="classic-content">
+        <span class="eyebrow">EDUCAÇÃO CLÁSSICA</span>
+        <h2>Formar a mente e o <span>caráter.</span></h2>
+        <p>
+            A Educação Clássica valoriza leitura, escrita, pensamento ordenado e
+            virtudes. Na EVA, isso se traduz em aulas bem estruturadas e prática constante.
+        </p>
+        <div class="classic-points">
+            <span>Leitura</span>
+            <span>Escrita</span>
+            <span>Vocabulário</span>
+            <span>Conversação</span>
+            <span>Disciplina</span>
+            <span>Excelência</span>
+        </div>
+    </div>
+</section>
+
+<section class="section cream" id="cursos">
+    <div class="container">
+        <span class="eyebrow">CURSOS</span>
+        <h2 class="section-title">O que você <span>encontra.</span></h2>
+        <div class="cards-3">
+            <article class="info-card">
+                <div class="ico">🇬🇧</div>
+                <h3>Inglês</h3>
+                <p>Comunicação real, vocabulário útil e treino de compreensão e produção.</p>
+            </article>
+            <article class="info-card">
+                <div class="ico">📖</div>
+                <h3>Português</h3>
+                <p>Leitura, escrita e domínio da língua para estudos e vida.</p>
+            </article>
+            <article class="info-card">
+                <div class="ico">🎮</div>
+                <h3>Prática digital</h3>
+                <p>Jogos, ranking e missões na Área do Aluno para manter o hábito.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="section white" id="contato">
+    <div class="container">
+        <div class="cta-box">
+            <h2>Quer conhecer a EVA Academy?</h2>
+            <p>
+                Fale conosco no WhatsApp ou Instagram. Alunos já matriculados podem
+                entrar direto na Área do Aluno.
+            </p>
+            <div class="hero-actions" style="justify-content:center">
+                <a class="btn-primary" href="https://wa.me/5515996326825" target="_blank" rel="noopener">WhatsApp</a>
+                <a class="btn-secondary" href="https://instagram.com/eva.academy1" target="_blank" rel="noopener" style="color:#fff;border-color:rgba(255,255,255,.35)">Instagram</a>
+                <a class="btn-secondary" href="alunos.html" style="color:#fff;border-color:rgba(255,255,255,.35)">Área do Aluno</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <strong>EVA Academy</strong> · Educação Clássica<br>
+        WhatsApp: <a href="https://wa.me/5515996326825">+55 15 99632-6825</a> ·
+        Instagram: <a href="https://instagram.com/eva.academy1">@eva.academy1</a><br>
+        <a href="alunos.html">Área do Aluno</a> ·
+        <a href="admin.html">Admin</a>
+        <div style="margin-top:12px">© 2026 EVA Academy</div>
+    </div>
+</footer>
+
+<button id="eva-ai-btn" title="Assistente EVA">💬</button>
+<div id="eva-ai-panel">
+    <div id="eva-ai-head">
+        <span>Assistente EVA</span>
+        <button type="button" id="eva-ai-close">×</button>
+    </div>
+    <div id="eva-ai-messages"></div>
+    <form id="eva-ai-form">
+        <input id="eva-ai-input" type="text" placeholder="Pergunte sobre a EVA ou inglês..." autocomplete="off">
+        <button type="submit">Enviar</button>
+    </form>
 </div>
+
 <script>
-(()=>{
-const button=document.getElementById('eva-ai-button'),box=document.getElementById('eva-ai'),close=document.getElementById('eva-ai-close'),form=document.getElementById('eva-ai-form'),input=document.getElementById('eva-ai-text'),messages=document.getElementById('eva-ai-messages');
-button.addEventListener('click',()=>{box.classList.add('open');setTimeout(()=>input.focus(),100)});close.addEventListener('click',()=>box.classList.remove('open'));
-function add(text,type){const el=document.createElement('div');el.className='eva-message '+type;el.textContent=text;messages.appendChild(el);messages.scrollTop=messages.scrollHeight}
-function answer(q){const p=q.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-if(/\b(oi|ola|olá|bom dia|boa tarde|boa noite)\b/.test(p))return 'Olá! Como posso ajudar você com a EVA Academy?';
-if(p.includes('idioma')||p.includes('ingles')||p.includes('portugues'))return 'A EVA Academy trabalha com Inglês e Português dentro de uma proposta de Educação Clássica.';
-if(p.includes('classica')||p.includes('educacao classica'))return 'A Educação Clássica é uma proposta que valoriza o conhecimento, a linguagem, a leitura, a escrita, o raciocínio e a formação intelectual.';
-if(p.includes('online')||p.includes('aula online')||p.includes('remota'))return 'Sim. A EVA Academy oferece modalidade presencial e on-line.';
-if(p.includes('presencial'))return 'A EVA Academy também possui modalidade presencial.';
-if(p.includes('contato')||p.includes('whatsapp')||p.includes('telefone')||p.includes('falar'))return 'Você pode falar com a EVA pelo WhatsApp no número +55 15 99632-6825.';
-if(p.includes('instagram'))return 'Você pode acompanhar a EVA Academy no Instagram pelo perfil @eva.academy1.';
-if(p.includes('o que e a eva')||p.includes('sobre a eva')||p.includes('eva academy'))return 'A EVA Academy trabalha com o ensino de Inglês e Português dentro de uma proposta de Educação Clássica, valorizando o conhecimento, a linguagem e a formação do aluno.';
-return 'Posso ajudar com dúvidas sobre a EVA Academy, como idiomas, Educação Clássica, modalidades de ensino e formas de contato. Se quiser saber algo específico, pode perguntar!';}
-function send(q){q=q.trim();if(!q)return;add(q,'user');input.value='';const t=document.createElement('div');t.className='eva-message bot';t.innerHTML='<div class="eva-typing"><span></span><span></span><span></span></div>';messages.appendChild(t);messages.scrollTop=messages.scrollHeight;setTimeout(()=>{t.remove();add(answer(q),'bot')},650)}
-form.addEventListener('submit',e=>{e.preventDefault();send(input.value)});document.querySelectorAll('.eva-quick button').forEach(b=>b.addEventListener('click',()=>send(b.dataset.question)));document.addEventListener('keydown',e=>{if(e.key==='Escape')box.classList.remove('open')});
+(function(){
+  const header = document.getElementById("header");
+  const menu = document.getElementById("menu");
+  const toggle = document.getElementById("menuToggle");
+  window.addEventListener("scroll", function(){
+    if(window.scrollY > 20) header.classList.add("scrolled");
+    else header.classList.remove("scrolled");
+  });
+  if(toggle){
+    toggle.addEventListener("click", function(){
+      menu.classList.toggle("active");
+    });
+  }
+  document.querySelectorAll("#menu a").forEach(function(a){
+    a.addEventListener("click", function(){ menu.classList.remove("active"); });
+  });
+
+  /* Chat local (sem API obrigatória) */
+  const btn = document.getElementById("eva-ai-btn");
+  const panel = document.getElementById("eva-ai-panel");
+  const closeBtn = document.getElementById("eva-ai-close");
+  const form = document.getElementById("eva-ai-form");
+  const input = document.getElementById("eva-ai-input");
+  const msgs = document.getElementById("eva-ai-messages");
+  const history = [];
+
+  function addMsg(text, who){
+    const d = document.createElement("div");
+    d.className = "eva-msg " + who;
+    d.textContent = text;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function replyLocal(q){
+    const t = (q||"").toLowerCase();
+    if(/área do aluno|area do aluno|login|senha/.test(t))
+      return "A Área do Aluno fica em alunos.html. Use o nome completo e a senha que a professora passou.";
+    if(/preço|valor|mensalidade|quanto/.test(t))
+      return "Para valores e matrícula, fale no WhatsApp: +55 15 99632-6825.";
+    if(/whatsapp|contato|telefone/.test(t))
+      return "WhatsApp: +55 15 99632-6825 · Instagram: @eva.academy1";
+    if(/inglês|ingles|english|traduz|translate/.test(t))
+      return "Posso ajudar com inglês! Envie uma frase para traduzir ou uma dúvida de gramática. Para aulas, fale com a EVA no WhatsApp.";
+    if(/português|portugues/.test(t))
+      return "Trabalhamos leitura, escrita e domínio do português. Dúvidas de matrícula: WhatsApp +55 15 99632-6825.";
+    if(/ranking|xp|jogo|missão|conquista/.test(t))
+      return "Na Área do Aluno você ganha XP nos jogos, sobe no ranking, completa missões e desbloqueia conquistas.";
+    if(/olá|oi|bom dia|boa tarde|hello|hi/.test(t))
+      return "Olá! Sou a assistente da EVA Academy. Pergunte sobre cursos, Área do Aluno ou tire dúvidas de inglês.";
+    return "Sou a assistente da EVA Academy. Posso falar sobre a escola, Área do Aluno e ajudar com inglês. Para matrícula: WhatsApp +55 15 99632-6825.";
+  }
+
+  async function replyAI(q){
+    history.push({ role: "user", content: q });
+    try {
+      const res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: history.slice(-8) })
+      });
+      if(!res.ok) throw new Error("no-api");
+      const data = await res.json();
+      if(data && data.reply){
+        history.push({ role: "assistant", content: data.reply });
+        return data.reply;
+      }
+      throw new Error("empty");
+    } catch(e){
+      const local = replyLocal(q);
+      history.push({ role: "assistant", content: local });
+      return local;
+    }
+  }
+
+  btn.addEventListener("click", function(){
+    panel.classList.toggle("open");
+    if(panel.classList.contains("open") && !msgs.dataset.ready){
+      addMsg("Olá! Sou a assistente da EVA. Como posso ajudar?", "bot");
+      msgs.dataset.ready = "1";
+    }
+  });
+  closeBtn.addEventListener("click", function(){ panel.classList.remove("open"); });
+  form.addEventListener("submit", async function(e){
+    e.preventDefault();
+    const q = input.value.trim();
+    if(!q) return;
+    input.value = "";
+    addMsg(q, "user");
+    addMsg("...", "bot");
+    const last = msgs.lastChild;
+    const ans = await replyAI(q);
+    last.textContent = ans;
+  });
 })();
 </script>
-
 </body>
 </html>

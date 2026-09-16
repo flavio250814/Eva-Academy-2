@@ -57,9 +57,34 @@ header{background:var(--azul);color:#fff;padding:18px 6%;display:flex;justify-co
 .c-icone{font-size:24px;margin-bottom:4px}
 .c-nome{font-weight:800;color:var(--azul);font-size:12px}
 .c-desc{color:var(--cinza);font-size:10px}
-.toast-conquista{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-16px);z-index:2000;background:var(--azul);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;font-size:13px;opacity:0;transition:.35s;max-width:90%}
-.toast-conquista.mostrar{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast-conquista span{color:var(--agua2)}
+.conquista.raridade-rara.desbloqueada{border-color:rgba(201,162,39,.55);box-shadow:0 0 0 1px rgba(201,162,39,.2)}
+.conquista.raridade-epica.desbloqueada{border-color:rgba(155,89,182,.55);box-shadow:0 0 0 1px rgba(155,89,182,.25)}
+.conquista .c-prog{margin-top:6px;height:4px;background:rgba(7,26,54,.1);border-radius:99px;overflow:hidden}
+.conquista .c-prog i{display:block;height:100%;background:var(--agua);border-radius:99px}
+.conquista .c-meta{font-size:9px;color:var(--cinza);margin-top:3px}
+.conquistas-resumo{font-size:12px;color:var(--cinza);margin-bottom:12px;font-weight:600}
+.conquistas-resumo strong{color:var(--azul)}
+.toast-conquista{
+  position:fixed;top:18px;left:50%;
+  transform:translateX(-50%) translateY(-24px) scale(.85);
+  z-index:2000;background:linear-gradient(135deg,#071a36,#10294c);
+  color:#fff;padding:16px 22px;border-radius:16px;font-weight:700;font-size:14px;
+  opacity:0;transition:.45s cubic-bezier(.2,1.2,.3,1);max-width:92%;
+  box-shadow:0 12px 40px rgba(7,26,54,.45),0 0 0 2px rgba(201,162,39,.35);
+  display:flex;align-items:center;gap:12px;text-align:left;
+}
+.toast-conquista.mostrar{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+.toast-conquista .toast-ico{font-size:32px;line-height:1;animation:conquistaPop .6s cubic-bezier(.2,1.4,.3,1) both}
+.toast-conquista .toast-txt strong{display:block;color:var(--agua2);font-size:11px;letter-spacing:1px;margin-bottom:2px}
+.toast-conquista .toast-txt span{color:#fff;font-size:14px}
+.toast-conquista.saida{opacity:0;transform:translateX(-50%) translateY(-12px) scale(.9)}
+@keyframes conquistaPop{0%{transform:scale(0) rotate(-20deg)}60%{transform:scale(1.25) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes conquistaShine{0%{box-shadow:0 0 0 0 rgba(201,162,39,.5)}70%{box-shadow:0 0 0 14px rgba(201,162,39,0)}100%{box-shadow:0 0 0 0 rgba(201,162,39,0)}}
+.conquista.desbloqueada.recem{animation:conquistaShine .9s ease-out, conquistaReveal .55s cubic-bezier(.2,1.2,.3,1) both}
+@keyframes conquistaReveal{0%{transform:scale(.7);filter:grayscale(1);opacity:.4}100%{transform:scale(1);filter:grayscale(0);opacity:1}}
+.confete-layer{position:fixed;inset:0;pointer-events:none;z-index:1999;overflow:hidden}
+.confete{position:absolute;top:-12px;width:8px;height:8px;border-radius:2px;animation:confeteCai linear forwards}
+@keyframes confeteCai{0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
 .missao-item{background:var(--creme);border-radius:12px;padding:12px 14px;margin-bottom:8px}
 .missao-item .mt{font-weight:800;color:var(--azul);font-size:14px}
 .missao-item .md{color:var(--cinza);font-size:12px;margin:4px 0 8px}
@@ -70,11 +95,7 @@ header{background:var(--azul);color:#fff;padding:18px 6%;display:flex;justify-co
 .av-btn.sel,.mold-btn.sel{border-color:var(--dourado);box-shadow:0 0 0 2px rgba(201,162,39,.25)}
 .mold-btn{font-size:11px;font-weight:800;color:var(--azul)}
 .preview-avatar{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:10px;border:3px solid #ccc}
-.preview-avatar.padrao{border-color:#9aa}
-.preview-avatar.prata{border-color:#a8a8a8}
-.preview-avatar.ouro{border-color:#c9a227}
-.preview-avatar.agua{border-color:#55d6c2}
-.preview-avatar.fogo{border-color:#e74c3c}
+.preview-avatar.padrao{border-color:#9aa}.preview-avatar.prata{border-color:#a8a8a8}.preview-avatar.ouro{border-color:#c9a227}.preview-avatar.agua{border-color:#55d6c2}.preview-avatar.fogo{border-color:#e74c3c}
 .loja-saldo{display:inline-flex;align-items:center;gap:6px;background:var(--creme);padding:8px 14px;border-radius:999px;font-weight:800;color:var(--azul);font-size:14px;margin-bottom:12px}
 .loja-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
 .loja-item{background:var(--creme);border-radius:12px;padding:12px 10px;text-align:center;border:2px solid transparent}
@@ -108,10 +129,9 @@ footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
 .leaderboard{background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 15px 40px rgba(7,26,54,.1)}
 .leaderboard-item{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid rgba(7,26,54,.08)}
 .leaderboard-item.voce{background:rgba(85,214,194,.12)}
-.leaderboard-item.top1{background:linear-gradient(90deg,rgba(201,162,39,.15),transparent)}
+.leaderboard-item.top1,.leaderboard-item.semana{background:linear-gradient(90deg,rgba(201,162,39,.2),transparent)}
 .leaderboard-item.top2{background:linear-gradient(90deg,rgba(192,192,192,.15),transparent)}
 .leaderboard-item.top3{background:linear-gradient(90deg,rgba(205,127,50,.12),transparent)}
-.leaderboard-item.semana{background:linear-gradient(90deg,rgba(201,162,39,.22),transparent)}
 .posicao{width:28px;height:28px;border-radius:50%;background:var(--azul);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px}
 .avatar{width:40px;height:40px;border-radius:12px;background:var(--azul);color:var(--agua2);display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid #9aa}
 .avatar.prata{border-color:#a8a8a8}.avatar.ouro{border-color:#c9a227}.avatar.agua{border-color:#55d6c2}.avatar.fogo{border-color:#e74c3c}
@@ -141,7 +161,6 @@ footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
     <a class="admin-link" href="admin.html">Admin</a>
   </div>
 </header>
-
 <div id="telaLogin">
   <div class="login-box">
     <h1>Área do Aluno</h1>
@@ -154,7 +173,6 @@ footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
     <div class="erro-login" id="erroLogin">Nome ou senha incorretos.</div>
   </div>
 </div>
-
 <div id="areaLogada">
   <section class="hero">
     <span class="eyebrow">ÁREA DO ALUNO</span>
@@ -175,16 +193,14 @@ footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
         <button class="btn-gelo" id="btnGelo" onclick="congelarOfensiva()">🧊 Congelar ofensiva</button>
       </div>
     </div>
-
     <div class="destaque-semana" id="caixaAlunoSemana" style="display:none">
       <div class="ds-avatar" id="dsAvatar">🎓</div>
       <div class="ds-info">
         <div class="ds-label">⭐ ALUNO DA SEMANA</div>
         <div class="ds-nome" id="dsNome">—</div>
-        <div class="ds-meta" id="dsMeta">Mais XP nesta semana</div>
+        <div class="ds-meta" id="dsMeta">Mais XP</div>
       </div>
     </div>
-
     <div class="meta-diaria" id="caixaMetaDiaria">
       <div class="meta-diaria-topo">
         <h3>🎯 Meta de hoje</h3>
@@ -193,35 +209,30 @@ footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
       <div class="barra-meta"><div class="barra-meta-fill" id="barraMetaFill"></div></div>
       <div class="meta-status" id="metaStatus">Complete a meta para manter a ofensiva!</div>
     </div>
-
     <div class="missoes-box" id="caixaMissoes">
       <h3>📋 Missões da professora</h3>
       <p>Complete os desafios da semana.</p>
       <div id="listaMissoesAluno"></div>
     </div>
-
     <div class="avatar-box" id="caixaAvatar">
       <h3>🎭 Seu avatar</h3>
-      <p>Escolha um emoji. Molduras desbloqueiam com conquistas ou na loja.</p>
+      <p>Escolha um emoji. Molduras na loja ou por conquista.</p>
       <div class="preview-avatar padrao" id="previewAvatar">🎓</div>
       <div class="avatar-opcoes" id="avatarOpcoes"></div>
       <div style="margin-top:12px;font-size:12px;font-weight:700;color:var(--azul)">Moldura</div>
       <div class="moldura-opcoes" id="molduraOpcoes"></div>
     </div>
-
     <div class="loja-box" id="caixaLoja">
       <h3>🛍️ Loja de recompensas</h3>
       <p>Ganhe moedas jogando e troque por molduras e badges.</p>
       <div class="loja-saldo">🪙 <span id="saldoMoedas">0</span> moedas</div>
       <div class="loja-grid" id="lojaGrid"></div>
     </div>
-
     <div class="conquistas-box" id="caixaConquistas">
       <h3>Conquistas</h3>
       <p>Desbloqueie medalhas jogando e acumulando XP.</p>
       <div class="conquistas-grid" id="gridConquistas"></div>
     </div>
-
     <div class="grid" id="cardsArea">
       <article class="card">
         <div class="icon">🎮</div>
@@ -238,26 +249,23 @@ footer{text-align:center;color:var(--cinza);padding:20px;font-size:13px}
       <article class="card">
         <div class="icon">🏆</div>
         <h2>Ranking</h2>
-        <p>Disputa semanal por liga, no estilo Duolingo.</p>
+        <p>Compete por XP e suba de liga.</p>
         <button class="button" onclick="mostrarRanking()">Ver ranking</button>
       </article>
     </div>
-
     <section id="ranking">
       <button class="voltar-ranking" onclick="voltarCards()">← Voltar</button>
       <div class="ranking-header">
         <div class="liga-atual">Liga: <span id="nomeLiga">Bronze</span></div>
-        <h2>Leaderboard da semana</h2>
-        <p>XP da semana. Top 3 sobem de liga no reset.</p>
+        <h2>Leaderboard</h2>
+        <p>Ranking por XP total. Top 3 sobem de liga no reset semanal.</p>
       </div>
       <div class="leaderboard" id="listaRanking"></div>
     </section>
-
     <div class="notice" id="aviso"><strong>Dica:</strong> complete a meta diária para manter sua ofensiva.</div>
   </main>
   <footer>© 2026 EVA Academy</footer>
 </div>
-
 <div class="modal-overlay" id="modalSenha">
   <div class="modal">
     <h3>Alterar senha</h3>
@@ -322,6 +330,7 @@ function comprarItem(itemId){
   renderLoja(u);
   renderAvatarUI(u);
   atualizarProgresso(u);
+  verificarConquistas(u);
   alert("Comprado: " + item.nome + "!");
 }
 
@@ -330,13 +339,13 @@ function renderAlunoSemana(){
   if(!box) return;
   const contas = carregarContas();
   if(!contas.length){ box.style.display = "none"; return; }
-  const ord = contas.slice().sort((a,b) => (b.xpSemana||0) - (a.xpSemana||0));
+  const ord = contas.slice().sort((a,b) => (b.xp||0) - (a.xp||0));
   const top = ord[0];
-  if(!top || !(top.xpSemana > 0)){ box.style.display = "none"; return; }
+  if(!top || !(top.xp > 0)){ box.style.display = "none"; return; }
   box.style.display = "flex";
   document.getElementById("dsAvatar").textContent = (top.badge || top.avatar || "🎓");
   document.getElementById("dsNome").textContent = top.nomeCompleto;
-  document.getElementById("dsMeta").textContent = (top.xpSemana||0) + " XP nesta semana · Liga " + (LIGAS[top.liga||0]||"Bronze");
+  document.getElementById("dsMeta").textContent = (top.xp||0) + " XP · Liga " + (LIGAS[top.liga||0]||"Bronze");
 }
 
 const LIGAS=["Bronze","Prata","Ouro","Safira","Rubi","Esmeralda","Ametista","Pérola","Obsidiana","Diamante"];
@@ -349,21 +358,24 @@ const MOLDURAS=[
   {id:"fogo",nome:"Fogo",req:"primeiro"}
 ];
 const CONQUISTAS_DEF=[
-  {id:"primeiro_acesso",nome:"Bem-vindo!",desc:"Entrou na área",icone:"👋"},
-  {id:"primeiro_jogo",nome:"Primeiro jogo",desc:"Completou 1 jogo",icone:"🎮"},
-  {id:"jogos_5",nome:"Jogador",desc:"5 jogos",icone:"⭐"},
-  {id:"jogos_10",nome:"Dedicado",desc:"10 jogos",icone:"🌟"},
-  {id:"jogos_25",nome:"Campeão",desc:"25 jogos",icone:"🏅"},
-  {id:"xp_50",nome:"Iniciante",desc:"50 XP",icone:"🌱"},
-  {id:"xp_100",nome:"Em ascensão",desc:"100 XP",icone:"📈"},
-  {id:"xp_250",nome:"Estudioso",desc:"250 XP",icone:"📚"},
-  {id:"xp_500",nome:"Expert",desc:"500 XP",icone:"💎"},
-  {id:"xp_1000",nome:"Lenda",desc:"1000 XP",icone:"👑"},
-  {id:"top3",nome:"Pódio",desc:"Top 3",icone:"🥉"},
-  {id:"primeiro",nome:"Número 1",desc:"1º lugar",icone:"🥇"},
-  {id:"meta_diaria",nome:"Meta do dia",desc:"Meta diária",icone:"🎯"},
-  {id:"ofensiva_3",nome:"Em chamas",desc:"3 dias de ofensiva",icone:"🔥"},
-  {id:"ofensiva_7",nome:"Imparável",desc:"7 dias de ofensiva",icone:"⚡"}
+  {id:"primeiro_acesso",nome:"Bem-vindo!",desc:"Entrou na Área do Aluno",icone:"👋",cat:"inicio",raridade:"comum",bonusMoedas:5},
+  {id:"primeiro_jogo",nome:"Primeiro jogo",desc:"Completou 1 jogo",icone:"🎮",cat:"jogos",raridade:"comum",bonusMoedas:5,meta:1,campo:"jogos"},
+  {id:"jogos_5",nome:"Jogador",desc:"Completou 5 jogos",icone:"⭐",cat:"jogos",raridade:"comum",bonusMoedas:10,meta:5,campo:"jogos"},
+  {id:"jogos_10",nome:"Dedicado",desc:"Completou 10 jogos",icone:"🌟",cat:"jogos",raridade:"rara",bonusMoedas:15,meta:10,campo:"jogos"},
+  {id:"jogos_25",nome:"Campeão",desc:"Completou 25 jogos",icone:"🏅",cat:"jogos",raridade:"epica",bonusMoedas:30,meta:25,campo:"jogos"},
+  {id:"xp_50",nome:"Iniciante",desc:"Alcançou 50 XP",icone:"🌱",cat:"xp",raridade:"comum",bonusMoedas:5,meta:50,campo:"xp"},
+  {id:"xp_100",nome:"Em ascensão",desc:"Alcançou 100 XP",icone:"📈",cat:"xp",raridade:"comum",bonusMoedas:10,meta:100,campo:"xp"},
+  {id:"xp_250",nome:"Estudioso",desc:"Alcançou 250 XP",icone:"📚",cat:"xp",raridade:"rara",bonusMoedas:15,meta:250,campo:"xp"},
+  {id:"xp_500",nome:"Expert",desc:"Alcançou 500 XP",icone:"💎",cat:"xp",raridade:"rara",bonusMoedas:25,meta:500,campo:"xp"},
+  {id:"xp_1000",nome:"Lenda",desc:"Alcançou 1000 XP",icone:"👑",cat:"xp",raridade:"epica",bonusMoedas:50,meta:1000,campo:"xp"},
+  {id:"top3",nome:"Pódio",desc:"Ficou no top 3",icone:"🥉",cat:"rank",raridade:"rara",bonusMoedas:20},
+  {id:"primeiro",nome:"Número 1",desc:"Ficou em 1º lugar",icone:"🥇",cat:"rank",raridade:"epica",bonusMoedas:40},
+  {id:"meta_diaria",nome:"Meta do dia",desc:"Completou a meta diária",icone:"🎯",cat:"habito",raridade:"comum",bonusMoedas:10},
+  {id:"ofensiva_3",nome:"Em chamas",desc:"3 dias de ofensiva",icone:"🔥",cat:"habito",raridade:"rara",bonusMoedas:15,meta:3,campo:"ofensiva"},
+  {id:"ofensiva_7",nome:"Imparável",desc:"7 dias de ofensiva",icone:"⚡",cat:"habito",raridade:"epica",bonusMoedas:30,meta:7,campo:"ofensiva"},
+  {id:"primeira_missao",nome:"Missionário",desc:"Concluiu 1 missão",icone:"📋",cat:"missao",raridade:"comum",bonusMoedas:10,meta:1,campo:"missoes"},
+  {id:"missoes_3",nome:"Cumpridor",desc:"Concluiu 3 missões",icone:"🎖️",cat:"missao",raridade:"rara",bonusMoedas:20,meta:3,campo:"missoes"},
+  {id:"loja_1",nome:"Comprador",desc:"Comprou 1 item na loja",icone:"🛍️",cat:"loja",raridade:"comum",bonusMoedas:5,meta:1,campo:"loja"}
 ];
 
 function carregarContas(){try{return JSON.parse(localStorage.getItem("eva_contas"))||[]}catch(e){return[]}}
@@ -415,15 +427,10 @@ function atualizarOfensiva(usuario){
   if(idx===-1)return usuario;
   let ofe=contas[idx].ofensiva||{dias:0,ultimaData:null};
   const hoje=dataHoje();
-  if(ofe.ultimaData===hoje){/* já contou hoje */}
+  if(ofe.ultimaData===hoje){}
   else if(ofe.ultimaData===ontemStr()){ofe.dias=(ofe.dias||0)+1;ofe.ultimaData=hoje}
-  else if(ofe.geloAtivo){
-    ofe.geloAtivo=false;
-    ofe.dias=ofe.dias||1;
-    ofe.ultimaData=hoje;
-  } else {
-    ofe.dias=1;ofe.ultimaData=hoje;
-  }
+  else if(ofe.geloAtivo){ofe.geloAtivo=false;ofe.dias=ofe.dias||1;ofe.ultimaData=hoje}
+  else{ofe.dias=1;ofe.ultimaData=hoje}
   contas[idx].ofensiva=ofe;
   salvarContas(contas);
   usuario.ofensiva=ofe;
@@ -445,6 +452,7 @@ function garantirCampos(usuario){
   if(!c.moldura){c.moldura="padrao";mudou=true}
   if(!c.ofensiva){c.ofensiva={dias:0,ultimaData:null};mudou=true}
   if(!c.missoesProgresso){c.missoesProgresso={};mudou=true}
+  if(!Array.isArray(c.missoesConcluidas)){c.missoesConcluidas=[];mudou=true}
   if(typeof c.moedas!=="number"){c.moedas=0;mudou=true}
   if(!Array.isArray(c.itensComprados)){c.itensComprados=[];mudou=true}
   if(mudou){salvarContas(contas);usuario=Object.assign({},usuario,c);setUsuarioLogado(usuario)}
@@ -508,6 +516,7 @@ function mostrarAreaLogada(usuario){
   const p=usuario.nomeCompleto.split(" ")[0];
   document.getElementById("nomeLogado").textContent=(usuario.avatar||"🎓")+" "+p;
   document.getElementById("saudacaoNome").textContent=p;
+  usuario=verificarMissoes(usuario);
   atualizarProgresso(usuario);
   renderMetaDiaria(usuario);
   renderMissoes(usuario);
@@ -522,7 +531,7 @@ function mostrarAreaLogada(usuario){
 function atualizarProgresso(usuario){
   const contas=carregarContas();
   const atual=contas.find(c=>c.id===usuario.id)||usuario;
-  const ranking=contas.slice().sort((a,b)=>(b.xpSemana||0)-(a.xpSemana||0));
+  const ranking=contas.slice().sort((a,b)=>(b.xp||0)-(a.xp||0));
   const pos=ranking.findIndex(c=>c.id===atual.id)+1;
   document.getElementById("progXP").textContent=atual.xp||0;
   document.getElementById("progSemana").textContent=atual.xpSemana||0;
@@ -563,24 +572,72 @@ function renderMetaDiaria(usuario){
   }
 }
 
+function progressoMissao(usuario, m){
+  const atual = usuario || {};
+  if(m.tipo === "jogos") return Number(atual.jogosFeitos) || 0;
+  if(m.tipo === "xp") return Number(atual.xp) || 0;
+  return 0;
+}
+
+function verificarMissoes(usuario){
+  if(!usuario) return usuario;
+  const missoes = carregarMissoes().filter(m => m.ativa);
+  if(!missoes.length) return usuario;
+  const contas = carregarContas();
+  const idx = contas.findIndex(c => c.id === usuario.id);
+  if(idx === -1) return usuario;
+  if(!contas[idx].missoesProgresso) contas[idx].missoesProgresso = {};
+  if(!contas[idx].missoesConcluidas) contas[idx].missoesConcluidas = [];
+  let mudou = false;
+  missoes.forEach(m => {
+    const val = progressoMissao(contas[idx], m);
+    contas[idx].missoesProgresso[m.id] = val;
+    const ja = contas[idx].missoesConcluidas.includes(m.id);
+    if(val >= m.alvo && !ja){
+      contas[idx].missoesConcluidas.push(m.id);
+      const bonusXp = Number(m.bonusXp) || 25;
+      const bonusMoedas = Number(m.bonusMoedas) || 10;
+      contas[idx].xp = (Number(contas[idx].xp) || 0) + bonusXp;
+      contas[idx].xpSemana = (Number(contas[idx].xpSemana) || 0) + bonusXp;
+      contas[idx].moedas = (Number(contas[idx].moedas) || 0) + bonusMoedas;
+      mudou = true;
+      try {
+        mostrarToastConquista({ icone: "✅", nome: "Missão: " + m.titulo });
+        enviarNotificacao("Missão concluída!", m.titulo + " · +" + bonusXp + " XP", "missao-" + m.id);
+      } catch(e) {}
+    }
+  });
+  salvarContas(contas);
+  Object.assign(usuario, contas[idx]);
+  setUsuarioLogado(usuario);
+  return usuario;
+}
+
 function renderMissoes(usuario){
-  const box=document.getElementById("listaMissoesAluno");
-  const missoes=carregarMissoes().filter(m=>m.ativa);
+  const box = document.getElementById("listaMissoesAluno");
+  if(!box) return;
+  const missoes = carregarMissoes().filter(m => m.ativa);
   if(!missoes.length){
-    box.innerHTML='<div style="color:var(--cinza);font-size:13px">Nenhuma missão ativa no momento.</div>';
+    box.innerHTML = '<div style="color:var(--cinza);font-size:13px">Nenhuma missão ativa no momento. A professora cria no Admin.</div>';
     return;
   }
-  const contas=carregarContas();
-  const atual=contas.find(c=>c.id===usuario.id)||usuario;
-  const prog=usuario.missoesProgresso||{};
-  box.innerHTML=missoes.map(m=>{
-    let atualVal=0;
-    if(m.tipo==="jogos") atualVal=atual.jogosFeitos||0;
-    else if(m.tipo==="xp") atualVal=atual.xpSemana||0;
-    if(typeof prog[m.id]==="number") atualVal=prog[m.id];
-    const pct=Math.min(100,Math.round((Math.min(atualVal,m.alvo)/m.alvo)*100));
-    const done=atualVal>=m.alvo;
-    return '<div class="missao-item"><div class="mt">'+(done?"✅":"📌")+" "+m.titulo+'</div><div class="md">'+(m.desc||"")+" · "+Math.min(atualVal,m.alvo)+"/"+m.alvo+'</div><div class="missao-barra"><div class="missao-fill" style="width:'+pct+'%"></div></div></div>';
+  const contas = carregarContas();
+  const atual = contas.find(c => c.id === usuario.id) || usuario;
+  const concluidas = atual.missoesConcluidas || [];
+  box.innerHTML = missoes.map(m => {
+    const val = progressoMissao(atual, m);
+    const pct = Math.min(100, Math.round((Math.min(val, m.alvo) / m.alvo) * 100));
+    const done = concluidas.includes(m.id) || val >= m.alvo;
+    const tipoLabel = m.tipo === "jogos" ? "jogos" : "XP";
+    return '<div class="missao-item">' +
+      '<div class="mt">' + (done ? "✅ " : "📌 ") + m.titulo + '</div>' +
+      '<div class="md">' + (m.desc || "") + '<br>' +
+      Math.min(val, m.alvo) + " / " + m.alvo + " " + tipoLabel +
+      (done ? " · Concluída!" : "") +
+      (m.bonusXp ? " · 🎁 +" + m.bonusXp + " XP" : " · 🎁 +25 XP") +
+      '</div>' +
+      '<div class="missao-barra"><div class="missao-fill" style="width:' + pct + '%;background:' + (done ? "#2ecc71" : "var(--agua)") + '"></div></div>' +
+      '</div>';
   }).join("");
 }
 
@@ -625,29 +682,86 @@ function escolherMoldura(id){
   contas[i].moldura=id;salvarContas(contas);u.moldura=id;setUsuarioLogado(u);renderAvatarUI(u);
 }
 
+function soltarConfetes(){
+  const layer=document.createElement("div");
+  layer.className="confete-layer";
+  const cores=["#c9a227","#55d6c2","#e74c3c","#3498db","#9b59b6","#f1c40f","#2ecc71"];
+  for(let i=0;i<28;i++){
+    const p=document.createElement("div");
+    p.className="confete";
+    p.style.left=Math.random()*100+"%";
+    p.style.background=cores[i%cores.length];
+    p.style.animationDuration=(1.4+Math.random()*1.6)+"s";
+    p.style.animationDelay=(Math.random()*0.35)+"s";
+    p.style.width=(6+Math.random()*6)+"px";
+    p.style.height=(6+Math.random()*8)+"px";
+    layer.appendChild(p);
+  }
+  document.body.appendChild(layer);
+  setTimeout(()=>layer.remove(),3200);
+}
+
 function mostrarToastConquista(c){
-  const el=document.createElement("div");el.className="toast-conquista";
-  el.innerHTML=c.icone+' <span>Nova conquista:</span> '+c.nome;
-  document.body.appendChild(el);requestAnimationFrame(()=>el.classList.add("mostrar"));
-  setTimeout(()=>{el.classList.remove("mostrar");setTimeout(()=>el.remove(),400)},3000);
+  const el=document.createElement("div");
+  el.className="toast-conquista";
+  const nome=(c&&c.nome)?c.nome:"Nova conquista";
+  const icone=(c&&c.icone)?c.icone:"🏅";
+  el.innerHTML='<div class="toast-ico">'+icone+'</div><div class="toast-txt"><strong>CONQUISTA DESBLOQUEADA</strong><span>'+nome+'</span></div>';
+  document.body.appendChild(el);
+  soltarConfetes();
+  requestAnimationFrame(()=>el.classList.add("mostrar"));
+  try{
+    const cards=document.querySelectorAll("#gridConquistas .conquista");
+    cards.forEach(card=>{
+      const n=card.querySelector(".c-nome");
+      if(n&&c&&n.textContent===String(c.nome).split(" · ")[0]){
+        card.classList.add("desbloqueada","recem");
+        setTimeout(()=>card.classList.remove("recem"),1000);
+      }
+    });
+  }catch(e){}
+  setTimeout(()=>{
+    el.classList.add("saida");
+    el.classList.remove("mostrar");
+    setTimeout(()=>el.remove(),400);
+  },3400);
 }
 
 function desbloquearConquista(usuario,id){
-  const contas=carregarContas();const idx=contas.findIndex(c=>c.id===usuario.id);if(idx===-1)return false;
+  const contas=carregarContas();
+  const idx=contas.findIndex(c=>c.id===usuario.id);
+  if(idx===-1)return false;
   if(!Array.isArray(contas[idx].conquistas))contas[idx].conquistas=[];
   if(contas[idx].conquistas.includes(id))return false;
-  contas[idx].conquistas.push(id);salvarContas(contas);
-  usuario.conquistas=contas[idx].conquistas;setUsuarioLogado(usuario);
+  contas[idx].conquistas.push(id);
   const def=CONQUISTAS_DEF.find(x=>x.id===id);
-  if(def){mostrarToastConquista(def);enviarNotificacao("Nova conquista!",def.icone+" "+def.nome,"c-"+id)}
+  if(def && def.bonusMoedas){
+    contas[idx].moedas=(Number(contas[idx].moedas)||0)+def.bonusMoedas;
+  }
+  salvarContas(contas);
+  usuario.conquistas=contas[idx].conquistas;
+  usuario.moedas=contas[idx].moedas;
+  setUsuarioLogado(usuario);
+  if(def){
+    const extra=def.bonusMoedas?(" · +"+def.bonusMoedas+" 🪙"):"";
+    mostrarToastConquista({icone:def.icone,nome:def.nome+extra});
+    try{enviarNotificacao("Nova conquista!",def.icone+" "+def.nome+extra,"c-"+id)}catch(e){}
+  }
   return true;
 }
 
 function verificarConquistas(usuario){
-  const contas=carregarContas();const atual=contas.find(c=>c.id===usuario.id);if(!atual)return;
-  const xp=atual.xp||0,jogos=atual.jogosFeitos||0,ofe=(atual.ofensiva&&atual.ofensiva.dias)||0;
-  const ranking=contas.slice().sort((a,b)=>(b.xpSemana||0)-(a.xpSemana||0));
+  const contas=carregarContas();
+  const atual=contas.find(c=>c.id===usuario.id);
+  if(!atual)return;
+  const xp=atual.xp||0;
+  const jogos=atual.jogosFeitos||0;
+  const ofe=(atual.ofensiva&&atual.ofensiva.dias)||0;
+  const missoes=(atual.missoesConcluidas||[]).length;
+  const loja=(atual.itensComprados||[]).length;
+  const ranking=contas.slice().sort((a,b)=>(b.xp||0)-(a.xp||0));
   const pos=ranking.findIndex(c=>c.id===atual.id)+1;
+
   desbloquearConquista(atual,"primeiro_acesso");
   if(jogos>=1)desbloquearConquista(atual,"primeiro_jogo");
   if(jogos>=5)desbloquearConquista(atual,"jogos_5");
@@ -663,16 +777,59 @@ function verificarConquistas(usuario){
   if(atual.metaDiaria&&atual.metaDiaria.completaHoje)desbloquearConquista(atual,"meta_diaria");
   if(ofe>=3)desbloquearConquista(atual,"ofensiva_3");
   if(ofe>=7)desbloquearConquista(atual,"ofensiva_7");
+  if(missoes>=1)desbloquearConquista(atual,"primeira_missao");
+  if(missoes>=3)desbloquearConquista(atual,"missoes_3");
+  if(loja>=1)desbloquearConquista(atual,"loja_1");
+
   const final=carregarContas().find(c=>c.id===usuario.id)||atual;
-  setUsuarioLogado(final);renderConquistas(final);renderAvatarUI(final);
+  setUsuarioLogado(final);
+  renderConquistas(final);
+  try{renderAvatarUI(final);atualizarProgresso(final);renderLoja(final)}catch(e){}
+}
+
+function valorCampoConquista(usuario,campo){
+  if(campo==="jogos")return Number(usuario.jogosFeitos)||0;
+  if(campo==="xp")return Number(usuario.xp)||0;
+  if(campo==="ofensiva")return (usuario.ofensiva&&usuario.ofensiva.dias)||0;
+  if(campo==="missoes")return (usuario.missoesConcluidas||[]).length;
+  if(campo==="loja")return (usuario.itensComprados||[]).length;
+  return 0;
 }
 
 function renderConquistas(usuario){
   const grid=document.getElementById("gridConquistas");
+  if(!grid)return;
   const des=usuario.conquistas||[];
+  const total=CONQUISTAS_DEF.length;
+  const okCount=des.length;
+  const box=document.getElementById("caixaConquistas");
+  if(box){
+    let resumo=box.querySelector(".conquistas-resumo");
+    if(!resumo){
+      resumo=document.createElement("div");
+      resumo.className="conquistas-resumo";
+      const p=box.querySelector("p");
+      if(p)p.insertAdjacentElement("afterend",resumo);
+      else box.insertBefore(resumo,grid);
+    }
+    resumo.innerHTML="Progresso: <strong>"+okCount+" / "+total+"</strong> conquistas";
+  }
   grid.innerHTML=CONQUISTAS_DEF.map(c=>{
     const ok=des.includes(c.id);
-    return '<div class="conquista'+(ok?" desbloqueada":"")+'"><div class="c-icone">'+c.icone+'</div><div class="c-nome">'+c.nome+'</div><div class="c-desc">'+c.desc+"</div></div>";
+    const rar=c.raridade||"comum";
+    let extra="";
+    if(!ok && c.meta && c.campo){
+      const val=valorCampoConquista(usuario,c.campo);
+      const pct=Math.min(100,Math.round((val/c.meta)*100));
+      extra='<div class="c-prog"><i style="width:'+pct+'%"></i></div><div class="c-meta">'+Math.min(val,c.meta)+" / "+c.meta+"</div>";
+    } else if(ok){
+      extra='<div class="c-meta">Desbloqueada'+(c.bonusMoedas?" · +"+c.bonusMoedas+"🪙":"")+"</div>";
+    }
+    return '<div class="conquista '+(ok?"desbloqueada":"")+" raridade-"+rar+'">'+
+      '<div class="c-icone">'+c.icone+'</div>'+
+      '<div class="c-nome">'+c.nome+'</div>'+
+      '<div class="c-desc">'+c.desc+'</div>'+extra+
+      '</div>';
   }).join("");
 }
 
@@ -688,19 +845,23 @@ function gerarRanking(){
   let ranking=contas.map(c=>({
     id:c.id,
     nome:c.nomeCompleto,
-    xp:Number(c.xpSemana)||0,
-    xpTotal:Number(c.xp)||0,
+    xp:Number(c.xp)||0,
+    xpSemana:Number(c.xpSemana)||0,
     avatar:c.avatar||"🎓",
     moldura:c.moldura||"padrao",
     badge:c.badge||"",
-    voce:logado&&c.id===logado.id
+    voce:!!(logado&&c.id===logado.id)
   }));
-  ranking.sort((a,b)=>b.xp-a.xp||b.xpTotal-a.xpTotal);
-  return { ranking, liga:atual?(atual.liga||0):0, meuXP:atual?(Number(atual.xpSemana)||0):0 };
+  ranking.sort((a,b)=>b.xp-a.xp);
+  return {
+    ranking,
+    liga:atual?(atual.liga||0):0,
+    meuXP:atual?(Number(atual.xp)||0):0
+  };
 }
 
 function renderRanking(){
-  const {ranking,liga,meuXP}=gerarRanking();
+  const {ranking,liga}=gerarRanking();
   document.getElementById("nomeLiga").textContent=LIGAS[liga]||"Bronze";
   const lista=document.getElementById("listaRanking");
   if(!ranking.length){
@@ -715,7 +876,7 @@ function renderRanking(){
     if(pos===3)classes+=" top3";
     const badge=item.badge?" "+item.badge:"";
     const tagSemana=pos===1?'<small>⭐ Aluno da semana</small>':(item.voce?"<small>Você</small>":"");
-    return '<div class="'+classes+'"><div class="posicao">'+pos+'</div><div class="avatar '+item.moldura+'">'+item.avatar+'</div><div class="nome">'+item.nome+badge+tagSemana+'</div><div class="xp">'+item.xp+' <span>XP sem.</span></div></div>';
+    return '<div class="'+classes+'"><div class="posicao">'+pos+'</div><div class="avatar '+item.moldura+'">'+item.avatar+'</div><div class="nome">'+item.nome+badge+tagSemana+'</div><div class="xp">'+item.xp+' <span>XP</span></div></div>';
   }).join("");
 }
 
