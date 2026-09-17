@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>EVA Academy | Jogos</title>
 <style>
-:root{--azul:#071a36;--escuro:#031023;--dourado:#c9a227;--dourado2:#e0bd45;--agua:#55d6c2;--agua2:#8be6d6;--creme:#faf8ef;--branco:#fff;--cinza:#657086;--erro:#d64545;--borda:rgba(7,26,54,.12)}
+:root{--azul:#071a36;--escuro:#031023;--dourado:#c9a227;--agua:#55d6c2;--agua2:#8be6d6;--creme:#faf8ef;--cinza:#657086;--erro:#d64545;--borda:rgba(7,26,54,.12)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:Arial,sans-serif;background:var(--creme);color:#172238;min-height:100vh}
 header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
@@ -32,10 +32,9 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 .modo-card p{color:var(--cinza);font-size:12px;line-height:1.4}
 #niveis{display:none}
 #niveis h1{color:var(--azul);font-size:clamp(24px,4vw,34px);margin-bottom:8px}
-#niveis p{color:var(--cinza);margin-bottom:26px}
 .niveis-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
 @media(max-width:650px){.niveis-grid{grid-template-columns:1fr}}
-.nivel-card{background:white;border-radius:16px;padding:24px 18px;text-align:center;box-shadow:0 12px 30px rgba(7,26,54,.08);cursor:pointer;transition:.2s;border:2px solid transparent}
+.nivel-card{background:white;border-radius:16px;padding:24px 18px;text-align:center;box-shadow:0 12px 30px rgba(7,26,54,.08);cursor:pointer;border:2px solid transparent}
 .nivel-card:hover{transform:translateY(-4px);border-color:var(--dourado)}
 .nivel-card .icon{font-size:32px;margin-bottom:10px}
 .nivel-card h3{color:var(--azul);margin-bottom:6px}
@@ -82,24 +81,24 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 <main class="wrap">
   <section id="idioma">
     <h1>Qual idioma você quer praticar?</h1>
-    <p>21 jogos em cada idioma.</p>
+    <p>21+ jogos em cada idioma (e extras: cruzadinha, caça, números…).</p>
     <div class="idioma-grid">
       <article class="idioma-card" onclick="selecionarIdioma('en')">
         <div class="icon">🇬🇧</div>
         <h2>Inglês</h2>
-        <p>21 jogos de inglês.</p>
+        <p>21 jogos de inglês + extras.</p>
       </article>
       <article class="idioma-card" onclick="selecionarIdioma('pt')">
         <div class="icon">🇧🇷</div>
         <h2>Português</h2>
-        <p>21 jogos de português.</p>
+        <p>21 jogos de português + extras.</p>
       </article>
     </div>
   </section>
   <section id="selecao">
     <button class="voltar-link" onclick="voltarIdioma()">← Trocar idioma</button>
     <h1 id="tituloSelecao">Jogos</h1>
-    <p>Escolha um dos 21 jogos.</p>
+    <p>Escolha um jogo.</p>
     <div class="modos" id="gridModos"></div>
   </section>
   <section id="niveis">
@@ -226,7 +225,6 @@ let idiomaAtual="en", modoAtual=null, nivelAtual="iniciante", pontos=0, estadoJo
 function atualizarPlacar(){ document.getElementById("placar").textContent="Pontos: "+pontos; document.getElementById("tagNivel").textContent=nivelAtual; }
 function voltarIdioma(){ mostrarTela("idioma"); }
 function voltarSelecao(){ mostrarTela("selecao"); }
-
 const MODOS = [
   { id:"en_quiz_ept", nome:"Quiz EN→PT", icon:"📝", desc:"Inglês para português", lang:"en", engine:"quiz", tipo:"en_pt" },
   { id:"en_quiz_pte", nome:"Quiz PT→EN", icon:"📝", desc:"Português para inglês", lang:"en", engine:"quiz", tipo:"pt_en" },
@@ -249,6 +247,10 @@ const MODOS = [
   { id:"en_revisao", nome:"Revisão geral", icon:"📚", desc:"Mistura de níveis", lang:"en", engine:"quiz", tipo:"en_pt", mixNivel:true },
   { id:"en_pares", nome:"Ache o par", icon:"🔗", desc:"Escolha a tradução", lang:"en", engine:"quiz", tipo:"en_pt" },
   { id:"en_flash", nome:"Flash quiz", icon:"✨", desc:"Quiz curto", lang:"en", engine:"quiz", tipo:"pt_en", qtd:6 },
+  { id:"en_cruzadinha", nome:"Cruzadinha (EN)", icon:"🧩", desc:"Palavras cruzadas", lang:"en", engine:"cruzadinha", tipo:"en" },
+  { id:"en_caca", nome:"Caça-palavras (EN)", icon:"🔍", desc:"Encontre as palavras", lang:"en", engine:"caca", tipo:"en" },
+  { id:"en_numeros", nome:"Números (EN)", icon:"🔢", desc:"Numbers 1–20", lang:"en", engine:"numeros", tipo:"en" },
+  { id:"en_vocab_dia", nome:"Vocabulário do dia", icon:"💬", desc:"Speak naturally", lang:"en", engine:"vocab_dia", tipo:"en" },
   { id:"pt_quiz_dica", nome:"Quiz por dica", icon:"💡", desc:"Adivinhe pela dica", lang:"pt", engine:"quiz_pt" },
   { id:"pt_forca", nome:"Forca (PT)", icon:"🔤", desc:"Adivinhe a palavra", lang:"pt", engine:"forca", tipo:"pt" },
   { id:"pt_memoria", nome:"Memória PT", icon:"🧠", desc:"Palavra e dica", lang:"pt", engine:"memoria", tipo:"pt" },
@@ -269,14 +271,32 @@ const MODOS = [
   { id:"pt_pares", nome:"Ache a palavra", icon:"🔗", desc:"Combine com a dica", lang:"pt", engine:"quiz_pt" },
   { id:"pt_ortografia", nome:"Ortografia", icon:"✍️", desc:"Escreva certo", lang:"pt", engine:"digite_pt" },
   { id:"pt_desafio_final", nome:"Desafio final", icon:"🎯", desc:"10 perguntas", lang:"pt", engine:"quiz_pt", qtd:10 },
-  { id:"pt_treino", nome:"Treino diário", icon:"📅", desc:"Prática rápida", lang:"pt", engine:"quiz_pt", qtd:8 }
+  { id:"pt_treino", nome:"Treino diário", icon:"📅", desc:"Prática rápida", lang:"pt", engine:"quiz_pt", qtd:8 },
+  { id:"pt_cruzadinha", nome:"Cruzadinha (PT)", icon:"🧩", desc:"Palavras cruzadas", lang:"pt", engine:"cruzadinha", tipo:"pt" },
+  { id:"pt_caca", nome:"Caça-palavras (PT)", icon:"🔍", desc:"Encontre as palavras", lang:"pt", engine:"caca", tipo:"pt" }
 ];
+
+function modoLiberado(m){
+  try{
+    const u=JSON.parse(sessionStorage.getItem("eva_usuario_logado")||"null");
+    if(!u) return true;
+    const contas=JSON.parse(localStorage.getItem("eva_contas")||"[]");
+    const c=contas.find(function(x){return x.id===u.id;})||u;
+    const mat=c.materias||{};
+    if(Object.keys(mat).length===0) return true;
+    if(m.engine==="cruzadinha") return mat.cruzadinha!==false;
+    if(m.engine==="caca") return mat.caca!==false;
+    if(m.engine==="numeros") return mat.numeros!==false;
+    if(m.engine==="vocab_dia") return mat.vocab!==false;
+    return mat.jogos!==false;
+  }catch(e){ return true; }
+}
 
 function selecionarIdioma(lang){
   idiomaAtual=lang;
-  document.getElementById("tituloSelecao").textContent=lang==="en"?"21 Jogos de Inglês":"21 Jogos de Português";
+  document.getElementById("tituloSelecao").textContent=lang==="en"?"Jogos de Inglês":"Jogos de Português";
   const grid=document.getElementById("gridModos");
-  grid.innerHTML=MODOS.filter(function(m){return m.lang===lang;}).map(function(m){
+  grid.innerHTML=MODOS.filter(function(m){return m.lang===lang && modoLiberado(m);}).map(function(m){
     return '<article class="modo-card" data-modo="'+m.id+'"><div class="icon">'+m.icon+'</div><h3>'+m.nome+'</h3><p>'+m.desc+'</p></article>';
   }).join("");
   grid.querySelectorAll(".modo-card").forEach(function(card){
@@ -303,8 +323,13 @@ function iniciarComNivel(nivel){
   else if(engine==="vf") iniciarVF(tipo);
   else if(engine==="categoria") iniciarCategoria(tipo);
   else if(engine==="embaralha") iniciarEmbaralha(tipo);
+  else if(engine==="cruzadinha") iniciarCruzadinha(tipo);
+  else if(engine==="caca") iniciarCaca(tipo);
+  else if(engine==="numeros") iniciarNumeros();
+  else if(engine==="vocab_dia") iniciarVocabDia();
   else iniciarQuiz("en_pt");
 }
+
 const banco = {
   iniciante: [
     {en:"dog",pt:"cachorro"},{en:"cat",pt:"gato"},{en:"bird",pt:"pássaro"},{en:"fish",pt:"peixe"},
@@ -325,7 +350,6 @@ const banco = {
     {en:"discipline",pt:"disciplina"},{en:"integrity",pt:"integridade"},{en:"perseverance",pt:"perseverança"}
   ]
 };
-
 const bancoPt = {
   iniciante: [
     {palavra:"alegria",dica:"sentimento positivo"},{palavra:"escola",dica:"lugar de estudar"},
@@ -343,7 +367,6 @@ const bancoPt = {
     {palavra:"integridade",dica:"retidão"},{palavra:"perseverança",dica:"não desistir"}
   ]
 };
-
 const sinonimosEN = {
   iniciante:[{palavra:"happy",correta:"glad",opcoes:["glad","sad","angry"]},{palavra:"big",correta:"large",opcoes:["large","small","tiny"]},{palavra:"fast",correta:"quick",opcoes:["quick","slow","late"]},{palavra:"smart",correta:"clever",opcoes:["clever","lazy","weak"]}],
   intermediario:[{palavra:"begin",correta:"start",opcoes:["start","end","stop"]},{palavra:"buy",correta:"purchase",opcoes:["purchase","sell","rent"]},{palavra:"hard",correta:"difficult",opcoes:["difficult","easy","simple"]}],
@@ -389,7 +412,6 @@ function poolEN(){ return (banco[nivelAtual] || banco.iniciante).slice(); }
 function poolPT(){ return (bancoPt[nivelAtual] || bancoPt.iniciante).slice(); }
 function poolENMix(){ return (banco.iniciante||[]).concat(banco.intermediario||[]).concat(banco.avancado||[]); }
 function poolPTMix(){ return (bancoPt.iniciante||[]).concat(bancoPt.intermediario||[]).concat(bancoPt.avancado||[]); }
-
 function opcoesDistratoras(correta, todas, campo){
   const outs = embaralhar(todas.filter(function(x){ return x[campo] !== correta; }).map(function(x){ return x[campo]; })).slice(0,3);
   return embaralhar([correta].concat(outs));
@@ -675,6 +697,153 @@ function responderEmbaralha(){
   if(val === item.palavra.toLowerCase()){ pontos += 15; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
   else alert("Resposta: " + item.palavra);
   estadoJogo.i++; renderEmbaralha();
+}
+
+/* Cruzadinha */
+const cruzEN = [{palavra:"DOG",dica:"Animal that barks"},{palavra:"CAT",dica:"Animal that meows"},{palavra:"BOOK",dica:"You read it"},{palavra:"SUN",dica:"Bright in the sky"},{palavra:"HOME",dica:"Where you live"}];
+const cruzPT = [{palavra:"GATO",dica:"Animal que mia"},{palavra:"CASA",dica:"Onde se mora"},{palavra:"LIVRO",dica:"Serve para ler"},{palavra:"AGUA",dica:"Se bebe"},{palavra:"SOL",dica:"Brilha de dia"}];
+function iniciarCruzadinha(lang){
+  estadoJogo = { fila:(lang==="pt"?cruzPT:cruzEN).slice(), i:0 };
+  renderCruzadinha();
+}
+function renderCruzadinha(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){ adicionarXP(30); mostrarGanhoXP(30); fimDeJogo("Cruzadinha completa!","Você acertou todas."); return; }
+  const item = st.fila[st.i];
+  const slots = item.palavra.split("").map(function(){ return "_"; }).join(" ");
+  document.getElementById("areaJogo").innerHTML =
+    '<div class="pergunta">🧩 Cruzadinha<br><span style="font-size:14px;color:var(--cinza)">'+item.dica+'</span><br><span style="letter-spacing:6px;font-size:26px">'+slots+'</span></div>'+
+    '<div style="text-align:center"><input class="input-resposta" id="respCruz" placeholder="palavra" style="text-transform:uppercase"><br><button class="proxima" onclick="responderCruzadinha()">Confirmar</button></div>'+
+    '<p style="text-align:center;margin-top:12px;color:var(--cinza);font-size:13px">'+(st.i+1)+' / '+st.fila.length+'</p>';
+  document.getElementById("respCruz").focus();
+}
+function responderCruzadinha(){
+  const item = estadoJogo.fila[estadoJogo.i];
+  const val = (document.getElementById("respCruz").value||"").trim().toUpperCase().replace(/\s/g,"");
+  if(val === item.palavra){ pontos += 15; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  else alert("Resposta: " + item.palavra);
+  estadoJogo.i++; renderCruzadinha();
+}
+
+/* Caça-palavras */
+function iniciarCaca(lang){
+  const words = lang==="pt" ? ["CASA","GATO","SOL","LIVRO","MESA"] : ["HOME","CAT","SUN","BOOK","DOOR"];
+  const size = 8;
+  const grid = [];
+  for(let r=0;r<size;r++){ grid[r]=[]; for(let c=0;c<size;c++) grid[r][c]=""; }
+  words.forEach(function(w, idx){ if(idx < size && w.length <= size) for(let i=0;i<w.length;i++) grid[idx][i] = w[i]; });
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  for(let r=0;r<size;r++) for(let c=0;c<size;c++) if(!grid[r][c]) grid[r][c] = letters[Math.floor(Math.random()*26)];
+  estadoJogo = { words:words, found:[], grid:grid };
+  renderCaca();
+}
+function renderCaca(){
+  const st = estadoJogo;
+  if(st.found.length >= st.words.length){ adicionarXP(30); mostrarGanhoXP(30); fimDeJogo("Caça completa!","Todas encontradas."); return; }
+  let html = '<div class="pergunta">🔍 Caça-palavras</div><div style="display:inline-block;width:100%;text-align:center">';
+  st.grid.forEach(function(row){
+    html += '<div style="display:flex;gap:2px;justify-content:center">';
+    row.forEach(function(ch){ html += '<span style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;background:#f0f4f8;border-radius:4px;font-weight:800;font-size:13px;color:var(--azul)">'+ch+'</span>'; });
+    html += '</div>';
+  });
+  html += '</div><div style="text-align:center;margin-top:10px;font-size:13px;color:var(--cinza)">Encontre: <strong>'+st.words.filter(function(w){ return st.found.indexOf(w)<0; }).join(", ")+'</strong></div>';
+  html += '<div style="text-align:center;margin-top:12px"><input class="input-resposta" id="respCaca" placeholder="palavra" style="text-transform:uppercase"><br><button class="proxima" onclick="responderCaca()">Marcar</button></div>';
+  html += '<div style="text-align:center;margin-top:8px;font-size:12px;color:var(--agua)">Encontradas: '+(st.found.join(", ")||"—")+'</div>';
+  document.getElementById("areaJogo").innerHTML = html;
+  document.getElementById("respCaca").focus();
+}
+function responderCaca(){
+  const st = estadoJogo;
+  const val = (document.getElementById("respCaca").value||"").trim().toUpperCase().replace(/\s/g,"");
+  if(st.words.indexOf(val) >= 0 && st.found.indexOf(val) < 0){ st.found.push(val); pontos += 12; atualizarPlacar(); adicionarXP(8); mostrarGanhoXP(8); }
+  else if(st.found.indexOf(val) >= 0) alert("Já encontrada!");
+  else alert("Não está na lista.");
+  renderCaca();
+}
+
+/* Números */
+const NUMEROS = [
+  {n:1,en:"one"},{n:2,en:"two"},{n:3,en:"three"},{n:4,en:"four"},{n:5,en:"five"},
+  {n:6,en:"six"},{n:7,en:"seven"},{n:8,en:"eight"},{n:9,en:"nine"},{n:10,en:"ten"},
+  {n:11,en:"eleven"},{n:12,en:"twelve"},{n:13,en:"thirteen"},{n:14,en:"fourteen"},{n:15,en:"fifteen"},
+  {n:16,en:"sixteen"},{n:17,en:"seventeen"},{n:18,en:"eighteen"},{n:19,en:"nineteen"},{n:20,en:"twenty"}
+];
+function iniciarNumeros(){ estadoJogo = { fila:embaralhar(NUMEROS).slice(0,10), i:0 }; renderNumeros(); }
+function renderNumeros(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Números concluídos!","Great job!"); return; }
+  const item = st.fila[st.i];
+  const modo = Math.random() < 0.5 ? "n2en" : "en2n";
+  const pergunta = modo==="n2en" ? ("How do you say <em>"+item.n+"</em> in English?") : ("What number is <em>"+item.en+"</em>?");
+  const correta = modo==="n2en" ? item.en : String(item.n);
+  let ops;
+  if(modo==="n2en") ops = embaralhar([item.en].concat(embaralhar(NUMEROS.filter(function(x){return x.en!==item.en;}).map(function(x){return x.en;})).slice(0,3)));
+  else ops = embaralhar([String(item.n)].concat(embaralhar(NUMEROS.filter(function(x){return x.n!==item.n;}).map(function(x){return String(x.n);})).slice(0,3)));
+  const area = document.getElementById("areaJogo");
+  area.innerHTML = '<div class="pergunta">🔢 '+pergunta+'</div><div class="opcoes" id="opsNum"></div>';
+  const box = document.getElementById("opsNum");
+  ops.forEach(function(o){
+    const b = document.createElement("button");
+    b.className = "opcao"; b.textContent = o;
+    b.onclick = function(){ responderNumeros(o, correta); };
+    box.appendChild(b);
+  });
+}
+function responderNumeros(escolha, correta){
+  document.querySelectorAll(".opcao").forEach(function(b){
+    b.disabled = true;
+    if(b.textContent === correta) b.classList.add("certa");
+    if(b.textContent === escolha && escolha !== correta) b.classList.add("errada");
+  });
+  if(escolha === correta){ pontos += 10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  setTimeout(function(){ estadoJogo.i++; renderNumeros(); }, 700);
+}
+
+/* Vocabulário do dia / Speak naturally */
+const VOCAB_DIA = [
+  {en:"Good morning!",pt:"Bom dia!",situacao:"Saudação de manhã"},
+  {en:"How are you?",pt:"Como vai você?",situacao:"Perguntar como está"},
+  {en:"I'm fine, thank you.",pt:"Estou bem, obrigado(a).",situacao:"Responder educadamente"},
+  {en:"Nice to meet you.",pt:"Prazer em conhecer você.",situacao:"Ao conhecer alguém"},
+  {en:"See you later!",pt:"Até mais!",situacao:"Despedida casual"},
+  {en:"Please",pt:"Por favor",situacao:"Pedido educado"},
+  {en:"Thank you very much.",pt:"Muito obrigado(a).",situacao:"Agradecer"},
+  {en:"You're welcome.",pt:"De nada.",situacao:"Responder a agradecimento"},
+  {en:"Excuse me.",pt:"Com licença. / Desculpe.",situacao:"Pedir passagem ou desculpas"},
+  {en:"Can you help me?",pt:"Você pode me ajudar?",situacao:"Pedir ajuda"},
+  {en:"Where is the bathroom?",pt:"Onde fica o banheiro?",situacao:"Perguntar direção"},
+  {en:"I don't understand.",pt:"Eu não entendo.",situacao:"Dificuldade de compreensão"}
+];
+function iniciarVocabDia(){ estadoJogo = { fila:embaralhar(VOCAB_DIA).slice(0,8), i:0 }; renderVocabDia(); }
+function renderVocabDia(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){ adicionarXP(25); mostrarGanhoXP(25); fimDeJogo("Speak naturally!","Vocabulário do dia concluído."); return; }
+  const item = st.fila[st.i];
+  const modo = Math.random() < 0.5 ? "en_pt" : "pt_en";
+  const pergunta = modo==="en_pt"
+    ? ("What does this mean?<br><em>"+item.en+'</em><br><span style="font-size:13px;color:var(--cinza)">'+item.situacao+"</span>")
+    : ("How do you say this in English?<br><em>"+item.pt+'</em><br><span style="font-size:13px;color:var(--cinza)">'+item.situacao+"</span>");
+  const correta = modo==="en_pt" ? item.pt : item.en;
+  const campo = modo==="en_pt" ? "pt" : "en";
+  const ops = embaralhar([correta].concat(embaralhar(VOCAB_DIA.filter(function(x){ return x[campo] !== correta; }).map(function(x){ return x[campo]; })).slice(0,3)));
+  const area = document.getElementById("areaJogo");
+  area.innerHTML = '<div class="pergunta">💬 '+pergunta+'</div><div class="opcoes" id="opsVoc"></div>';
+  const box = document.getElementById("opsVoc");
+  ops.forEach(function(o){
+    const b = document.createElement("button");
+    b.className = "opcao"; b.textContent = o;
+    b.onclick = function(){ responderVocabDia(o, correta); };
+    box.appendChild(b);
+  });
+}
+function responderVocabDia(escolha, correta){
+  document.querySelectorAll(".opcao").forEach(function(b){
+    b.disabled = true;
+    if(b.textContent === correta) b.classList.add("certa");
+    if(b.textContent === escolha && escolha !== correta) b.classList.add("errada");
+  });
+  if(escolha === correta){ pontos += 10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  setTimeout(function(){ estadoJogo.i++; renderVocabDia(); }, 700);
 }
 </script>
 </body>
