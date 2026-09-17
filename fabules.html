@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>EVA Academy | Fábulas — Seeds</title>
+<style>
+:root{--azul:#071a36;--dourado:#c9a227;--agua:#55d6c2;--creme:#faf8ef;--cinza:#657086}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:var(--creme);color:#172238;min-height:100vh}
+header{background:var(--azul);color:#fff;padding:16px 6%;display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:800;letter-spacing:2px}
+.back{color:#8be6d6;text-decoration:none;font-weight:700;font-size:14px}
+.wrap{width:min(900px,92%);margin:28px auto 60px}
+.hero{background:#fff;border-radius:18px;padding:24px;box-shadow:0 12px 36px rgba(7,26,54,.1);margin-bottom:18px}
+.hero h1{color:var(--azul);font-size:clamp(22px,4vw,32px);margin-bottom:6px}
+.hero p{color:var(--cinza);font-size:14px;line-height:1.5}
+.lista{display:flex;flex-direction:column;gap:12px}
+.item{background:#fff;border-radius:14px;padding:16px 18px;box-shadow:0 8px 24px rgba(7,26,54,.08);cursor:pointer;border:2px solid transparent;transition:.2s}
+.item:hover{border-color:rgba(201,162,39,.45);transform:translateY(-2px)}
+.item .num{font-size:11px;font-weight:800;color:var(--dourado);letter-spacing:1px}
+.item h3{color:var(--azul);font-size:16px;margin:4px 0}
+.item .moral{color:var(--cinza);font-size:12px}
+.leitura{display:none;background:#fff;border-radius:18px;padding:28px 22px;box-shadow:0 15px 40px rgba(7,26,54,.1)}
+.leitura.ativo{display:block}
+.leitura h2{color:var(--azul);font-size:22px;margin-bottom:8px}
+.leitura .lesson{color:var(--dourado);font-weight:800;font-size:12px;letter-spacing:1px;margin-bottom:14px}
+.leitura .texto{color:#24324a;line-height:1.7;font-size:15px;white-space:pre-line}
+.leitura .moral-box{margin-top:20px;padding:14px 16px;border-left:4px solid var(--agua);background:rgba(85,214,194,.12);border-radius:0 12px 12px 0}
+.leitura .moral-box strong{color:var(--azul)}
+.btn-voltar{margin-bottom:14px;background:none;border:none;color:var(--azul);font-weight:700;cursor:pointer}
+.xp-ok{margin-top:16px}
+.xp-ok button{padding:11px 16px;border:none;border-radius:10px;background:var(--azul);color:#fff;font-weight:700;cursor:pointer}
+.bloqueado{text-align:center;padding:40px 20px;background:#fff;border-radius:18px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">EVA ACADEMY</div>
+  <a class="back" href="alunos.html">← Área do Aluno</a>
+</header>
+<main class="wrap">
+  <div class="hero">
+    <h1>🌱 Seeds — Book of Fables</h1>
+    <p>Fábulas clássicas em inglês (Book 1). Leia, aprenda o vocabulário e a moral de cada história.</p>
+  </div>
+  <div id="bloqueado" class="bloqueado" style="display:none">
+    <h2 style="color:var(--azul);margin-bottom:8px">Acesso não liberado</h2>
+    <p style="color:var(--cinza)">A professora ainda não habilitou as Fábulas para a sua conta.</p>
+  </div>
+  <div id="lista" class="lista"></div>
+  <div id="leitura" class="leitura">
+    <button class="btn-voltar" onclick="fecharLeitura()">← Voltar às fábulas</button>
+    <div class="lesson" id="ltLesson"></div>
+    <h2 id="ltTitulo"></h2>
+    <div class="texto" id="ltTexto"></div>
+    <div class="moral-box"><strong>Moral:</strong> <span id="ltMoral"></span></div>
+    <div class="xp-ok"><button onclick="marcarLida()">Concluir leitura (+15 XP)</button></div>
+  </div>
+</main>
+<script>
+(function(){
+  try{
+    const u=JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
+    if(!u||!u.id){ alert("Faça login na Área do Aluno."); location.href="alunos.html"; }
+  }catch(e){ location.href="alunos.html"; }
+})();
+
+const FABULAS=[
+  {id:1,titulo:"The Young Crab and His Mother",texto:`"Why do you walk sideways like that?" said a mother crab to her son.\n"You should walk straight, with your toes pointing out."\n"Show me how to walk, Mommy," said the little crab.\n"I want to learn."\nSo the mother crab tried to walk straight.\nShe tried and tried.\nBut she could only walk sideways, just like her son.\nWhen she tried to turn her toes out, she tripped and fell on her nose.`,moral:"Don't tell others what to do if you can't do it too."},
+  {id:2,titulo:"The Wolf and the Crane",texto:`A wolf had been eating too much, and a bone got stuck in his throat.\nHe could not get it out, and he could not eat anything.\nThe wolf was very upset. He went quickly to the crane.\nHe thought she could help because she has a long neck and a long beak.\n"I will give you a big reward," said the wolf, "if you pull the bone out for me."\nThe crane was afraid, but she wanted the reward. So she helped the wolf.\nWhen the crane pulled the bone out, the wolf started to walk away.\n"But what about my reward?" asked the crane.\n"What reward?" growled the wolf. "Isn't it enough that I let you take your head out of my mouth without biting it off?"`,moral:"Expect no reward for helping bad people."},
+  {id:3,titulo:"The Lion and the Mouse",texto:`A Lion was sleeping in the forest, his big head resting on his paws.\nA small, shy Mouse ran across the Lion's nose. The Lion woke up and put his big paw on the little Mouse.\n"Please don't hurt me!" said the Mouse. "Let me go, and one day I will help you."\nThe Lion thought it was funny, but he was kind and let her go.\nA few days later, the Lion got caught in a hunter's net. He roared loudly.\nThe Mouse heard him and bit the ropes until they broke. The Lion was free.\n"You laughed when I said I would help you," said the Mouse. "Now you see that even a small Mouse can help a big Lion."`,moral:"Little friends can be a big help."},
+  {id:4,titulo:"The Crow and the Pitcher",texto:`During a long dry time, the birds could find very little water.\nA thirsty crow found a tall pitcher with a little water inside.\nBut the neck was very thin. The crow could not reach the water.\nHe thought hard. Then he picked up small stones and dropped them into the pitcher, one by one.\nThe water rose higher and higher. At last the crow could drink.\nHe was happy and flew away.`,moral:"Little by little does the trick. Think and don't give up."},
+  {id:5,titulo:"The Ants and the Grasshopper",texto:`One sunny day in late autumn, a family of ants was busy drying the food they had saved during the summer.\nSuddenly, a hungry grasshopper came by with his fiddle and asked for some food.\n"What! You didn't save anything for the winter?" said the ants. "What were you doing all summer?"\n"I was singing and playing music," said the grasshopper.\n"Then dance the winter away," said the ants, and went back to work.`,moral:"Prepare today for the needs of tomorrow."},
+  {id:6,titulo:"The Fox and the Lion",texto:`A young Fox had never seen a Lion before.\nOne day he saw a big Lion and ran as fast as he could to hide.\nSome days later, the Fox saw the Lion again. This time he stayed behind a tree and watched.\nThe third time, the Fox walked up to the Lion and talked to him.\n"I was so afraid at first," said the Fox. "But now I see you are not so terrible."`,moral:"Familiarity reduces fear."},
+  {id:7,titulo:"The Hares and the Frogs",texto:`Hares are very shy. One day they decided life was too hard and they would rather die.\nOn the way to a pond, they heard a noise and ran. The Frogs by the water jumped into the pond in fear.\n"Stop!" said one Hare. "See? There are animals even more afraid than we are. We should not give up so easily."`,moral:"There is always someone who feels more fear than you."},
+  {id:8,titulo:"The Travelers and the Purse",texto:`Two men were walking together when one found a purse full of gold.\n"How lucky I am!" he said.\n"Do not say 'I'," said the other. "Say 'we'. Travelers share both good and bad things."\n"No," said the first angrily. "I found it, and I will keep it."\nJust then they heard a shout: "Stop, thief! Someone stole a purse!"\nThe first man was scared. "We are in trouble!" he said.\n"No," said the second. "You said the purse was yours alone. Now the trouble is yours alone too."`,moral:"Share good fortune if you want others to share trouble."},
+  {id:9,titulo:"The Bear and the Bees",texto:`A Bear found a fallen tree full of honey.\nHe sniffed carefully. One Bee came home, saw the Bear, and stung his nose hard.\nThe Bear became angry and hit the log with his paws. All the Bees flew out and stung him everywhere.\nHe ran away, crying that one little sting had brought a thousand more.`,moral:"It is better to bear a small injury than to make it worse with anger."},
+  {id:10,titulo:"The Heron",texto:`A Heron walked along a stream looking for breakfast.\nThe water was full of fish, but he was very picky.\n"No small fish for me," he said. He waited for a big one.\nTime passed. The big fish did not come. The small fish swam away.\nAt last the Heron was so hungry that he was happy to catch a tiny snail.`,moral:"Do not be too picky, or you may end up with nothing."},
+  {id:11,titulo:"The Dog in the Manger",texto:`A Dog was sleeping in a box of soft hay.\nSome Cattle came in, tired and hungry. They wanted to eat the hay.\nBut the Dog barked and growled and would not let them near.\nHe could not eat the hay himself, yet he would not let the Cattle eat it either.`,moral:"Do not keep from others what you cannot use yourself."},
+  {id:12,titulo:"The Wolf and the Goat",texto:`A hungry Wolf saw a Goat on a high cliff. He could not reach her.\n"That is a dangerous place," he shouted. "Come down to the green grass. It is safer and sweeter."\nThe Goat laughed. "You do not care about my safety. You care about your dinner."`,moral:"Do not trust the advice of someone who wants to harm you."},
+  {id:13,titulo:"The Wolf and the Shepherd",texto:`A Wolf stayed near a flock of Sheep for a long time without hurting them.\nThe Shepherd began to trust him and even left him with the lambs.\nOne day the Shepherd went to town. The Wolf killed most of the flock.\nWhen the Shepherd returned, he cried: "It is my fault. I trusted a natural enemy."`,moral:"Never trust a natural enemy with what you love."},
+  {id:14,titulo:"The Peacock and the Crane",texto:`A proud Peacock showed his bright tail to a Crane.\n"Look at me! Your feathers are gray and plain!"\nThe Crane answered: "You are beautiful on the ground, but I can fly high in the sky. Your beauty cannot take you there."`,moral:"Useful gifts are better than empty show."},
+  {id:15,titulo:"The Farmer and His Sons",texto:`A rich old farmer told his sons there was treasure on the farm.\nAfter he died, the sons dug everywhere, but found no gold.\nThat year the land produced a great harvest because the soil had been well turned.\nThey understood: the treasure was the fruit of hard work.`,moral:"Hard work is the real treasure."}
+];
+
+function getUsuario(){ try{return JSON.parse(sessionStorage.getItem("eva_usuario_logado"));}catch(e){return null;} }
+function temAcesso(){
+  const u=getUsuario(); if(!u) return false;
+  const contas=JSON.parse(localStorage.getItem("eva_contas")||"[]");
+  const c=contas.find(x=>x.id===u.id)||u;
+  const m=c.materias||{};
+  if(m.fabulas===undefined && Object.keys(m).length===0) return true;
+  return !!m.fabulas;
+}
+
+function renderLista(){
+  if(!temAcesso()){
+    document.getElementById("bloqueado").style.display="block";
+    document.getElementById("lista").style.display="none";
+    return;
+  }
+  document.getElementById("bloqueado").style.display="none";
+  const box=document.getElementById("lista");
+  box.innerHTML=FABULAS.map(f=>
+    '<div class="item" onclick="abrirFabulas('+f.id+')"><div class="num">LESSON '+f.id+'</div><h3>'+f.titulo+'</h3><div class="moral">Moral: '+f.moral+'</div></div>'
+  ).join("");
+}
+
+function abrirFabulas(id){
+  const f=FABULAS.find(x=>x.id===id); if(!f) return;
+  document.getElementById("lista").style.display="none";
+  const L=document.getElementById("leitura");
+  L.classList.add("ativo");
+  document.getElementById("ltLesson").textContent="LESSON "+f.id+" · Seeds Book of Fables";
+  document.getElementById("ltTitulo").textContent=f.titulo;
+  document.getElementById("ltTexto").textContent=f.texto;
+  document.getElementById("ltMoral").textContent=f.moral;
+  L.dataset.id=String(id);
+}
+function fecharLeitura(){
+  document.getElementById("leitura").classList.remove("ativo");
+  document.getElementById("lista").style.display="flex";
+}
+
+function marcarLida(){
+  const id=document.getElementById("leitura").dataset.id;
+  try{
+    const logado=JSON.parse(sessionStorage.getItem("eva_usuario_logado"));
+    if(!logado||!logado.id) return;
+    const contas=JSON.parse(localStorage.getItem("eva_contas")||"[]");
+    const idx=contas.findIndex(c=>c.id===logado.id); if(idx===-1) return;
+    if(!contas[idx].fabulasLidas) contas[idx].fabulasLidas=[];
+    if(!contas[idx].fabulasLidas.includes(id)){
+      contas[idx].fabulasLidas.push(id);
+      contas[idx].xp=(Number(contas[idx].xp)||0)+15;
+      contas[idx].xpSemana=(Number(contas[idx].xpSemana)||0)+15;
+      contas[idx].moedas=(Number(contas[idx].moedas)||0)+3;
+      localStorage.setItem("eva_contas",JSON.stringify(contas));
+      logado.xp=contas[idx].xp; logado.xpSemana=contas[idx].xpSemana; logado.moedas=contas[idx].moedas;
+      sessionStorage.setItem("eva_usuario_logado",JSON.stringify(logado));
+      alert("Leitura concluída! +15 XP");
+    } else alert("Você já concluiu esta fábula.");
+  }catch(e){}
+}
+renderLista();
+</script>
+</body>
+</html>
