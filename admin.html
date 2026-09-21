@@ -540,7 +540,7 @@ function salvarFabulaUpload(){
   if(!titulo){ alert("Digite o título da fábula."); return; }
   if(!input.files || !input.files[0]){ alert("Escolha um arquivo de texto."); return; }
   const file = input.files[0];
-if(file.size > 50000 * 1024){ alert("Arquivo muito grande (máx. 50.000 KB / 50 MB)."); return; }
+if(file.size > 10000 * 1024){ alert("Arquivo muito grande (máx. 10.000 KB / 10 MB)."); return; }
   const reader = new FileReader();
   reader.onload = function(e){
     const texto = String(e.target.result||"").trim();
