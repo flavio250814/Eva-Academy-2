@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>EVA Academy | Fábulas — Seeds</title>
+<title>EVA Academy | Fábulas</title>
 <style>
 :root{--azul:#071a36;--dourado:#c9a227;--agua:#55d6c2;--creme:#faf8ef;--cinza:#657086}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -41,8 +41,8 @@ header{background:var(--azul);color:#fff;padding:16px 6%;display:flex;justify-co
 </header>
 <main class="wrap">
   <div class="hero">
-    <h1>🌱 Seeds — Book of Fables</h1>
-    <p>Fábulas clássicas em inglês (Book 1). Leia, aprenda o vocabulário e a moral de cada história.</p>
+    <h1>🌱 Fábulas</h1>
+    <p>Fábulas clássicas em inglês (Book 1) e as enviadas pela professora.</p>
   </div>
   <div id="bloqueado" class="bloqueado" style="display:none">
     <h2 style="color:var(--azul);margin-bottom:8px">Acesso não liberado</h2>
@@ -93,7 +93,22 @@ function temAcesso(){
   if(m.fabulas===undefined && Object.keys(m).length===0) return true;
   return !!m.fabulas;
 }
-
+function carregarCustom(){
+  try{ return JSON.parse(localStorage.getItem("eva_fabulas_custom")||"[]"); }
+  catch(e){ return []; }
+}
+function carregarOcultas(){
+  try{ return JSON.parse(localStorage.getItem("eva_fabulas_ocultas")||"[]"); }
+  catch(e){ return []; }
+}
+function todasFabulas(){
+  const ocultas = carregarOcultas();
+  const base = FABULAS.filter(function(f){ return ocultas.indexOf(String(f.id)) < 0; }).map(function(f){ return Object.assign({}, f, { tipo:"base" }); });
+  const custom = carregarCustom().map(function(f){
+    return { id:f.id, titulo:f.titulo, texto:f.texto, moral:f.moral||"—", tipo:"custom" };
+  });
+  return base.concat(custom);
+}
 function renderLista(){
   if(!temAcesso()){
     document.getElementById("bloqueado").style.display="block";
@@ -102,11 +117,26 @@ function renderLista(){
   }
   document.getElementById("bloqueado").style.display="none";
   const box=document.getElementById("lista");
-  box.innerHTML=FABULAS.map(f=>
-    '<div class="item" onclick="abrirFabulas('+f.id+')"><div class="num">LESSON '+f.id+'</div><h3>'+f.titulo+'</h3><div class="moral">Moral: '+f.moral+'</div></div>'
-  ).join("");
+  const todas = todasFabulas();
+  box.innerHTML=todas.map(function(f){
+    const num = f.tipo==="custom" ? "EXTRA" : ("LESSON "+f.id);
+    const click = f.tipo==="custom" ? ("abrirFabulaCustom('"+f.id+"')") : ("abrirFabulas("+f.id+")");
+    return '<div class="item" onclick="'+click+'"><div class="num">'+num+'</div><h3>'+f.titulo+'</h3><div class="moral">Moral: '+f.moral+'</div></div>';
+  }).join("");
 }
-
+function abrirFabulaCustom(id){
+  const f = carregarCustom().find(function(x){ return x.id===id; });
+  if(!f) return;
+  document.getElementById("lista").style.display="none";
+  const L=document.getElementById("leitura");
+  L.classList.add("ativo");
+  document.getElementById("ltLesson").textContent="EXTRA · Enviada pela professora";
+  document.getElementById("ltTitulo").textContent=f.titulo;
+  document.getElementById("ltTexto").textContent=f.texto;
+  document.getElementById("ltMoral").textContent=f.moral||"—";
+  L.dataset.id=String(id);
+  L.dataset.tipo="custom";
+}
 function abrirFabulas(id){
   const f=FABULAS.find(x=>x.id===id); if(!f) return;
   document.getElementById("lista").style.display="none";
@@ -117,12 +147,12 @@ function abrirFabulas(id){
   document.getElementById("ltTexto").textContent=f.texto;
   document.getElementById("ltMoral").textContent=f.moral;
   L.dataset.id=String(id);
+  L.dataset.tipo="base";
 }
 function fecharLeitura(){
   document.getElementById("leitura").classList.remove("ativo");
   document.getElementById("lista").style.display="flex";
 }
-
 function marcarLida(){
   const id=document.getElementById("leitura").dataset.id;
   try{

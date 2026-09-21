@@ -34,7 +34,6 @@
       width: 100%; padding: 14px; border: none; border-radius: 10px;
       background: var(--azul); color: white; font-weight: 700; font-size: 15px; cursor: pointer;
     }
-    #login button:hover { background: var(--escuro); }
     .erro-msg { color: var(--erro); font-size: 13px; margin-top: 12px; display: none; }
     #painel { display: none; }
     .painel-header {
@@ -125,7 +124,7 @@
   <div id="painel">
     <div class="painel-header">
       <h1>Painel da professora</h1>
-      <p>Contas, matérias, ranking, missões e relatório</p>
+      <p>Contas, matérias, fábulas, ranking e relatório</p>
     </div>
 
     <div class="cards" id="cardsResumo"></div>
@@ -197,6 +196,25 @@
     </div>
 
     <div class="secao">
+      <h2>📖 Adicionar fábula</h2>
+      <p class="meta" style="margin-bottom:12px">Envie um arquivo de texto da sua máquina. A fábula ficará disponível para os alunos na página de Fábulas.</p>
+      <label>Título da fábula</label>
+      <input type="text" id="fabulaTitulo" placeholder="Ex: The Fox and the Grapes">
+      <label>Moral (opcional)</label>
+      <input type="text" id="fabulaMoral" placeholder="Ex: It is easy to despise what you cannot have">
+      <label style="margin-top:12px">Arquivo (.txt ou .md)</label>
+      <input type="file" id="fabulaArquivo" accept=".txt,.md,.text,text/plain" style="padding:10px 0">
+      <div style="margin-top:12px;padding:12px 14px;background:rgba(201,162,39,.12);border-left:4px solid var(--dourado);border-radius:0 10px 10px 0;font-size:13px;color:#172238;line-height:1.5">
+        <strong>Atenção:</strong> todo o texto contido no arquivo enviado aparecerá na fábula que o aluno vai ler. Revise o conteúdo antes de enviar.
+      </div>
+      <div class="form-botoes">
+        <button class="btn btn-azul" onclick="salvarFabulaUpload()">Publicar fábula</button>
+      </div>
+      <p class="meta" style="margin-top:14px">Todas as fábulas (Seeds + enviadas). Você pode ocultar as do Seeds ou excluir as que enviou.</p>
+      <div id="listaFabulasAdmin" style="margin-top:10px"></div>
+    </div>
+
+    <div class="secao">
       <h2>Ranking da semana</h2>
       <div id="rankingAdmin"></div>
     </div>
@@ -226,6 +244,23 @@
 <script>
 const SENHA_ADMIN = "evaadmin2026";
 const LIGAS = ["Bronze","Prata","Ouro","Safira","Rubi","Esmeralda","Ametista","Pérola","Obsidiana","Diamante"];
+const FABULAS_BASE = [
+  {id:1,titulo:"The Young Crab and His Mother",moral:"Don't tell others what to do if you can't do it too."},
+  {id:2,titulo:"The Wolf and the Crane",moral:"Expect no reward for helping bad people."},
+  {id:3,titulo:"The Lion and the Mouse",moral:"Little friends can be a big help."},
+  {id:4,titulo:"The Crow and the Pitcher",moral:"Little by little does the trick. Think and don't give up."},
+  {id:5,titulo:"The Ants and the Grasshopper",moral:"Prepare today for the needs of tomorrow."},
+  {id:6,titulo:"The Fox and the Lion",moral:"Familiarity reduces fear."},
+  {id:7,titulo:"The Hares and the Frogs",moral:"There is always someone who feels more fear than you."},
+  {id:8,titulo:"The Travelers and the Purse",moral:"Share good fortune if you want others to share trouble."},
+  {id:9,titulo:"The Bear and the Bees",moral:"It is better to bear a small injury than to make it worse with anger."},
+  {id:10,titulo:"The Heron",moral:"Do not be too picky, or you may end up with nothing."},
+  {id:11,titulo:"The Dog in the Manger",moral:"Do not keep from others what you cannot use yourself."},
+  {id:12,titulo:"The Wolf and the Goat",moral:"Do not trust the advice of someone who wants to harm you."},
+  {id:13,titulo:"The Wolf and the Shepherd",moral:"Never trust a natural enemy with what you love."},
+  {id:14,titulo:"The Peacock and the Crane",moral:"Useful gifts are better than empty show."},
+  {id:15,titulo:"The Farmer and His Sons",moral:"Hard work is the real treasure."}
+];
 
 function carregarContas(){ try{return JSON.parse(localStorage.getItem("eva_contas"))||[]}catch(e){return[]} }
 function salvarContas(l){ localStorage.setItem("eva_contas", JSON.stringify(l)); }
@@ -236,6 +271,10 @@ function carregarConfig(){
 function salvarConfigObj(c){ localStorage.setItem("eva_config", JSON.stringify(c)); }
 function carregarMissoes(){ try{return JSON.parse(localStorage.getItem("eva_missoes"))||[]}catch(e){return[]} }
 function salvarMissoes(m){ localStorage.setItem("eva_missoes", JSON.stringify(m)); }
+function carregarFabulasCustom(){ try{return JSON.parse(localStorage.getItem("eva_fabulas_custom")||"[]");}catch(e){return[]} }
+function salvarFabulasCustom(lista){ localStorage.setItem("eva_fabulas_custom", JSON.stringify(lista)); }
+function carregarFabulasOcultas(){ try{return JSON.parse(localStorage.getItem("eva_fabulas_ocultas")||"[]");}catch(e){return[]} }
+function salvarFabulasOcultas(lista){ localStorage.setItem("eva_fabulas_ocultas", JSON.stringify(lista)); }
 
 function chaveSemana(d){
   d = d || new Date();
@@ -284,6 +323,7 @@ function garantirSemanaEmContas(){
 }
 
 function renderizarTudo(){
+  renderFabulasAdmin();
   renderResumo();
   renderContas();
   renderRanking();
@@ -419,8 +459,7 @@ function salvarConta(){
 
 function excluirConta(id){
   if(!confirm("Excluir esta conta?")) return;
-  const contas = carregarContas().filter(function(c){ return c.id!==id; });
-  salvarContas(contas);
+  salvarContas(carregarContas().filter(function(c){ return c.id!==id; }));
   renderizarTudo();
   mostrarStatus("Conta excluída.");
 }
@@ -449,9 +488,7 @@ function renderContas(){
 }
 
 function renderRanking(){
-  const contas = carregarContas().slice().sort(function(a,b){
-    return (b.xp||0)-(a.xp||0);
-  });
+  const contas = carregarContas().slice().sort(function(a,b){ return (b.xp||0)-(a.xp||0); });
   const box = document.getElementById("rankingAdmin");
   if(!contas.length){ box.innerHTML = '<p class="meta">Sem alunos.</p>'; return; }
   box.innerHTML = contas.map(function(c,i){
@@ -498,6 +535,91 @@ function renderMissoes(){
       '<button class="btn btn-vermelho" onclick="excluirMissao(\''+m.id+'\')">Excluir</button>'+
       '</div></div>';
   }).join("");
+}
+
+/* ===== FÁBULAS ===== */
+function salvarFabulaUpload(){
+  const titulo = (document.getElementById("fabulaTitulo").value||"").trim();
+  const moral = (document.getElementById("fabulaMoral").value||"").trim();
+  const input = document.getElementById("fabulaArquivo");
+  if(!titulo){ alert("Digite o título da fábula."); return; }
+  if(!input.files || !input.files[0]){ alert("Escolha um arquivo de texto."); return; }
+  const file = input.files[0];
+  if(file.size > 200000){ alert("Arquivo muito grande (máx. ~200 KB)."); return; }
+  const reader = new FileReader();
+  reader.onload = function(e){
+    const texto = String(e.target.result||"").trim();
+    if(!texto){ alert("O arquivo está vazio."); return; }
+    const lista = carregarFabulasCustom();
+    lista.push({
+      id: "c_"+Date.now(),
+      titulo: titulo,
+      moral: moral || "—",
+      texto: texto,
+      origem: file.name,
+      criadoEm: new Date().toISOString()
+    });
+    salvarFabulasCustom(lista);
+    document.getElementById("fabulaTitulo").value = "";
+    document.getElementById("fabulaMoral").value = "";
+    input.value = "";
+    renderFabulasAdmin();
+    mostrarStatus("Fábula publicada: "+titulo);
+  };
+  reader.onerror = function(){ alert("Não foi possível ler o arquivo."); };
+  reader.readAsText(file, "UTF-8");
+}
+function excluirFabulaCustom(id){
+  if(!confirm("Excluir esta fábula enviada?")) return;
+  salvarFabulasCustom(carregarFabulasCustom().filter(function(f){ return f.id!==id; }));
+  renderFabulasAdmin();
+  mostrarStatus("Fábula excluída.");
+}
+function ocultarFabulaBase(id){
+  if(!confirm("Ocultar esta fábula do Seeds para os alunos?")) return;
+  const oc = carregarFabulasOcultas();
+  const sid = String(id);
+  if(oc.indexOf(sid) < 0) oc.push(sid);
+  salvarFabulasOcultas(oc);
+  renderFabulasAdmin();
+  mostrarStatus("Fábula ocultada dos alunos.");
+}
+function restaurarFabulaBase(id){
+  const sid = String(id);
+  salvarFabulasOcultas(carregarFabulasOcultas().filter(function(x){ return x !== sid; }));
+  renderFabulasAdmin();
+  mostrarStatus("Fábula restaurada.");
+}
+function renderFabulasAdmin(){
+  const box = document.getElementById("listaFabulasAdmin");
+  if(!box) return;
+  const ocultas = carregarFabulasOcultas();
+  const custom = carregarFabulasCustom();
+  let html = '<h3 style="color:var(--azul);font-size:15px;margin:12px 0 8px">Seeds — Book of Fables</h3>';
+  html += FABULAS_BASE.map(function(f){
+    const oc = ocultas.indexOf(String(f.id)) >= 0;
+    return '<div class="conta-item" style="'+(oc?"opacity:.55":"")+'">'+
+      '<strong>LESSON '+f.id+': '+f.titulo+'</strong>'+(oc?' <span class="meta">(ocultada)</span>':'')+'<br>'+
+      '<span class="meta">Moral: '+f.moral+'</span>'+
+      '<div class="acoes">'+
+      (oc
+        ? '<button class="btn btn-verde" onclick="restaurarFabulaBase('+f.id+')">Restaurar</button>'
+        : '<button class="btn btn-vermelho" onclick="ocultarFabulaBase('+f.id+')">Ocultar dos alunos</button>')+
+      '</div></div>';
+  }).join("");
+  html += '<h3 style="color:var(--azul);font-size:15px;margin:18px 0 8px">Enviadas pela professora</h3>';
+  if(!custom.length){
+    html += '<p class="meta">Nenhuma fábula enviada ainda.</p>';
+  } else {
+    html += custom.map(function(f){
+      const preview = (f.texto||"").slice(0,100).replace(/</g,"&lt;") + ((f.texto||"").length>100?"…":"");
+      return '<div class="conta-item"><strong>'+f.titulo+'</strong><br>'+
+        '<span class="meta">Moral: '+f.moral+' · Arquivo: '+(f.origem||"—")+'</span><br>'+
+        '<span class="meta" style="display:block;margin-top:4px">'+preview+'</span>'+
+        '<div class="acoes"><button class="btn btn-vermelho" onclick="excluirFabulaCustom(\''+f.id+'\')">Excluir</button></div></div>';
+    }).join("");
+  }
+  box.innerHTML = html;
 }
 
 function copiarTexto(){
@@ -562,7 +684,7 @@ function mostrarStatus(msg){
 }
 function resetarTudo(){
   if(!confirm("Apagar TODOS os dados?") || !confirm("Confirma?")) return;
-  ["eva_contas","eva_xp_semana","eva_liga","eva_config","eva_missoes","eva_semana_id"].forEach(function(k){
+  ["eva_contas","eva_xp_semana","eva_liga","eva_config","eva_missoes","eva_semana_id","eva_fabulas_custom","eva_fabulas_ocultas"].forEach(function(k){
     localStorage.removeItem(k);
   });
   renderizarTudo();
