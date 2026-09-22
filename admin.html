@@ -124,7 +124,7 @@
   <div id="painel">
     <div class="painel-header">
       <h1>Painel da professora</h1>
-      <p>Contas, matérias, fábulas, ranking e relatório</p>
+      <p>Contas, matérias, jogos, fábulas, ranking e relatório</p>
     </div>
 
     <div class="cards" id="cardsResumo"></div>
@@ -196,16 +196,40 @@
     </div>
 
     <div class="secao">
+      <h2>🎮 Adicionar jogo (quiz)</h2>
+      <p class="meta" style="margin-bottom:12px">Crie um jogo de perguntas. Cada pergunta tem <strong>4 opções</strong> e uma resposta correta.</p>
+      <label>Nome do jogo</label>
+      <input type="text" id="jogoNome" placeholder="Ex: Vocabulário da semana 3">
+      <label>Idioma</label>
+      <select id="jogoIdioma">
+        <option value="en">Inglês</option>
+        <option value="pt">Português</option>
+      </select>
+      <label>Ícone (emoji)</label>
+      <input type="text" id="jogoIcon" value="🎯" maxlength="4" style="max-width:80px">
+      <div style="margin-top:16px;padding:14px;background:var(--creme);border-radius:12px">
+        <strong style="color:var(--azul)">Perguntas</strong>
+        <div id="listaPerguntasJogo" style="margin-top:10px"></div>
+        <button type="button" class="btn btn-cinza" style="margin-top:8px" onclick="adicionarPerguntaJogo()">+ Adicionar pergunta</button>
+      </div>
+      <div class="form-botoes">
+        <button class="btn btn-azul" onclick="salvarJogoCustom()">Publicar jogo</button>
+      </div>
+      <div id="listaJogosAdmin" style="margin-top:16px"></div>
+    </div>
+
+    <div class="secao">
       <h2>📖 Adicionar fábula</h2>
-      <p class="meta" style="margin-bottom:12px">Envie um arquivo de texto da sua máquina. A fábula ficará disponível para os alunos na página de Fábulas.</p>
+      <p class="meta" style="margin-bottom:12px">Envie um arquivo de texto da sua máquina. A fábula ficará disponível para os alunos.</p>
       <label>Título da fábula</label>
       <input type="text" id="fabulaTitulo" placeholder="Ex: The Fox and the Grapes">
       <label>Moral (opcional)</label>
       <input type="text" id="fabulaMoral" placeholder="Ex: It is easy to despise what you cannot have">
       <label style="margin-top:12px">Arquivo de texto (.txt)</label>
-<input type="file" id="fabulaArquivo" style="padding:10px 0">
-<p class="meta" style="margin-top:6px">Dica: se não aparecer nenhum arquivo, o formato pode estar filtrado. Use um arquivo <strong>.txt</strong> (Bloco de Notas). PDF e Word não entram aqui — copie o texto e salve como .txt.</p>
-        <strong>Atenção:</strong> todo o texto contido no arquivo enviado aparecerá na fábula que o aluno vai ler. Revise o conteúdo antes de enviar. Caso o arquivo não foi salvo corretamente, abra no Bloco de Notas e salve novamente como .txt ou separe em varias fábulas. O tamanho máximo do arquivo é 10 MB.
+      <input type="file" id="fabulaArquivo" style="padding:10px 0">
+      <p class="meta" style="margin-top:6px">Use arquivo <strong>.txt</strong> (Bloco de Notas). PDF e Word: copie o texto e salve como .txt.</p>
+      <div style="margin-top:12px;padding:12px 14px;background:rgba(201,162,39,.12);border-left:4px solid var(--dourado);border-radius:0 10px 10px 0;font-size:13px;color:#172238;line-height:1.5">
+        <strong>Atenção:</strong> todo o texto contido no arquivo enviado aparecerá na fábula que o aluno vai ler. Revise o conteúdo antes de enviar.
       </div>
       <div class="form-botoes">
         <button class="btn btn-azul" onclick="salvarFabulaUpload()">Publicar fábula</button>
@@ -230,6 +254,14 @@
       <textarea id="relatorioOut" style="margin-top:14px;width:100%;min-height:180px;display:none;padding:12px;border-radius:10px;border:2px solid rgba(7,26,54,.12);font-size:12px;font-family:monospace"></textarea>
     </div>
 
+    <div class="secao">
+      <h2>Ações perigosas</h2>
+      <button class="btn btn-vermelho" onclick="resetarTudo()">Apagar todos os dados</button>
+    </div>
+
+    <div class="info-box">
+      <strong>Senha admin:</strong> evaadmin2026<br>
+      Meta diária, missões e reset de liga valem para todos os alunos neste navegador (localStorage).
     </div>
   </div>
 </main>
@@ -267,6 +299,8 @@ function carregarFabulasCustom(){ try{return JSON.parse(localStorage.getItem("ev
 function salvarFabulasCustom(lista){ localStorage.setItem("eva_fabulas_custom", JSON.stringify(lista)); }
 function carregarFabulasOcultas(){ try{return JSON.parse(localStorage.getItem("eva_fabulas_ocultas")||"[]");}catch(e){return[]} }
 function salvarFabulasOcultas(lista){ localStorage.setItem("eva_fabulas_ocultas", JSON.stringify(lista)); }
+function carregarJogosCustom(){ try{return JSON.parse(localStorage.getItem("eva_jogos_custom")||"[]");}catch(e){return[]} }
+function salvarJogosCustom(lista){ localStorage.setItem("eva_jogos_custom", JSON.stringify(lista)); }
 
 function chaveSemana(d){
   d = d || new Date();
@@ -316,6 +350,7 @@ function garantirSemanaEmContas(){
 
 function renderizarTudo(){
   renderFabulasAdmin();
+  renderJogosAdmin();
   renderResumo();
   renderContas();
   renderRanking();
@@ -529,6 +564,110 @@ function renderMissoes(){
   }).join("");
 }
 
+/* ===== JOGOS CUSTOM (4 opções) ===== */
+var _perguntasTemp = [];
+
+function adicionarPerguntaJogo(dados){
+  dados = dados || { pergunta:"", opcoes:["","","",""], correta:0 };
+  _perguntasTemp.push(dados);
+  renderPerguntasJogoForm();
+}
+function removerPerguntaJogo(i){
+  _perguntasTemp.splice(i,1);
+  renderPerguntasJogoForm();
+}
+function renderPerguntasJogoForm(){
+  const box = document.getElementById("listaPerguntasJogo");
+  if(!box) return;
+  if(!_perguntasTemp.length){
+    box.innerHTML = '<p class="meta">Nenhuma pergunta ainda. Clique em “+ Adicionar pergunta”.</p>';
+    return;
+  }
+  box.innerHTML = _perguntasTemp.map(function(p, i){
+    return '<div class="conta-item" style="background:#fff">'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">'+
+      '<strong>Pergunta '+(i+1)+'</strong>'+
+      '<button type="button" class="btn btn-vermelho" onclick="removerPerguntaJogo('+i+')">Remover</button></div>'+
+      '<label>Texto da pergunta</label>'+
+      '<input type="text" id="perg_'+i+'" value="'+(p.pergunta||"").replace(/"/g,"&quot;")+'" placeholder="Ex: What does house mean?">'+
+      '<label style="margin-top:8px">Opção A</label><input type="text" id="op_'+i+'_0" value="'+(p.opcoes[0]||"").replace(/"/g,"&quot;")+'">'+
+      '<label>Opção B</label><input type="text" id="op_'+i+'_1" value="'+(p.opcoes[1]||"").replace(/"/g,"&quot;")+'">'+
+      '<label>Opção C</label><input type="text" id="op_'+i+'_2" value="'+(p.opcoes[2]||"").replace(/"/g,"&quot;")+'">'+
+      '<label>Opção D</label><input type="text" id="op_'+i+'_3" value="'+(p.opcoes[3]||"").replace(/"/g,"&quot;")+'">'+
+      '<label style="margin-top:8px">Resposta correta</label>'+
+      '<select id="corr_'+i+'">'+
+      '<option value="0"'+(p.correta===0?" selected":"")+'>A</option>'+
+      '<option value="1"'+(p.correta===1?" selected":"")+'>B</option>'+
+      '<option value="2"'+(p.correta===2?" selected":"")+'>C</option>'+
+      '<option value="3"'+(p.correta===3?" selected":"")+'>D</option>'+
+      '</select></div>';
+  }).join("");
+}
+function coletarPerguntasDoForm(){
+  return _perguntasTemp.map(function(_, i){
+    return {
+      pergunta: (document.getElementById("perg_"+i).value||"").trim(),
+      opcoes: [
+        (document.getElementById("op_"+i+"_0").value||"").trim(),
+        (document.getElementById("op_"+i+"_1").value||"").trim(),
+        (document.getElementById("op_"+i+"_2").value||"").trim(),
+        (document.getElementById("op_"+i+"_3").value||"").trim()
+      ],
+      correta: parseInt(document.getElementById("corr_"+i).value,10)||0
+    };
+  });
+}
+function salvarJogoCustom(){
+  const nome = (document.getElementById("jogoNome").value||"").trim();
+  const idioma = document.getElementById("jogoIdioma").value;
+  const icon = (document.getElementById("jogoIcon").value||"🎯").trim() || "🎯";
+  if(!nome){ alert("Digite o nome do jogo."); return; }
+  const perguntas = coletarPerguntasDoForm();
+  if(!perguntas.length){ alert("Adicione pelo menos uma pergunta."); return; }
+  for(let i=0;i<perguntas.length;i++){
+    const p = perguntas[i];
+    if(!p.pergunta){ alert("Preencha o texto da pergunta "+(i+1)+"."); return; }
+    if(p.opcoes.some(function(o){ return !o; })){ alert("Preencha as 4 opções da pergunta "+(i+1)+"."); return; }
+  }
+  const lista = carregarJogosCustom();
+  lista.push({
+    id: "j_"+Date.now(),
+    nome: nome,
+    icon: icon,
+    lang: idioma,
+    perguntas: perguntas,
+    criadoEm: new Date().toISOString()
+  });
+  salvarJogosCustom(lista);
+  document.getElementById("jogoNome").value = "";
+  document.getElementById("jogoIcon").value = "🎯";
+  _perguntasTemp = [];
+  renderPerguntasJogoForm();
+  renderJogosAdmin();
+  mostrarStatus("Jogo publicado: "+nome);
+}
+function excluirJogoCustom(id){
+  if(!confirm("Excluir este jogo?")) return;
+  salvarJogosCustom(carregarJogosCustom().filter(function(j){ return j.id!==id; }));
+  renderJogosAdmin();
+  mostrarStatus("Jogo excluído.");
+}
+function renderJogosAdmin(){
+  const box = document.getElementById("listaJogosAdmin");
+  if(!box) return;
+  const lista = carregarJogosCustom();
+  if(!lista.length){
+    box.innerHTML = '<p class="meta">Nenhum jogo criado ainda.</p>';
+    return;
+  }
+  box.innerHTML = '<h3 style="color:var(--azul);font-size:15px;margin:12px 0 8px">Jogos publicados</h3>'+
+    lista.map(function(j){
+      return '<div class="conta-item"><strong>'+(j.icon||"🎯")+' '+j.nome+'</strong><br>'+
+        '<span class="meta">'+(j.lang==="pt"?"Português":"Inglês")+' · '+(j.perguntas||[]).length+' pergunta(s)</span>'+
+        '<div class="acoes"><button class="btn btn-vermelho" onclick="excluirJogoCustom(\''+j.id+'\')">Excluir</button></div></div>';
+    }).join("");
+}
+
 /* ===== FÁBULAS ===== */
 function salvarFabulaUpload(){
   const titulo = (document.getElementById("fabulaTitulo").value||"").trim();
@@ -537,11 +676,17 @@ function salvarFabulaUpload(){
   if(!titulo){ alert("Digite o título da fábula."); return; }
   if(!input.files || !input.files[0]){ alert("Escolha um arquivo de texto."); return; }
   const file = input.files[0];
-if(file.size > 10000 * 1024){ alert("Arquivo muito grande (máx. 10.000 KB / 10 MB)."); return; }
+  if(file.size > 50000 * 1024){ alert("Arquivo muito grande (máx. 50.000 KB / 50 MB)."); return; }
   const reader = new FileReader();
   reader.onload = function(e){
-    const texto = String(e.target.result||"").trim();
-    if(!texto){ alert("O arquivo está vazio."); return; }
+    let texto = String(e.target.result||"");
+    if(texto.indexOf("%PDF") === 0){
+      alert("Este arquivo parece ser PDF.\\n\\nSalve o texto como .txt (Bloco de Notas) e envie de novo.");
+      return;
+    }
+    texto = texto.trim();
+    if(!texto){ alert("O arquivo está vazio ou não é texto legível."); return; }
+    if(texto.length < 10){ alert("O texto é muito curto."); return; }
     const lista = carregarFabulasCustom();
     lista.push({
       id: "c_"+Date.now(),
@@ -676,7 +821,7 @@ function mostrarStatus(msg){
 }
 function resetarTudo(){
   if(!confirm("Apagar TODOS os dados?") || !confirm("Confirma?")) return;
-  ["eva_contas","eva_xp_semana","eva_liga","eva_config","eva_missoes","eva_semana_id","eva_fabulas_custom","eva_fabulas_ocultas"].forEach(function(k){
+  ["eva_contas","eva_xp_semana","eva_liga","eva_config","eva_missoes","eva_semana_id","eva_fabulas_custom","eva_fabulas_ocultas","eva_jogos_custom"].forEach(function(k){
     localStorage.removeItem(k);
   });
   renderizarTudo();
