@@ -80,18 +80,18 @@ header{background:var(--azul);color:white;padding:18px 6%;display:flex;justify-c
 </header>
 <main class="wrap">
   <section id="idioma">
-    <h1>Jogos:</h1>
-    <p>Mais de 21 jogos em cada idioma (e extras: cruzadinha, caça, números…).</p>
+    <h1>Qual idioma você quer praticar?</h1>
+    <p>Jogos de inglês e português + quizzes da professora.</p>
     <div class="idioma-grid">
       <article class="idioma-card" onclick="selecionarIdioma('en')">
-        <div class="icon">EN</div>
+        <div class="icon">🇬🇧</div>
         <h2>Inglês</h2>
-        <p>Jogos de inglês.</p>
+        <p>Quiz, forca, memória, cruzadinha e mais.</p>
       </article>
       <article class="idioma-card" onclick="selecionarIdioma('pt')">
-        <div class="icon">PT</div>
+        <div class="icon">🇧🇷</div>
         <h2>Português</h2>
-        <p>Jogos de português.</p>
+        <p>Quiz, forca, memória, cruzadinha e mais.</p>
       </article>
     </div>
   </section>
@@ -225,6 +225,7 @@ let idiomaAtual="en", modoAtual=null, nivelAtual="iniciante", pontos=0, estadoJo
 function atualizarPlacar(){ document.getElementById("placar").textContent="Pontos: "+pontos; document.getElementById("tagNivel").textContent=nivelAtual; }
 function voltarIdioma(){ mostrarTela("idioma"); }
 function voltarSelecao(){ mostrarTela("selecao"); }
+
 const MODOS = [
   { id:"en_quiz_ept", nome:"Quiz EN→PT", icon:"📝", desc:"Inglês para português", lang:"en", engine:"quiz", tipo:"en_pt" },
   { id:"en_quiz_pte", nome:"Quiz PT→EN", icon:"📝", desc:"Português para inglês", lang:"en", engine:"quiz", tipo:"pt_en" },
@@ -240,17 +241,13 @@ const MODOS = [
   { id:"en_embaralha", nome:"Letras embaralhadas", icon:"🔀", desc:"Monte a palavra", lang:"en", engine:"embaralha", tipo:"en" },
   { id:"en_rapido", nome:"Quiz rápido", icon:"⚡", desc:"5 perguntas", lang:"en", engine:"quiz", tipo:"en_pt", qtd:5 },
   { id:"en_desafio", nome:"Desafio 12", icon:"🏆", desc:"12 perguntas", lang:"en", engine:"quiz", tipo:"en_pt", qtd:12 },
-  { id:"en_memoria_inv", nome:"Memória PT-EN", icon:"🧠", desc:"Pares invertidos", lang:"en", engine:"memoria", tipo:"en" },
-  { id:"en_forca_ptpista", nome:"Forca com pista", icon:"🔤", desc:"Forca + dica", lang:"en", engine:"forca", tipo:"en" },
-  { id:"en_digite_mix", nome:"Digite misto", icon:"⌨️", desc:"EN ou PT", lang:"en", engine:"digite", tipo:"mix" },
-  { id:"en_quiz_mix", nome:"Quiz misto", icon:"🎲", desc:"EN↔PT", lang:"en", engine:"quiz", tipo:"mix" },
-  { id:"en_revisao", nome:"Revisão geral", icon:"📚", desc:"Mistura de níveis", lang:"en", engine:"quiz", tipo:"en_pt", mixNivel:true },
-  { id:"en_pares", nome:"Ache o par", icon:"🔗", desc:"Escolha a tradução", lang:"en", engine:"quiz", tipo:"en_pt" },
-  { id:"en_flash", nome:"Flash quiz", icon:"✨", desc:"Quiz curto", lang:"en", engine:"quiz", tipo:"pt_en", qtd:6 },
   { id:"en_cruzadinha", nome:"Cruzadinha (EN)", icon:"🧩", desc:"Palavras cruzadas", lang:"en", engine:"cruzadinha", tipo:"en" },
   { id:"en_caca", nome:"Caça-palavras (EN)", icon:"🔍", desc:"Encontre as palavras", lang:"en", engine:"caca", tipo:"en" },
   { id:"en_numeros", nome:"Números (EN)", icon:"🔢", desc:"Numbers 1–20", lang:"en", engine:"numeros", tipo:"en" },
   { id:"en_vocab_dia", nome:"Vocabulário do dia", icon:"💬", desc:"Speak naturally", lang:"en", engine:"vocab_dia", tipo:"en" },
+  { id:"en_quiz_mix", nome:"Quiz misto", icon:"🎲", desc:"EN↔PT", lang:"en", engine:"quiz", tipo:"mix" },
+  { id:"en_revisao", nome:"Revisão geral", icon:"📚", desc:"Mistura de níveis", lang:"en", engine:"quiz", tipo:"en_pt", mixNivel:true },
+  { id:"en_flash", nome:"Flash quiz", icon:"✨", desc:"Quiz curto", lang:"en", engine:"quiz", tipo:"pt_en", qtd:6 },
   { id:"pt_quiz_dica", nome:"Quiz por dica", icon:"💡", desc:"Adivinhe pela dica", lang:"pt", engine:"quiz_pt" },
   { id:"pt_forca", nome:"Forca (PT)", icon:"🔤", desc:"Adivinhe a palavra", lang:"pt", engine:"forca", tipo:"pt" },
   { id:"pt_memoria", nome:"Memória PT", icon:"🧠", desc:"Palavra e dica", lang:"pt", engine:"memoria", tipo:"pt" },
@@ -263,54 +260,94 @@ const MODOS = [
   { id:"pt_rapido", nome:"Quiz rápido", icon:"⚡", desc:"5 perguntas", lang:"pt", engine:"quiz_pt", qtd:5 },
   { id:"pt_desafio", nome:"Desafio 12", icon:"🏆", desc:"12 perguntas", lang:"pt", engine:"quiz_pt", qtd:12 },
   { id:"pt_digite", nome:"Digite a palavra", icon:"⌨️", desc:"Escreva pela dica", lang:"pt", engine:"digite_pt" },
-  { id:"pt_memoria2", nome:"Memória extra", icon:"🧩", desc:"Mais pares", lang:"pt", engine:"memoria", tipo:"pt" },
-  { id:"pt_forca2", nome:"Forca difícil", icon:"🔤", desc:"Outra rodada", lang:"pt", engine:"forca", tipo:"pt" },
-  { id:"pt_quiz2", nome:"Quiz avançado", icon:"📝", desc:"Mais dicas", lang:"pt", engine:"quiz_pt" },
+  { id:"pt_cruzadinha", nome:"Cruzadinha (PT)", icon:"🧩", desc:"Palavras cruzadas", lang:"pt", engine:"cruzadinha", tipo:"pt" },
+  { id:"pt_caca", nome:"Caça-palavras (PT)", icon:"🔍", desc:"Encontre as palavras", lang:"pt", engine:"caca", tipo:"pt" },
   { id:"pt_mix", nome:"Revisão mista", icon:"📚", desc:"Vários níveis", lang:"pt", engine:"quiz_pt", mixNivel:true },
   { id:"pt_flash", nome:"Flash quiz", icon:"✨", desc:"Quiz curto", lang:"pt", engine:"quiz_pt", qtd:6 },
-  { id:"pt_pares", nome:"Ache a palavra", icon:"🔗", desc:"Combine com a dica", lang:"pt", engine:"quiz_pt" },
-  { id:"pt_ortografia", nome:"Ortografia", icon:"✍️", desc:"Escreva certo", lang:"pt", engine:"digite_pt" },
-  { id:"pt_desafio_final", nome:"Desafio final", icon:"🎯", desc:"10 perguntas", lang:"pt", engine:"quiz_pt", qtd:10 },
-  { id:"pt_treino", nome:"Treino diário", icon:"📅", desc:"Prática rápida", lang:"pt", engine:"quiz_pt", qtd:8 },
-  { id:"pt_cruzadinha", nome:"Cruzadinha (PT)", icon:"🧩", desc:"Palavras cruzadas", lang:"pt", engine:"cruzadinha", tipo:"pt" },
-  { id:"pt_caca", nome:"Caça-palavras (PT)", icon:"🔍", desc:"Encontre as palavras", lang:"pt", engine:"caca", tipo:"pt" }
+  { id:"pt_treino", nome:"Treino diário", icon:"📅", desc:"Prática rápida", lang:"pt", engine:"quiz_pt", qtd:8 }
 ];
 
-function modoLiberado(m){
-  try{
-    const u=JSON.parse(sessionStorage.getItem("eva_usuario_logado")||"null");
-    if(!u) return true;
-    const contas=JSON.parse(localStorage.getItem("eva_contas")||"[]");
-    const c=contas.find(function(x){return x.id===u.id;})||u;
-    const mat=c.materias||{};
-    if(Object.keys(mat).length===0) return true;
-    if(m.engine==="cruzadinha") return mat.cruzadinha!==false;
-    if(m.engine==="caca") return mat.caca!==false;
-    if(m.engine==="numeros") return mat.numeros!==false;
-    if(m.engine==="vocab_dia") return mat.vocab!==false;
-    return mat.jogos!==false;
-  }catch(e){ return true; }
+function carregarJogosCustom(){
+  try{ return JSON.parse(localStorage.getItem("eva_jogos_custom")||"[]"); }
+  catch(e){ return []; }
 }
-
-function selecionarIdioma(lang){
-  idiomaAtual=lang;
-  document.getElementById("tituloSelecao").textContent=lang==="en"?"Jogos de Inglês":"Jogos de Português";
-  const grid=document.getElementById("gridModos");
-  grid.innerHTML=MODOS.filter(function(m){return m.lang===lang && modoLiberado(m);}).map(function(m){
-    return '<article class="modo-card" data-modo="'+m.id+'"><div class="icon">'+m.icon+'</div><h3>'+m.nome+'</h3><p>'+m.desc+'</p></article>';
+function selecionarIdioma(lang) {
+  idiomaAtual = lang;
+  document.getElementById("tituloSelecao").textContent = lang === "en" ? "Jogos de Inglês" : "Jogos de Português";
+  const grid = document.getElementById("gridModos");
+  const base = MODOS.filter(function(m){ return m.lang === lang; });
+  const custom = carregarJogosCustom().filter(function(jg){ return jg.lang === lang; }).map(function(jg){
+    return {
+      id: jg.id, nome: jg.nome, icon: jg.icon || "🎯",
+      desc: (jg.perguntas||[]).length + " perguntas · professora",
+      lang: jg.lang, perguntas: jg.perguntas
+    };
+  });
+  const todos = base.concat(custom);
+  window._modosCustom = {};
+  custom.forEach(function(m){ window._modosCustom[m.id] = m; });
+  grid.innerHTML = todos.map(function(m){
+    return '<article class="modo-card" data-modo="'+m.id+'">'+
+      '<div class="icon">'+m.icon+'</div><h3>'+m.nome+'</h3><p>'+m.desc+'</p></article>';
   }).join("");
   grid.querySelectorAll(".modo-card").forEach(function(card){
-    card.onclick=function(){ mostrarNiveis(card.getAttribute("data-modo")); };
+    card.onclick = function(){
+      const id = card.getAttribute("data-modo");
+      if(window._modosCustom && window._modosCustom[id]){
+        modoAtual = id;
+        iniciarQuizCustom(window._modosCustom[id]);
+      } else {
+        mostrarNiveis(id);
+      }
+    };
   });
   mostrarTela("selecao");
 }
 function mostrarNiveis(modoId){ modoAtual=modoId; mostrarTela("niveis"); }
 
+function iniciarQuizCustom(jogo){
+  pontos = 0; atualizarPlacar();
+  document.getElementById("tagNivel").textContent = "Quiz";
+  mostrarTela("jogo");
+  estadoJogo = { fila: (jogo.perguntas||[]).slice(), i: 0, custom: true };
+  renderQuizCustom();
+}
+function renderQuizCustom(){
+  const st = estadoJogo;
+  if(st.i >= st.fila.length){
+    adicionarXP(25); mostrarGanhoXP(25);
+    fimDeJogo("Fim!","Você concluiu o quiz da professora.");
+    return;
+  }
+  const item = st.fila[st.i];
+  const ops = (item.opcoes||[]).slice();
+  const area = document.getElementById("areaJogo");
+  area.innerHTML = '<div class="pergunta">'+item.pergunta+'</div><div class="opcoes" id="opsCustom"></div>'+
+    '<p style="text-align:center;margin-top:14px;color:var(--cinza);font-size:13px">'+(st.i+1)+' / '+st.fila.length+'</p>';
+  const box = document.getElementById("opsCustom");
+  const labels = ["A","B","C","D"];
+  ops.forEach(function(o, idx){
+    const b = document.createElement("button");
+    b.className = "opcao";
+    b.textContent = labels[idx]+") "+o;
+    b.onclick = function(){ responderQuizCustom(idx, item.correta); };
+    box.appendChild(b);
+  });
+}
+function responderQuizCustom(escolha, correta){
+  document.querySelectorAll("#opsCustom .opcao").forEach(function(b, idx){
+    b.disabled = true;
+    if(idx === correta) b.classList.add("certa");
+    if(idx === escolha && escolha !== correta) b.classList.add("errada");
+  });
+  if(escolha === correta){ pontos += 10; atualizarPlacar(); adicionarXP(10); mostrarGanhoXP(10); }
+  setTimeout(function(){ estadoJogo.i++; renderQuizCustom(); }, 700);
+}
+
 function iniciarComNivel(nivel){
   nivelAtual=nivel; pontos=0; atualizarPlacar(); mostrarTela("jogo");
   const modo=MODOS.find(function(m){return m.id===modoAtual;})||{};
   const engine=modo.engine||"quiz", tipo=modo.tipo||"en_pt", qtd=modo.qtd||0, mixNivel=!!modo.mixNivel;
-  estadoJogo.modoCfg=modo;
   if(engine==="quiz") iniciarQuiz(tipo,qtd,mixNivel);
   else if(engine==="digite") iniciarDigite(tipo);
   else if(engine==="forca") iniciarForca(tipo==="pt"?"pt":"en");
@@ -425,7 +462,12 @@ function fimDeJogo(titulo, msg){
   area.querySelector("p").textContent = msg;
   area.querySelector("strong").textContent = pontos + " pontos";
   document.getElementById("btnOutro").onclick = function(){ voltarSelecao(); };
-  document.getElementById("btnAgain").onclick = function(){ iniciarComNivel(nivelAtual); };
+  document.getElementById("btnAgain").onclick = function(){
+    if(estadoJogo.custom){
+      const j = window._modosCustom && window._modosCustom[modoAtual];
+      if(j) iniciarQuizCustom(j); else voltarSelecao();
+    } else iniciarComNivel(nivelAtual);
+  };
 }
 
 function iniciarQuiz(tipo, qtd, mixNivel){
@@ -699,7 +741,6 @@ function responderEmbaralha(){
   estadoJogo.i++; renderEmbaralha();
 }
 
-/* Cruzadinha */
 const cruzEN = [{palavra:"DOG",dica:"Animal that barks"},{palavra:"CAT",dica:"Animal that meows"},{palavra:"BOOK",dica:"You read it"},{palavra:"SUN",dica:"Bright in the sky"},{palavra:"HOME",dica:"Where you live"}];
 const cruzPT = [{palavra:"GATO",dica:"Animal que mia"},{palavra:"CASA",dica:"Onde se mora"},{palavra:"LIVRO",dica:"Serve para ler"},{palavra:"AGUA",dica:"Se bebe"},{palavra:"SOL",dica:"Brilha de dia"}];
 function iniciarCruzadinha(lang){
@@ -725,7 +766,6 @@ function responderCruzadinha(){
   estadoJogo.i++; renderCruzadinha();
 }
 
-/* Caça-palavras */
 function iniciarCaca(lang){
   const words = lang==="pt" ? ["CASA","GATO","SOL","LIVRO","MESA"] : ["HOME","CAT","SUN","BOOK","DOOR"];
   const size = 8;
@@ -761,7 +801,6 @@ function responderCaca(){
   renderCaca();
 }
 
-/* Números */
 const NUMEROS = [
   {n:1,en:"one"},{n:2,en:"two"},{n:3,en:"three"},{n:4,en:"four"},{n:5,en:"five"},
   {n:6,en:"six"},{n:7,en:"seven"},{n:8,en:"eight"},{n:9,en:"nine"},{n:10,en:"ten"},
@@ -799,7 +838,6 @@ function responderNumeros(escolha, correta){
   setTimeout(function(){ estadoJogo.i++; renderNumeros(); }, 700);
 }
 
-/* Vocabulário do dia / Speak naturally */
 const VOCAB_DIA = [
   {en:"Good morning!",pt:"Bom dia!",situacao:"Saudação de manhã"},
   {en:"How are you?",pt:"Como vai você?",situacao:"Perguntar como está"},
